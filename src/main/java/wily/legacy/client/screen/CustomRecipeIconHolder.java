@@ -14,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
+import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.base.FactoryIngredient;
 import wily.factoryapi.base.StackIngredient;
 import wily.factoryapi.base.Stocker;
@@ -228,7 +229,7 @@ public abstract class CustomRecipeIconHolder extends LegacyIconHolder implements
     public void renderSelection(GuiGraphicsExtractor graphics, int i, int j, float f) {
         super.renderSelection(graphics, i, j, f);
         int matchSlot;
-        if (!itemIcon.isEmpty() && hasItem(itemIcon) && minecraft.screen instanceof LegacyMenuAccess<?> a && (matchSlot = findInventoryMatchSlot()) > 0) {
+        if (!itemIcon.isEmpty() && hasItem(itemIcon) && FactoryAPIClient.getScreen() instanceof LegacyMenuAccess<?> a && (matchSlot = findInventoryMatchSlot()) > 0) {
             Slot s = a.getMenu().getSlot(matchSlot);
             LegacyIconHolder h = LegacyRenderUtil.iconHolderRenderer.slotBounds(a.getMenuRectangle().left(), a.getMenuRectangle().top(), s);
             h.extractRenderState(graphics, i, j, f);

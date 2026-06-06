@@ -8,6 +8,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
+import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.base.client.UIAccessor;
 import wily.legacy.client.LegacyOptions;
 import wily.legacy.network.TopMessage;
@@ -38,7 +39,7 @@ public class LegacyLoadingScreen extends Screen implements LegacyLoading, Contro
         LegacyLoadingScreen screen = new LegacyLoadingScreen(od || lastOd ? Component.translatable("legacy.menu." + (lastOd ? "leaving" : "entering"), LegacyComponents.getDimensionName((lastOd ? lastLevel : newLevel))) : Component.empty(), Component.empty()) {
             @Override
             public void tick() {
-                if (levelReady.getAsBoolean() || Util.getMillis() - createdTime >= 30000) minecraft.setScreen(null);
+                if (levelReady.getAsBoolean() || Util.getMillis() - createdTime >= 30000) FactoryAPIClient.setScreen(null);
             }
 
             @Override
@@ -62,7 +63,7 @@ public class LegacyLoadingScreen extends Screen implements LegacyLoading, Contro
         LegacyLoadingScreen screen = new LegacyLoadingScreen(LegacyComponents.RESPAWNING, Component.empty()) {
             @Override
             public void tick() {
-                if (levelReady.getAsBoolean() || Util.getMillis() - createdTime >= 30000) minecraft.setScreen(null);
+                if (levelReady.getAsBoolean() || Util.getMillis() - createdTime >= 30000) FactoryAPIClient.setScreen(null);
             }
 
             @Override
@@ -76,26 +77,26 @@ public class LegacyLoadingScreen extends Screen implements LegacyLoading, Contro
 
     public static void startFakeAutoSave() {
         if (!LegacyOptions.fakeAutosaveScreen.get()) return;
-        Minecraft.getInstance().gui.autosaveIndicatorValue = 0.0f;
+        FactoryAPIClient.getGuiOrHud(Minecraft.getInstance()).autosaveIndicatorValue = 0.0f;
         TopMessage.setMedium(null);
-        Minecraft.getInstance().setScreen(getFakeAutoSaveScreen());
+        FactoryAPIClient.setScreen(getFakeAutoSaveScreen());
     }
 
     public static void openFakeManualSaveScreen(Screen nextScreen) {
         if (!LegacyOptions.fakeManualSaveScreen.get()) {
-            Minecraft.getInstance().setScreen(nextScreen);
+            FactoryAPIClient.setScreen(nextScreen);
             return;
         }
-        Minecraft.getInstance().gui.autosaveIndicatorValue = 0.0f;
-        Minecraft.getInstance().setScreen(getFakeManualSaveScreen(nextScreen));
+        FactoryAPIClient.getGuiOrHud(Minecraft.getInstance()).autosaveIndicatorValue = 0.0f;
+        FactoryAPIClient.setScreen(getFakeManualSaveScreen(nextScreen));
     }
 
     public static LegacyLoadingScreen getFakeAutoSaveScreen() {
-        return createFakeSaveScreen(LegacyComponents.PREPARING_AUTOSAVE, true, () -> Minecraft.getInstance().setScreen(null));
+        return createFakeSaveScreen(LegacyComponents.PREPARING_AUTOSAVE, true, () -> FactoryAPIClient.setScreen(null));
     }
 
     public static LegacyLoadingScreen getFakeManualSaveScreen(Screen nextScreen) {
-        return createFakeSaveScreen(LegacyComponents.PREPARING_MANUAL_SAVE, true, () -> Minecraft.getInstance().setScreen(nextScreen));
+        return createFakeSaveScreen(LegacyComponents.PREPARING_MANUAL_SAVE, true, () -> FactoryAPIClient.setScreen(nextScreen));
     }
 
     private static LegacyLoadingScreen createFakeSaveScreen(Component loadingHeader, boolean controlsAutosaveIndicator, Runnable onClose) {
@@ -110,7 +111,7 @@ public class LegacyLoadingScreen extends Screen implements LegacyLoading, Contro
             @Override
             public void tick() {
                 if (controlsAutosaveIndicator) {
-                    minecraft.gui.autosaveIndicatorValue = 0.0f;
+                    FactoryAPIClient.getGuiOrHud(minecraft).autosaveIndicatorValue = 0.0f;
                 }
                 super.tick();
 
@@ -128,7 +129,7 @@ public class LegacyLoadingScreen extends Screen implements LegacyLoading, Contro
                     onClose();
                     LegacySoundUtil.playBackSound();
                     if (controlsAutosaveIndicator) {
-                        minecraft.gui.autosaveIndicatorValue = 1.0f;
+                        FactoryAPIClient.getGuiOrHud(minecraft).autosaveIndicatorValue = 1.0f;
                     }
                 }
             }

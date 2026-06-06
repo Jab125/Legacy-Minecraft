@@ -5,7 +5,12 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.MultiBufferSource;
+//? if <26.2 {
+/*import net.minecraft.client.renderer.MultiBufferSource;
+*///?} else {
+import net.minecraft.client.gui.Hud;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+//?}
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Holder;
@@ -29,7 +34,10 @@ public class LegacyActivationAnim {
         display(((pose, f, source) -> {
             pose.pushPose();
             pose.scale(0.5f, 0.5f, 0.5f);
-            TextureAtlasSprite sprite = FactoryGuiGraphics.getSprites().getSprite(Gui.getMobEffectSprite(effect));
+            TextureAtlasSprite sprite = FactoryGuiGraphics.getSprites().getSprite(
+                    //$ gui_to_hud
+                    Hud
+                       .getMobEffectSprite(effect));
             renderTex(sprite, pose, source);
             pose.pushPose();
             pose.translate(0.5f, 0.5f, 0.5f);
@@ -41,7 +49,8 @@ public class LegacyActivationAnim {
         }));
     }
 
-    private static void renderTex(TextureAtlasSprite textureAtlasSprite, PoseStack poseStack, MultiBufferSource multiBufferSource) {
+    //? if <26.2 {
+    /*private static void renderTex(TextureAtlasSprite textureAtlasSprite, PoseStack poseStack, MultiBufferSource multiBufferSource) {
         int i = ARGB.colorFromFloat(1.0F, 0.1F, 0.1F, 0.1F);
         float m = textureAtlasSprite.getU0();
         float n = textureAtlasSprite.getU1();
@@ -54,9 +63,31 @@ public class LegacyActivationAnim {
         vertexConsumer.addVertex(matrix4f, 1.0F, 1.0F, -0.5F).setUv(m, o).setColor(i);
         vertexConsumer.addVertex(matrix4f, -1.0F, 1.0F, -0.5F).setUv(n, o).setColor(i);
     }
+    *///?} else {
+    private static void renderTex(TextureAtlasSprite textureAtlasSprite, PoseStack poseStack, SubmitNodeCollector collector) {
+        int i = ARGB.colorFromFloat(1.0F, 0.1F, 0.1F, 0.1F);
+        collector.submitCustomGeometry(poseStack, RenderTypes.blockScreenEffect(textureAtlasSprite.atlasLocation()), (pose, vertexConsumer) -> {
+            float m = textureAtlasSprite.getU0();
+            float n = textureAtlasSprite.getU1();
+            float o = textureAtlasSprite.getV0();
+            float p = textureAtlasSprite.getV1();
+            Matrix4f matrix4f = poseStack.last().pose();
+            vertexConsumer.addVertex(matrix4f, -1.0F, -1.0F, -0.5F).setUv(n, p).setColor(i);
+            vertexConsumer.addVertex(matrix4f, 1.0F, -1.0F, -0.5F).setUv(m, p).setColor(i);
+            vertexConsumer.addVertex(matrix4f, 1.0F, 1.0F, -0.5F).setUv(m, o).setColor(i);
+            vertexConsumer.addVertex(matrix4f, -1.0F, 1.0F, -0.5F).setUv(n, o).setColor(i);
+		});
+    }
+    //?}
 
     @FunctionalInterface
     public interface Render {
-        void render(PoseStack poseStack, float partialTick, MultiBufferSource bufferSource);
+        void render(PoseStack poseStack, float partialTick
+                //? if <26.2 {
+                /*, MultiBufferSource bufferSource
+                *///?} else {
+                , SubmitNodeCollector submitNodeCollector
+                //?}
+        );
     }
 }

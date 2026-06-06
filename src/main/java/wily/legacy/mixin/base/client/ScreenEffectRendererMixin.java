@@ -1,12 +1,15 @@
 package wily.legacy.mixin.base.client;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.ref.LocalIntRef;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.MultiBufferSource;
+//? if <26.2 {
+/*import net.minecraft.client.renderer.MultiBufferSource;
+*///?}
 import net.minecraft.client.renderer.ScreenEffectRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
@@ -46,17 +49,41 @@ public abstract class ScreenEffectRendererMixin {
     @Final
     private Minecraft minecraft;
 
-    @Shadow
+    //? if <26.2 {
+    /*@Shadow
     @Final
     private MultiBufferSource bufferSource;
+    *///?}
 
-    @ModifyArg(method = "renderTex", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;setColor(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;"))
-    private static int renderTex(int i) {
-        return ColorUtil.mergeColors(texRenderColor, i);
+    //? if <26.2 {
+    /*@ModifyArg(method = "renderTex", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/VertexConsumer;setColor(I)Lcom/mojang/blaze3d/vertex/VertexConsumer;"))
+    *///?} else {
+    @Inject(method = "submitBlockSprite", at = @At("HEAD"))
+    //?}
+    private static /*? if <26.2 {*//*int*//*?} else {*/void/*?}*/ renderTex(/*? if <26.2 {*//*int*//*?} else {*/CallbackInfo ci, @Local(argsOnly = true, name = "color") LocalIntRef/*?}*/ i) {
+        /*? if <26.2 {*//*return*//*?} else {*/i.set/*?}*/(ColorUtil.mergeColors(texRenderColor, i/*? if >=26.2 {*/.get()/*?}*/));
     }
 
-    @ModifyArg(method = "renderScreenEffect", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/ScreenEffectRenderer;renderTex(Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;)V"))
-    private TextureAtlasSprite renderScreenEffect(TextureAtlasSprite f, PoseStack i, MultiBufferSource f1, @Local /*? if neoforge {*//*Pair<BlockState, BlockPos> pair*//*?} else {*/BlockState state/*?}*/) {
+    @ModifyArg(method =
+            //? if <26.2 {
+            /*"renderScreenEffect"
+             *///?} else {
+            "submit"
+            //?}
+            , at = @At(value = "INVOKE", target =
+            //? if <26.2 {
+            /*"Lnet/minecraft/client/renderer/ScreenEffectRenderer;renderTex(Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;)V"
+            *///?} else {
+            "Lnet/minecraft/client/renderer/ScreenEffectRenderer;submitBlockSprite(Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;I)V"
+            //?}
+    ))
+    private TextureAtlasSprite renderScreenEffect(TextureAtlasSprite f,
+                                                  //? if <26.2 {
+                                                  /*PoseStack i, MultiBufferSource f1, SubmitNodeCollector submitNodeCollector,
+                                                  *///?} else {
+
+                                                  //?}
+                                                  @Local /*? if neoforge {*//*Pair<BlockState, BlockPos> pair*//*?} else {*/BlockState state/*?}*/) {
         //? if neoforge {
         /*BlockState state = pair.getLeft();
          *///?}
@@ -73,7 +100,13 @@ public abstract class ScreenEffectRendererMixin {
         return f;
     }
 
-    @Redirect(method = "renderScreenEffect", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isOnFire()Z"))
+    @Redirect(method =
+            //? if <26.2 {
+            /*"renderScreenEffect"
+            *///?} else {
+            "submit"
+            //?}
+            , at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isOnFire()Z"))
     private boolean renderScreenEffect(LocalPlayer player) {
         return player.isOnFire() && !player.hasEffect(MobEffects.FIRE_RESISTANCE);
     }
@@ -88,7 +121,13 @@ public abstract class ScreenEffectRendererMixin {
     private void renderItemActivationAnimation(PoseStack poseStack, float f, SubmitNodeCollector submitNodeCollector, CallbackInfo ci) {
         if (LegacyActivationAnim.itemActivationRenderReplacement != null) {
             ci.cancel();
-            LegacyActivationAnim.itemActivationRenderReplacement.render(poseStack, f, bufferSource);
+            LegacyActivationAnim.itemActivationRenderReplacement.render(poseStack, f,
+                    //? if <26.2 {
+                    /*bufferSource
+                    *///?} else {
+                    submitNodeCollector
+                    //?}
+            );
             poseStack.popPose();
         }
     }

@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.util.FormattedCharSequence;
+import wily.factoryapi.FactoryAPIClient;
 import wily.legacy.client.ContentManager;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -59,7 +60,7 @@ public class Legacy4JStoreScreen extends PanelVListScreen implements ControlTool
                 future.thenAccept(packs -> {
                     minecraft.execute(() -> {
                         this.isLoading = false;
-                        minecraft.setScreen(new Legacy4JContentListScreen(this, category, packs));
+                        FactoryAPIClient.setScreen(new Legacy4JContentListScreen(this, category, packs));
                     });
                 }).exceptionally(ex -> {
                     minecraft.execute(() -> this.isLoading = false);
@@ -78,7 +79,7 @@ public class Legacy4JStoreScreen extends PanelVListScreen implements ControlTool
         super.tick();
 
         if (warnNoContent) {
-            minecraft.setScreen(ConfirmationScreen.createInfoScreen(this, TITLE_LABEL, Component.translatable("legacy.menu.store_no_content_message")));
+            FactoryAPIClient.setScreen(ConfirmationScreen.createInfoScreen(this, TITLE_LABEL, Component.translatable("legacy.menu.store_no_content_message")));
             warnNoContent = false;
         }
     }

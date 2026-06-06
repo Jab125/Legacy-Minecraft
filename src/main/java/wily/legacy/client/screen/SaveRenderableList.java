@@ -33,6 +33,7 @@ import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import wily.factoryapi.FactoryAPI;
+import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.base.client.FactoryGuiGraphics;
 import wily.factoryapi.base.client.UIAccessor;
 import wily.legacy.Legacy4J;
@@ -140,7 +141,7 @@ public class SaveRenderableList extends RenderableVList {
     }
 
     public static void handleLevelLoadFailure(Minecraft minecraft, Component component) {
-        minecraft.setScreen(new ConfirmationScreen(new TitleScreen(), Component.translatable("selectWorld.futureworld.error.title"), component, (b) -> {
+        FactoryAPIClient.setScreen(new ConfirmationScreen(new TitleScreen(), Component.translatable("selectWorld.futureworld.error.title"), component, (b) -> {
         }) {
             protected void addButtons() {
                 renderableVList.addRenderable(okButton = Button.builder(Component.translatable("gui.ok"), (b) -> onClose()).bounds(panel.x + 15, panel.y + panel.height - 30, 200, 20).build());
@@ -235,8 +236,8 @@ public class SaveRenderableList extends RenderableVList {
     public void joinWorld(LevelSummary summary) {
         if (summary.primaryActionActive()) {
             if (summary instanceof LevelSummary.SymlinkLevelSummary) {
-                this.minecraft.setScreen(NoticeWithLinkScreen.createWorldSymlinkWarningScreen(() -> {
-                    this.minecraft.setScreen(getScreen());
+                FactoryAPIClient.setScreen(NoticeWithLinkScreen.createWorldSymlinkWarningScreen(() -> {
+                    FactoryAPIClient.setScreen(getScreen());
                 }));
             } else {
                 loadWorld(summary);
@@ -250,7 +251,7 @@ public class SaveRenderableList extends RenderableVList {
             if (LegacyOptions.saveCache.get())
                 LegacySaveCache.copySaveBtwSources(LoadSaveScreen.getSummaryAccess(Minecraft.getInstance().getLevelSource(), summary), LegacySaveCache.getLevelStorageSource());
             LoadSaveScreen.loadWorld(getScreen(), minecraft, LegacySaveCache.getLevelStorageSource(), summary);
-        } else minecraft.setScreen(new LoadSaveScreen(getScreen(), summary, LegacySaveCache.getLevelStorageSource()) {
+        } else FactoryAPIClient.setScreen(new LoadSaveScreen(getScreen(), summary, LegacySaveCache.getLevelStorageSource()) {
             @Override
             public void completeLoad() {
                 if (LegacyOptions.saveCache.get())
@@ -275,7 +276,7 @@ public class SaveRenderableList extends RenderableVList {
         }
 
         reloadSaveList();
-        minecraft.setScreen(getScreen());
+        FactoryAPIClient.setScreen(getScreen());
     }
 
     public class SaveButton extends IconButton implements ControlTooltip.ActionHolder {
@@ -301,7 +302,7 @@ public class SaveRenderableList extends RenderableVList {
         @Override
         public boolean keyPressed(KeyEvent keyEvent) {
             if (keyEvent.key() == InputConstants.KEY_O) {
-                minecraft.setScreen(new SaveOptionsScreen(getScreen(PlayGameScreen.class), summary));
+                FactoryAPIClient.setScreen(new SaveOptionsScreen(getScreen(PlayGameScreen.class), summary));
                 getScreen().setFocused(this);
                 return true;
             }

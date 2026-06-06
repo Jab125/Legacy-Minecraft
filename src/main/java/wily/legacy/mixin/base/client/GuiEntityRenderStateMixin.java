@@ -6,6 +6,9 @@ import net.minecraft.client.renderer.state.gui.pip.GuiBookModelRenderState;
 import net.minecraft.client.renderer.state.gui.pip.GuiEntityRenderState;
 import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
 import org.joml.Matrix3x2f;
+//? if >=26.2 {
+import org.joml.Matrix3x2fc;
+//?}
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,13 +17,14 @@ import wily.legacy.client.MutablePIPRenderState;
 @Mixin({GuiEntityRenderState.class, GuiBookModelRenderState.class, GuiBannerResultRenderState.class})
 public abstract class GuiEntityRenderStateMixin implements PictureInPictureRenderState, MutablePIPRenderState {
     @Unique
-    Matrix3x2f pose = IDENTITY_POSE;
+    Matrix3x2f pose = (Matrix3x2f /*i sure hope so*/) IDENTITY_POSE;
 
     @Unique
     Float scale = null;
 
     @Override
-    public Matrix3x2f pose() {
+    //~ if >=26.2 'Matrix3x2f pose' -> 'Matrix3x2fc pose'
+    public Matrix3x2fc pose() {
         return pose;
     }
 

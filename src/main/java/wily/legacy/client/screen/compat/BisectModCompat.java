@@ -10,6 +10,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
+import wily.factoryapi.FactoryAPIClient;
 import wily.legacy.client.screen.IconButton;
 import wily.legacy.client.screen.ServerRenderableList;
 
@@ -20,7 +21,7 @@ public class BisectModCompat {
         return new IconButton(list, 0, 0, 270, 30, /*? if neoforge {*//*ModRoot.get().clientModRoot*//*?} else {*/ModRoot.INSTANCE/*?}*/.modules.serverCreatorBanner.getTitle()) {
             @Override
             public void onPress(InputWithModifiers input) {
-                Minecraft.getInstance().setScreen(new BHOrderScreen(list.getScreen()));
+                FactoryAPIClient.setScreen(new BHOrderScreen(list.getScreen()));
             }
 
             @Override

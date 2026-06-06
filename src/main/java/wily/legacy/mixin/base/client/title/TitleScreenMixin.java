@@ -23,6 +23,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.base.client.UIAccessor;
 import wily.legacy.Legacy4J;
 import wily.legacy.Legacy4JClient;
@@ -69,22 +70,22 @@ public abstract class TitleScreenMixin extends Screen implements ControlTooltip.
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-            } else minecraft.setScreen(PlayGameScreen.createAndCheckNewerVersions(this));
+            } else FactoryAPIClient.setScreen(PlayGameScreen.createAndCheckNewerVersions(this));
         }).build());
         boolean optedOut = GlobalLeaderboardsFeature.isOptedOut();
         Button modButton = optedOut
-                ? Button.builder(Component.translatable("legacy.menu.mods"), b -> minecraft.setScreen(new ModsScreen(this))).build()
-                : Button.builder(Component.translatable("legacy.menu.leaderboards"), b -> minecraft.setScreen(LeaderboardsScreen.getOverallLeaderboardsScreenInstance(this))).build();
+                ? Button.builder(Component.translatable("legacy.menu.mods"), b -> FactoryAPIClient.setScreen(new ModsScreen(this))).build()
+                : Button.builder(Component.translatable("legacy.menu.leaderboards"), b -> FactoryAPIClient.setScreen(LeaderboardsScreen.getOverallLeaderboardsScreenInstance(this))).build();
         if (LegacyOptions.legacySettingsMenus.get()) {
-            renderableVList.addRenderable(Button.builder(Component.translatable("legacy.menu.leaderboards"), b -> minecraft.setScreen(LeaderboardsScreen.getOverallLeaderboardsScreenInstance(this))).build());
+            renderableVList.addRenderable(Button.builder(Component.translatable("legacy.menu.leaderboards"), b -> FactoryAPIClient.setScreen(LeaderboardsScreen.getOverallLeaderboardsScreenInstance(this))).build());
         }
         if (!LegacyOptions.legacySettingsMenus.get()) {
             renderableVList.addRenderable(modButton);
-            renderableVList.addRenderable(Button.builder(Component.translatable("options.language"), b -> minecraft.setScreen(new LegacyLanguageScreen(this, this.minecraft.getLanguageManager()))).build());
+            renderableVList.addRenderable(Button.builder(Component.translatable("options.language"), b -> FactoryAPIClient.setScreen(new LegacyLanguageScreen(this, this.minecraft.getLanguageManager()))).build());
         }
-        renderableVList.addRenderable(Button.builder(Component.translatable("menu.options"), b -> minecraft.setScreen(new HelpAndOptionsScreen(this))).build());
-        renderableVList.addRenderable(Button.builder(Component.translatable("legacy.menu.store"), b -> minecraft.setScreen(new Legacy4JStoreScreen(this, ContentManager.CATEGORIES))).build());
-        renderableVList.addRenderable(Button.builder(Component.translatable("menu.quit"), (button) -> minecraft.setScreen(new ExitConfirmationScreen(this))).build());
+        renderableVList.addRenderable(Button.builder(Component.translatable("menu.options"), b -> FactoryAPIClient.setScreen(new HelpAndOptionsScreen(this))).build());
+        renderableVList.addRenderable(Button.builder(Component.translatable("legacy.menu.store"), b -> FactoryAPIClient.setScreen(new Legacy4JStoreScreen(this, ContentManager.CATEGORIES))).build());
+        renderableVList.addRenderable(Button.builder(Component.translatable("menu.quit"), (button) -> FactoryAPIClient.setScreen(new ExitConfirmationScreen(this))).build());
         //? if forge || neoforge && <=1.20.4 {
         /*this.modUpdateNotification = TitleScreenModUpdateIndicator.init((TitleScreen) (Object) this, modButton);
          *///?}
@@ -153,7 +154,8 @@ public abstract class TitleScreenMixin extends Screen implements ControlTooltip.
             ControlTooltip.Renderer.of(this).add(() -> ControlType.getActiveType().isKbm() ? ControlTooltip.getKeyIcon(InputConstants.KEY_X) : ControllerBinding.LEFT_BUTTON.getIcon(), () -> ChooseUserScreen.CHOOSE_USER);
         if (PublishScreen.hasWorldHost())
             ControlTooltip.Renderer.of(this).add(() -> ControlType.getActiveType().isKbm() ? ControlTooltip.getKeyIcon(InputConstants.KEY_O) : ControllerBinding.UP_BUTTON.getIcon(), () -> WorldHostFriendsScreen.FRIENDS);
-        if (splash == null) this.splash = Minecraft.getInstance().getSplashManager().getSplash();
+        //~ if >=26.2 '.getSplashManager()' -> '.gui.splashManager()'
+        if (splash == null) this.splash = Minecraft.getInstance().gui.splashManager().getSplash();
     }
 
     @Inject(method = "removed", at = @At("RETURN"))
@@ -166,15 +168,15 @@ public abstract class TitleScreenMixin extends Screen implements ControlTooltip.
     public boolean keyPressed(KeyEvent keyEvent) {
         if (renderableVList.keyPressed(keyEvent.key())) return true;
         if (keyEvent.key() == InputConstants.KEY_X) {
-            minecraft.setScreen(new ChooseUserScreen(this));
+            FactoryAPIClient.setScreen(new ChooseUserScreen(this));
             return true;
         }
         if (keyEvent.key() == InputConstants.KEY_O && PublishScreen.hasWorldHost()) {
-            minecraft.setScreen(new WorldHostFriendsScreen(this));
+            FactoryAPIClient.setScreen(new WorldHostFriendsScreen(this));
             return true;
         }
         if (Legacy4JClient.keyLegacy4JSettings.matches(keyEvent)) {
-            minecraft.setScreen(new Legacy4JSettingsScreen(this));
+            FactoryAPIClient.setScreen(new Legacy4JSettingsScreen(this));
             return true;
         }
         return super.keyPressed(keyEvent);

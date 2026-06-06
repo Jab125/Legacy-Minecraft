@@ -97,6 +97,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
+import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.FactoryEvent;
 import wily.factoryapi.ItemContainerPlatform;
 import wily.factoryapi.base.ArbitrarySupplier;
@@ -307,7 +308,7 @@ public interface ControlTooltip {
     }
 
     static float getAlpha() {
-        return Math.max(Minecraft.getInstance().screen == null ? 0.0f : 0.2f, LegacyRenderUtil.getHUDOpacity());
+        return Math.max(FactoryAPIClient.getScreen() == null ? 0.0f : 0.2f, LegacyRenderUtil.getHUDOpacity());
     }
 
     static ComponentIcon getKbmIcon(String key) {
@@ -444,7 +445,7 @@ public interface ControlTooltip {
         }
         if (entity instanceof AbstractChestedHorse horse && mainHand.is(Items.CHEST) && horse.isTamed() && !horse.hasChest() && !horse.isVehicle() && !minecraft.player.isSecondaryUseActive())
             return LegacyComponents.ATTACH_CHEST;
-        if (entity != null && entity.getType() == EntityType.COMMAND_BLOCK_MINECART) {
+        if (entity != null && entity.getType() == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.COMMAND_BLOCK_MINECART) {
             if (minecraft.player.canUseGameMasterBlocks())
                 return LegacyComponents.EDIT;
         }
@@ -688,7 +689,7 @@ public interface ControlTooltip {
                 return LegacyComponents.CURE;
             if (entity instanceof Piglin piglin && actualItem.is(Items.GOLD_INGOT) && !piglin.isBaby() && piglin.getOffhandItem().isEmpty())
                 return LegacyComponents.BARTER;
-            Set<EntityType<?>> bucketable = Set.of(EntityType.AXOLOTL, EntityType.COD, EntityType.SALMON, EntityType.TROPICAL_FISH, EntityType.PUFFERFISH, EntityType.TADPOLE);
+            Set<EntityType<?>> bucketable = Set.of(/*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.AXOLOTL, /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.COD, /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.SALMON, /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.TROPICAL_FISH, /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.PUFFERFISH, /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.TADPOLE);
             if (actualItem.is(Items.WATER_BUCKET) && entity != null && bucketable.contains(entity.getType()))
                 return LegacyComponents.COLLECT;
             BlockHitResult bucketHitResult;
@@ -892,9 +893,9 @@ public interface ControlTooltip {
         if (!(hitResult != null && usedItem.getItem() instanceof HangingEntityItemAccessor hanging && (Block.canSupportCenter(minecraft.level, hitResult.getBlockPos(), hitResult.getDirection()) || blockState.isSolid() || DiodeBlock.isDiode(blockState))))
             return false;
 
-        if (hanging.getType() == EntityType.PAINTING) {
+        if (hanging.getType() == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.PAINTING) {
             return Direction.Plane.HORIZONTAL.test(hitResult.getDirection());
-        } else return hanging.getType() == EntityType.ITEM_FRAME || hanging.getType() == EntityType.GLOW_ITEM_FRAME;
+        } else return hanging.getType() == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.ITEM_FRAME || hanging.getType() == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.GLOW_ITEM_FRAME;
     }
 
     static boolean canTill(Minecraft minecraft, InteractionHand hand, ItemStack usedItem) {
@@ -1403,13 +1404,16 @@ public interface ControlTooltip {
         }
 
         public boolean allowPressed() {
-            return minecraft.screen != null;
+            return FactoryAPIClient.getScreen() != null;
         }
 
         @Override
         public void extractRenderState(GuiGraphicsExtractor GuiGraphicsExtractor, int i, int j, float f) {
-            boolean inGame = minecraft.screen == null;
-            if (!LegacyOptions.displayControlTooltips.get() || inGame && (!LegacyOptions.displayHUD.get() || minecraft.options.hideGui || !LegacyOptions.inGameTooltips.get()))
+            boolean inGame = FactoryAPIClient.getScreen() == null;
+            if (!LegacyOptions.displayControlTooltips.get() || inGame && (!LegacyOptions.displayHUD.get() ||
+                                                                          //$ if <26.2 'minecraft.options.hideGui' else 'minecraft.gui.hud.isHidden()'
+                                                                          minecraft.gui.hud.isHidden()
+                                                                          || !LegacyOptions.inGameTooltips.get()))
                 return;
             renderTooltips.clear();
             for (ControlTooltip tooltip : tooltips) {

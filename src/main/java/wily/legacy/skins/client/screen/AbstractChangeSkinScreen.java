@@ -13,6 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.sounds.SoundEvents;
+import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.base.client.FactoryGuiGraphics;
 import wily.legacy.client.ContentManager;
 import wily.legacy.client.ControlType;
@@ -198,11 +199,11 @@ public abstract class AbstractChangeSkinScreen extends PanelVListScreen
             optionsScreen.onClose = screen -> {
                 if (LegacyOptions.tu3ChangeSkinScreen.get() != wasTu3) {
                     source.requestFocus(packId, skinId);
-                    minecraft.setScreen(source.create(rootParent));
+                    FactoryAPIClient.setScreen(source.create(rootParent));
                 }
             };
         }
-        minecraft.setScreen(built);
+        FactoryAPIClient.setScreen(built);
     }
 
     boolean isEditingCustomPack(String packId) {
@@ -256,7 +257,7 @@ public abstract class AbstractChangeSkinScreen extends PanelVListScreen
     protected void openImportSkinScreen(String packId, Consumer<String> importedAction) {
         if (minecraft == null || packId == null || packId.isBlank()) return;
         Screen rootParent = parent != null ? parent : this;
-        minecraft.setScreen(new ImportCustomSkinScreen(this, rootParent, packId, importedAction));
+        FactoryAPIClient.setScreen(new ImportCustomSkinScreen(this, rootParent, packId, importedAction));
         playPressSound();
     }
 
@@ -270,7 +271,7 @@ public abstract class AbstractChangeSkinScreen extends PanelVListScreen
 
     void showError(Component title, Exception ex) {
         if (minecraft != null)
-            minecraft.setScreen(ConfirmationScreen.createInfoScreen(this, title, Component.literal(errorText(ex))));
+            FactoryAPIClient.setScreen(ConfirmationScreen.createInfoScreen(this, title, Component.literal(errorText(ex))));
     }
 
     String errorText(Exception ex) {
@@ -724,11 +725,11 @@ public abstract class AbstractChangeSkinScreen extends PanelVListScreen
         ContentManager.fetchIndex(category).whenComplete((packs, err) -> minecraft.execute(() -> {
             openingSkinMegaBundle = false;
             if (err != null || packs == null) {
-                minecraft.setScreen(ConfirmationScreen.createInfoScreen(this, category.title(), Component.literal(err == null ? "" : err.getMessage())));
+                FactoryAPIClient.setScreen(ConfirmationScreen.createInfoScreen(this, category.title(), Component.literal(err == null ? "" : err.getMessage())));
                 return;
             }
             restoreDefaultSkinPackFocus();
-            minecraft.setScreen(new Legacy4JContentListScreen(this, category, packs));
+            FactoryAPIClient.setScreen(new Legacy4JContentListScreen(this, category, packs));
         }));
     }
 

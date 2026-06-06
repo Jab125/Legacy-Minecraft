@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import wily.factoryapi.FactoryAPIClient;
 import wily.legacy.client.ContentManager;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.Font;
@@ -129,7 +130,7 @@ public class Legacy4JContentListScreen extends PanelVListScreen implements Contr
                     return;
                 }
                 if (isInstalled(pack)) {
-                    minecraft.setScreen(new PackActionScreen(Legacy4JContentListScreen.this, pack, category));
+                    FactoryAPIClient.setScreen(new PackActionScreen(Legacy4JContentListScreen.this, pack, category));
                 } else {
                     if (!prepareDownloadTarget(pack)) return;
                     startDownload(pack, category.requiresResourceReload());
@@ -162,7 +163,7 @@ public class Legacy4JContentListScreen extends PanelVListScreen implements Contr
             return true;
         } catch (IOException e) {
             String message = e.getMessage();
-            minecraft.setScreen(ConfirmationScreen.createInfoScreen(this, targetCategory.title(), Component.literal(message == null || message.isBlank() ? e.toString() : message)));
+            FactoryAPIClient.setScreen(ConfirmationScreen.createInfoScreen(this, targetCategory.title(), Component.literal(message == null || message.isBlank() ? e.toString() : message)));
             return false;
         }
     }
@@ -177,7 +178,7 @@ public class Legacy4JContentListScreen extends PanelVListScreen implements Contr
         refreshInstalledPacks();
         boolean appliedResourcePacks = installedAnything && ContentManager.applyAutoResourcePacks(pack, category);
         if (installedAnything && (reloadResources || appliedResourcePacks)) {
-            if (minecraft.screen == this) needsReload = true;
+            if (FactoryAPIClient.getScreen() == this) needsReload = true;
             else minecraft.reloadResourcePacks();
         }
     }
@@ -361,12 +362,12 @@ public class Legacy4JContentListScreen extends PanelVListScreen implements Contr
 
         @Override
         protected void addButtons() {
-            renderableVList.addRenderable(Button.builder(Component.translatable("gui.cancel"), b -> minecraft.setScreen(parent))
+            renderableVList.addRenderable(Button.builder(Component.translatable("gui.cancel"), b -> FactoryAPIClient.setScreen(parent))
                 .bounds(panel.x + 15, panel.getRectangle().bottom() - 52, 200, 20).build());
 
             renderableVList.addRenderable(Button.builder(Component.translatable("legacy.menu.delete"), b -> {
                 deletePack(pack);
-                minecraft.setScreen(parent);
+                FactoryAPIClient.setScreen(parent);
             }).bounds(panel.x + 15, panel.getRectangle().bottom() - 30, 200, 20).build());
         }
     }

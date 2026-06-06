@@ -15,6 +15,7 @@ import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.permissions.Permissions;
 import net.minecraft.util.Mth;
+import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.base.client.FactoryGuiGraphics;
 import wily.factoryapi.base.network.CommonNetwork;
 import wily.factoryapi.util.FactoryScreenUtil;
@@ -105,13 +106,13 @@ public class HostOptionsScreen extends PanelVListScreen {
             return true;
         }
         if (keyEvent.key() == InputConstants.KEY_O) {
-            minecraft.setScreen(new ChatScreen("", false));
+            FactoryAPIClient.setScreen(new ChatScreen("", false));
             return true;
         }
         if (keyEvent.key() == InputConstants.KEY_X && minecraft.hasSingleplayerServer()) {
             if (!minecraft.getSingleplayerServer().isPublished())
-                minecraft.setScreen(new PublishScreen(this, minecraft.getSingleplayerServer().getDefaultGameType(), s -> s.publish(minecraft.getSingleplayerServer())));
-            else if (PublishScreen.hasWorldHost()) minecraft.setScreen(new WorldHostFriendsScreen(this));
+                FactoryAPIClient.setScreen(new PublishScreen(this, minecraft.getSingleplayerServer().getDefaultGameType(), s -> s.publish(minecraft.getSingleplayerServer())));
+            else if (PublishScreen.hasWorldHost()) FactoryAPIClient.setScreen(new WorldHostFriendsScreen(this));
             return true;
         }
         return super.keyPressed(keyEvent);
@@ -120,7 +121,7 @@ public class HostOptionsScreen extends PanelVListScreen {
     protected void addPlayerButtons() {
         addPlayerButtons(true, (playerInfo, b) -> {
             if (!minecraft.player.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER)) return;
-            minecraft.setScreen(new PlayerHostOptionsScreen(this, playerInfo, minecraft));
+            FactoryAPIClient.setScreen(new PlayerHostOptionsScreen(this, playerInfo, minecraft));
         });
     }
 
@@ -160,7 +161,7 @@ public class HostOptionsScreen extends PanelVListScreen {
     }
 
     protected void pressHostOptionsButton(Button b) {
-        minecraft.setScreen(new GameHostOptionsScreen(this, minecraft));
+        FactoryAPIClient.setScreen(new GameHostOptionsScreen(this, minecraft));
     }
 
     public boolean isPauseScreen() {

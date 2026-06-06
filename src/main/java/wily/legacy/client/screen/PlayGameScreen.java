@@ -17,6 +17,7 @@ import net.minecraft.client.server.LanServer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.storage.LevelSummary;
 import org.apache.commons.compress.utils.FileNameUtils;
+import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.base.client.FactoryGuiGraphics;
 import wily.factoryapi.base.client.UIAccessor;
 import wily.legacy.Legacy4JClient;
@@ -51,7 +52,7 @@ public class PlayGameScreen extends PanelVListScreen implements ControlTooltip.E
         if (this.minecraft.options.skipMultiplayerWarning)
             repositionElements();
         else
-            minecraft.setScreen(new ConfirmationScreen(this, SAFETY_TITLE, Component.translatable("legacy.menu.multiplayer_warning").append("\n").append(SAFETY_CONTENT)) {
+            FactoryAPIClient.setScreen(new ConfirmationScreen(this, SAFETY_TITLE, Component.translatable("legacy.menu.multiplayer_warning").append("\n").append(SAFETY_CONTENT)) {
                 @Override
                 protected void addButtons() {
                     renderableVList.addRenderable(Button.builder(SAFETY_CHECK, b -> {
@@ -232,7 +233,7 @@ public class PlayGameScreen extends PanelVListScreen implements ControlTooltip.E
         }
         if (keyEvent.key() == InputConstants.KEY_X && tabList.getIndex() == 2) {
             EditBox serverBox = new EditBox(Minecraft.getInstance().font, 0, 0, 200, 20, DIRECT_CONNECTION);
-            minecraft.setScreen(new ConfirmationScreen(this, ConfirmationScreen::getPanelWidth, () -> LegacyOptions.getUIMode().isSD() ? 92 : 120, serverBox.getMessage(), LegacyComponents.ENTER_IP, b1 -> ConnectScreen.startConnecting(this, minecraft, ServerAddress.parseString(serverBox.getValue()), new ServerData("", "",/*? if >1.20.2 {*/ ServerData.Type.OTHER/*?} else {*//*false*//*?}*/), false/*? if >=1.20.5 {*/, null/*?}*/)) {
+            FactoryAPIClient.setScreen(new ConfirmationScreen(this, ConfirmationScreen::getPanelWidth, () -> LegacyOptions.getUIMode().isSD() ? 92 : 120, serverBox.getMessage(), LegacyComponents.ENTER_IP, b1 -> ConnectScreen.startConnecting(this, minecraft, ServerAddress.parseString(serverBox.getValue()), new ServerData("", "",/*? if >1.20.2 {*/ ServerData.Type.OTHER/*?} else {*//*false*//*?}*/), false/*? if >=1.20.5 {*/, null/*?}*/)) {
                 @Override
                 protected void addButtons() {
                     super.addButtons();
@@ -269,7 +270,7 @@ public class PlayGameScreen extends PanelVListScreen implements ControlTooltip.E
                     return;
             }
             String string = list.stream().map(Path::getFileName).map(Path::toString).collect(Collectors.joining(", "));
-            minecraft.setScreen(new ConfirmationScreen(this, Component.translatable("legacy.menu.import_save"), Component.translatable("legacy.menu.import_save_message", string), (b) -> {
+            FactoryAPIClient.setScreen(new ConfirmationScreen(this, Component.translatable("legacy.menu.import_save"), Component.translatable("legacy.menu.import_save_message", string), (b) -> {
                 list.forEach(p -> {
                     try {
                         LegacySaveCache.importSaveFile(new FileInputStream(p.toFile()), minecraft.getLevelSource(), FileNameUtils.getBaseName(p.getFileName().toString()));
@@ -278,7 +279,7 @@ public class PlayGameScreen extends PanelVListScreen implements ControlTooltip.E
                     }
 
                 });
-                minecraft.setScreen(this);
+                FactoryAPIClient.setScreen(this);
                 saveRenderableList.reloadSaveList();
             }));
         }

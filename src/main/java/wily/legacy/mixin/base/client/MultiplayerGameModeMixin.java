@@ -18,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import wily.factoryapi.FactoryAPIClient;
 import wily.legacy.client.screen.CreativeModeScreen;
 import wily.legacy.init.LegacyGameRules;
 import wily.legacy.util.LegacyBlockProtection;
@@ -32,7 +33,7 @@ public class MultiplayerGameModeMixin {
     //? if >=1.21.2 {
     @ModifyVariable(method = "handleCreativeModeItemDrop", at = @At("STORE"))
     public boolean handleCreativeModeItemDrop(boolean original) {
-        return original && !(minecraft.screen instanceof CreativeModeScreen);
+        return original && !(FactoryAPIClient.getScreen() instanceof CreativeModeScreen);
     }
     //?}
 

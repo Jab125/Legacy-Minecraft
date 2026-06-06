@@ -7,6 +7,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.WinScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.PlayerModelPart;
+import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.base.ArbitrarySupplier;
 import wily.factoryapi.base.client.UIAccessor;
 import wily.factoryapi.base.config.FactoryConfig;
@@ -42,26 +43,28 @@ public class HelpAndOptionsScreen extends RenderableVListScreen {
                                 LegacyOptions.of(Minecraft.getInstance().options.allowCursorChanges()),
                                 LegacyOptions.cursorAtFirstInventorySlot,
                                 LegacyOptions.of(Minecraft.getInstance().options.rawMouseInput()),
-                                LegacyOptions.of(Minecraft.getInstance().options.discreteMouseScroll()),
-                                LegacyOptions.of(Minecraft.getInstance().options.touchscreen())
+                                LegacyOptions.of(Minecraft.getInstance().options.discreteMouseScroll())
+                                //? if <26.2 {
+                                /*, LegacyOptions.of(Minecraft.getInstance().options.touchscreen())
+                                *///?}
                         )))));
     }
 
     private static Screen createControlsScreen(Screen parent) {
         return new RenderableVListScreen(parent, Component.translatable("controls.title"), r -> r.addRenderables(
                 openScreenButton(Component.translatable("options.mouse_settings.title"), () -> createMouseSettingsScreen(r.getScreen())).build(),
-                Button.builder(Component.translatable("controls.keybinds.title"), button -> Minecraft.getInstance().setScreen(new LegacyKeyMappingScreen(r.getScreen()))).build(),
-                Button.builder(Component.translatable("legacy.options.selectedController"), button -> Minecraft.getInstance().setScreen(new ControllerMappingScreen(r.getScreen()))).build()));
+                Button.builder(Component.translatable("controls.keybinds.title"), button -> FactoryAPIClient.setScreen(new LegacyKeyMappingScreen(r.getScreen()))).build(),
+                Button.builder(Component.translatable("legacy.options.selectedController"), button -> FactoryAPIClient.setScreen(new ControllerMappingScreen(r.getScreen()))).build()));
     }
 
     private static Screen createCreditsScreen(Screen parent) {
         if (LegacyOptions.legacySettingsMenus.get()) {
-            return new WinScreen(false, () -> Minecraft.getInstance().setScreen(parent));
+            return new WinScreen(false, () -> FactoryAPIClient.setScreen(parent));
         }
         return new RenderableVListScreen(parent, Component.translatable("credits_and_attribution.screen.title"), r -> r.addRenderables(
-                openScreenButton(Component.translatable("credits_and_attribution.button.credits"), () -> new WinScreen(false, () -> Minecraft.getInstance().setScreen(r.getScreen()))).build(),
-                Button.builder(Component.translatable("credits_and_attribution.button.attribution"), b -> Minecraft.getInstance().setScreen(ConfirmationScreen.createLinkScreen(r.getScreen(), "https://aka.ms/MinecraftJavaAttribution"))).build(),
-                Button.builder(Component.translatable("credits_and_attribution.button.licenses"), b -> Minecraft.getInstance().setScreen(ConfirmationScreen.createLinkScreen(r.getScreen(), "https://aka.ms/MinecraftJavaLicenses"))).build()));
+                openScreenButton(Component.translatable("credits_and_attribution.button.credits"), () -> new WinScreen(false, () -> FactoryAPIClient.setScreen(r.getScreen()))).build(),
+                Button.builder(Component.translatable("credits_and_attribution.button.attribution"), b -> FactoryAPIClient.setScreen(ConfirmationScreen.createLinkScreen(r.getScreen(), "https://aka.ms/MinecraftJavaAttribution"))).build(),
+                Button.builder(Component.translatable("credits_and_attribution.button.licenses"), b -> FactoryAPIClient.setScreen(ConfirmationScreen.createLinkScreen(r.getScreen(), "https://aka.ms/MinecraftJavaLicenses"))).build()));
     }
     public HelpAndOptionsScreen(Screen parent) {
         super(parent, Component.translatable("options.title"), r -> {

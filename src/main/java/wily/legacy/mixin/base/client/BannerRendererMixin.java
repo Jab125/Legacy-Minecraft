@@ -13,7 +13,8 @@ public class BannerRendererMixin {
         return LegacyHeadRenderState.getBannerTint(color);
     }
 
-    @ModifyArg(method = "submitPatternLayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;IIILnet/minecraft/client/renderer/texture/TextureAtlasSprite;ILnet/minecraft/client/renderer/feature/ModelFeatureRenderer$CrumblingOverlay;)V"), index = 6)
+    //~ if >=26.2 'Lnet/minecraft/client/renderer/SubmitNodeCollector;' -> 'Lnet/minecraft/client/renderer/OrderedSubmitNodeCollector;'
+    @ModifyArg(method = "submitPatternLayer", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/OrderedSubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;IIILnet/minecraft/client/renderer/texture/TextureAtlasSprite;ILnet/minecraft/client/renderer/feature/ModelFeatureRenderer$CrumblingOverlay;)V"), index = 6)
     private static int legacy$hurtTintBannerPatterns(int color) {
         return LegacyHeadRenderState.getBannerTint(color);
     }

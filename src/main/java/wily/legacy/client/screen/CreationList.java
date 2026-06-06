@@ -22,6 +22,7 @@ import net.minecraft.world.level.storage.LevelResource;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.LevelSummary;
 import org.apache.commons.io.FileUtils;
+import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.base.Stocker;
 import wily.factoryapi.base.client.FactoryGuiGraphics;
 import wily.factoryapi.base.client.UIAccessor;
@@ -62,12 +63,12 @@ public class CreationList extends RenderableVList {
         super(accessor);
         layoutSpacing(l -> 0);
         minecraft = Minecraft.getInstance();
-        addIconButton(this, Legacy4J.createModLocation("creation_list/create_world"), Component.translatable("legacy.menu.create_world"), c -> CreateWorldScreen.openFresh(this.minecraft, () -> minecraft.setScreen(getScreen())));
+        addIconButton(this, Legacy4J.createModLocation("creation_list/create_world"), Component.translatable("legacy.menu.create_world"), c -> CreateWorldScreen.openFresh(this.minecraft, () -> FactoryAPIClient.setScreen(getScreen())));
         LegacyWorldTemplate.list.forEach(t -> addTemplateButton(this, t, c -> {
             if (t.isGamePath() && !Files.exists(t.getPath())) {
                 Path path = t.getDownloadPath();
                 if (path == null) {
-                    minecraft.setScreen(ConfirmationScreen.createInfoScreen(getScreen(), LegacyComponents.MISSING_WORLD_TEMPLATE, Component.translatable("legacy.menu.missing_world_template_message", t.buttonMessage())));
+                    FactoryAPIClient.setScreen(ConfirmationScreen.createInfoScreen(getScreen(), LegacyComponents.MISSING_WORLD_TEMPLATE, Component.translatable("legacy.menu.missing_world_template_message", t.buttonMessage())));
                 } else {
                     File file = path.toFile();
                     Stocker<Long> fileSize = new Stocker<>(1L);
@@ -82,7 +83,7 @@ public class CreationList extends RenderableVList {
                         @Override
                         public void onClose() {
                             if (file.exists()) file.delete();
-                            minecraft.setScreen(getScreen());
+                            FactoryAPIClient.setScreen(getScreen());
                             LegacyLoadingScreen.closeExecutor(executor);
                         }
 
@@ -91,7 +92,7 @@ public class CreationList extends RenderableVList {
                             return true;
                         }
                     };
-                    minecraft.setScreen(screen);
+                    FactoryAPIClient.setScreen(screen);
                     CompletableFuture.runAsync(() -> {
                         try {
                             URL url = t.downloadURI().get().toURL();
@@ -118,7 +119,7 @@ public class CreationList extends RenderableVList {
             access.close();
             if (template.directJoin()) {
                 Legacy4JClient.hideNextExperimentalWorldWarning(() -> LoadSaveScreen.loadWorld(parent, minecraft, LegacySaveCache.getLevelStorageSource(), summary));
-            } else minecraft.setScreen(new LoadSaveScreen(parent, summary, access, (album.isPresent() || template.albumId().isEmpty()) && template.isLocked()) {
+            } else FactoryAPIClient.setScreen(new LoadSaveScreen(parent, summary, access, (album.isPresent() || template.albumId().isEmpty()) && template.isLocked()) {
                 @Override
                 public void onClose() {
                     if (!LegacyOptions.saveCache.get() || LegacyOptions.alwaysClearSaveCache.get())

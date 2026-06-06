@@ -38,7 +38,9 @@ public abstract class BitmapProviderMixin {
     @Shadow
     protected abstract int getActualGlyphWidth(NativeImage nativeImage, int i, int j, int k, int l);
 
-    @Inject(method = "load", at = @At("HEAD"), cancellable = true)
+    // TODO 26.2
+    //? if <26.2 {
+    /*@Inject(method = "load", at = @At("HEAD"), cancellable = true)
     private void load(ResourceManager resourceManager, CallbackInfoReturnable<GlyphProvider> cir) throws IOException {
         Identifier resourceLocation = this.file.withPrefix("textures/");
         InputStream inputStream = resourceManager.open(resourceLocation);
@@ -93,4 +95,5 @@ public abstract class BitmapProviderMixin {
 
         cir.setReturnValue(var22);
     }
+    *///?}
 }

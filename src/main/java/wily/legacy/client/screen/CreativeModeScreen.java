@@ -36,6 +36,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.base.Stocker;
 import wily.factoryapi.base.client.UIAccessor;
 import wily.factoryapi.util.FactoryItemUtil;
@@ -179,7 +180,7 @@ public class CreativeModeScreen extends AbstractContainerScreen<CreativeModeScre
     protected void init() {
         super.init();
         if (!Legacy4JClient.playerHasInfiniteMaterials()) {
-            minecraft.setScreen(new InventoryScreen(minecraft.player));
+            FactoryAPIClient.setScreen(new InventoryScreen(minecraft.player));
             return;
         }
         for (int i = 0; i < creativeModeGrid.getContainerSize(); i++) {

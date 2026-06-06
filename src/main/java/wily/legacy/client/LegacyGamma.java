@@ -29,7 +29,9 @@ public class LegacyGamma implements AutoCloseable {
     }
 
     public void render() {
-        float value = LegacyOptions.legacyGamma.get().floatValue();
+        // TODO 26.2
+        //? if <26.2 {
+        /*float value = LegacyOptions.legacyGamma.get().floatValue();
         CommandEncoder commandEncoder = RenderSystem.getDevice().createCommandEncoder();
         try (GpuBuffer.MappedView mappedView = commandEncoder.mapBuffer(this.ubo.currentBuffer(), false, true)) {
             Std140Builder.intoBuffer(mappedView.data()).putFloat(value >= 0.5f ? (value - 0.5f) * 1.12f + 1.08f : value * 0.96f + 0.6f);
@@ -50,6 +52,7 @@ public class LegacyGamma implements AutoCloseable {
         }
         this.ubo.rotate();
         profilerFiller.pop();
+        *///?}
     }
 
     private void resizeInput(RenderTarget target) {

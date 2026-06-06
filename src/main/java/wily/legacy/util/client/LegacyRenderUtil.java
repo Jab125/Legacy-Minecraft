@@ -3,6 +3,9 @@ package wily.legacy.util.client;
 import com.google.common.collect.Ordering;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+//? if >=26.2 {
+import net.minecraft.client.gui.Hud;
+//?}
 import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -194,7 +197,13 @@ public class LegacyRenderUtil {
     }
 
     public static void renderPanorama(GuiGraphicsExtractor GuiGraphicsExtractor) {
-        mc.gameRenderer.getPanorama().extractRenderState(GuiGraphicsExtractor, GuiGraphicsExtractor.guiWidth(), GuiGraphicsExtractor.guiHeight(), true);
+        mc.gameRenderer
+                //$ if >=26.2 '.panorama()' else '.getPanorama()'
+                .panorama()
+                .extractRenderState(GuiGraphicsExtractor, GuiGraphicsExtractor.guiWidth(), GuiGraphicsExtractor.guiHeight()
+                        //? if <26.2
+                        //, true
+                );
     }
 
     public static void renderLegacyPanorama(GuiGraphicsExtractor GuiGraphicsExtractor) {
@@ -258,7 +267,7 @@ public class LegacyRenderUtil {
     }
 
     public static float getHUDSize() {
-        return 6 + LegacyRenderUtil.getHUDScale() * (35 + (mc.gameMode.canHurtPlayer() ? Math.max(2, Mth.ceil((Math.max(mc.player.getAttributeValue(Attributes.MAX_HEALTH), Math.max(mc.gui.displayHealth, mc.player.getHealth())) + mc.player.getAbsorptionAmount()) / 20f) + (mc.player.getArmorValue() > 0 ? 1 : 0)) * 10 : 0));
+        return 6 + LegacyRenderUtil.getHUDScale() * (35 + (mc.gameMode.canHurtPlayer() ? Math.max(2, Mth.ceil((Math.max(mc.player.getAttributeValue(Attributes.MAX_HEALTH), Math.max(FactoryAPIClient.getGuiOrHud(mc).displayHealth, mc.player.getHealth())) + mc.player.getAbsorptionAmount()) / 20f) + (mc.player.getArmorValue() > 0 ? 1 : 0)) * 10 : 0));
     }
 
     public static float getHUDDistance() {
@@ -390,7 +399,7 @@ public class LegacyRenderUtil {
         EntityRenderDispatcher entityRenderDispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
         EntityRenderer<? super Entity, ?> entityRenderer = entityRenderDispatcher.getRenderer(entity);
         EntityRenderState entityRenderState;
-        suppressInventoryElytraPose = entity == mc.player && mc.screen instanceof InventoryScreen;
+        suppressInventoryElytraPose = entity == mc.player && FactoryAPIClient.getScreen() instanceof InventoryScreen;
         try {
             entityRenderState = entityRenderer.createRenderState(entity, 1.0F);
         } finally {
@@ -475,7 +484,7 @@ public class LegacyRenderUtil {
 
     public static boolean canDisplayHUD() {
         int hudDelay = LegacyOptions.hudDelay.get();
-        return mc.screen == null && (hudDelay == 0 || Util.getMillis() - LegacyGuiElements.lastGui > hudDelay);
+        return FactoryAPIClient.getScreen() == null && (hudDelay == 0 || Util.getMillis() - LegacyGuiElements.lastGui > hudDelay);
     }
 
     public static boolean hasAutoFocusButtonAnimation() {
@@ -510,7 +519,10 @@ public class LegacyRenderUtil {
                 });
                 GuiGraphicsExtractor.pose().popMatrix();
             }
-            FactoryGuiGraphics.of(GuiGraphicsExtractor).blitSprite(Gui.getMobEffectSprite(mobEffectInstance.getEffect()), x + (bl ? 3 : 5), y + 5, 18, 18);
+            FactoryGuiGraphics.of(GuiGraphicsExtractor).blitSprite(
+                    //$ gui_to_hud
+                    Hud
+                            .getMobEffectSprite(mobEffectInstance.getEffect()), x + (bl ? 3 : 5), y + 5, 18, 18);
             y -= m;
         }
         if (!bl && mouseX >= x && mouseX <= x + 28) {
@@ -638,7 +650,10 @@ public class LegacyRenderUtil {
             FactoryScreenUtil.enableBlend();
 
             FactoryGuiGraphics.of(GuiGraphicsExtractor).setBlitColor(1.0f, 1.0f, 1.0f, f * backAlpha);
-            FactoryGuiGraphics.of(GuiGraphicsExtractor).blitSprite(Gui.getMobEffectSprite(mobEffect), k + 3, l + 3, 18, 18);
+            FactoryGuiGraphics.of(GuiGraphicsExtractor).blitSprite(
+                    //$ gui_to_hud
+                    Hud
+                            .getMobEffectSprite(mobEffect), k + 3, l + 3, 18, 18);
             FactoryScreenUtil.disableBlend();
         }
         FactoryGuiGraphics.of(GuiGraphicsExtractor).setBlitColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -752,7 +767,12 @@ public class LegacyRenderUtil {
     public static void renderGameOverlay(GuiGraphicsExtractor graphics) {
         if (!MinecraftAccessor.getInstance().hasGameLoaded()) return;
         float partialTick = FactoryAPIClient.getPartialTick();
-        boolean canRenderElement = mc.screen != null || LegacyOptions.displayHUD.get() && !mc.options.hideGui;
+        boolean canRenderElement = FactoryAPIClient.getScreen() != null || LegacyOptions.displayHUD.get() &&
+                                                                           //? if <26.2 {
+                                                                           /*!mc.options.hideGui;
+                                                                           *///?} else {
+                                                                           !mc.gui.hud.isHidden();
+                                                                           //?}
         LegacyTip tip = LegacyTipManager.getActualTip();
         if ((!LegacyTipManager.tips.isEmpty() || tip != null) && canRenderElement) {
             if (tip == null) tip = LegacyTipManager.updateTip();
@@ -761,7 +781,7 @@ public class LegacyRenderUtil {
             if (tip.visibility == Toast.Visibility.HIDE) LegacyTipManager.updateTip();
         }
 
-        if (mc.options.showAutosaveIndicator().get() && canRenderElement && (mc.gui.autosaveIndicatorValue > 0 || mc.gui.lastAutosaveIndicatorValue > 0) && Mth.clamp(Mth.lerp(FactoryAPIClient.getPartialTick(), mc.gui.lastAutosaveIndicatorValue, mc.gui.autosaveIndicatorValue), 0.0f, 1.0f) > 0.02) {
+        if (mc.options.showAutosaveIndicator().get() && canRenderElement && (FactoryAPIClient.getGuiOrHud(mc).autosaveIndicatorValue > 0 || FactoryAPIClient.getGuiOrHud(mc).lastAutosaveIndicatorValue > 0) && Mth.clamp(Mth.lerp(FactoryAPIClient.getPartialTick(), FactoryAPIClient.getGuiOrHud(mc).lastAutosaveIndicatorValue, FactoryAPIClient.getGuiOrHud(mc).autosaveIndicatorValue), 0.0f, 1.0f) > 0.02) {
             FactoryScreenUtil.disableDepthTest();
             LegacyRenderUtil.drawAutoSavingIcon(graphics, graphics.guiWidth() - 66, 44);
             FactoryScreenUtil.enableDepthTest();

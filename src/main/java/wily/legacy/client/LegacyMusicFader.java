@@ -5,6 +5,7 @@ import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.SoundEngine;
 import net.minecraft.client.sounds.SoundManager;
 import wily.legacy.mixin.base.client.MusicManagerAccessor;
+import wily.legacy.util.client.LegacyMCUtil;
 import wily.legacy.util.client.LegacySoundUtil;
 
 import java.util.HashMap;
@@ -44,7 +45,7 @@ public class LegacyMusicFader {
         if (music != null) {
             fadeOutMusic(music, startMusicManager, true);
             musicManagerAccessor.setCurrentMusic(null);
-            mc.getToastManager().hideNowPlayingToast();
+            LegacyMCUtil.getToastManager(mc).hideNowPlayingToast();
         }
     }
 

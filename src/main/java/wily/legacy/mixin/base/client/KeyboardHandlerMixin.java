@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import wily.factoryapi.FactoryAPIClient;
 import wily.legacy.Legacy4JClient;
 
 @Mixin(KeyboardHandler.class)
@@ -47,8 +48,9 @@ public class KeyboardHandlerMixin {
     @WrapOperation(method = "keyPress", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;keyPressed(Lnet/minecraft/client/input/KeyEvent;)Z"))
     public boolean screenKeyPress(Screen instance, KeyEvent keyEvent, Operation<Boolean> original) {
         Legacy4JClient.controllerManager.blockNextCharType = false;
-        if (minecraft.getOverlay() == null && original.call(instance, keyEvent)) {
-            if (minecraft.screen != instance)
+        //~ if >=26.2 'minecraft.getOverlay()' -> 'minecraft.gui.overlay()'
+        if (minecraft.gui.overlay() == null && original.call(instance, keyEvent)) {
+            if (FactoryAPIClient.getScreen() != instance)
                 Legacy4JClient.controllerManager.blockNextCharType = true;
             return true;
         }
@@ -57,7 +59,8 @@ public class KeyboardHandlerMixin {
 
     @WrapOperation(method = "keyPress", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;keyReleased(Lnet/minecraft/client/input/KeyEvent;)Z"))
     public boolean screenKeyRelease(Screen instance, KeyEvent keyEvent, Operation<Boolean> original) {
-        return minecraft.getOverlay() == null && original.call(instance, keyEvent);
+        //~ if >=26.2 'minecraft.getOverlay()' -> 'minecraft.gui.overlay()'
+        return minecraft.gui.overlay() == null && original.call(instance, keyEvent);
     }
 
     @WrapOperation(method = "charTyped", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;charTyped(Lnet/minecraft/client/input/CharacterEvent;)Z"))

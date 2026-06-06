@@ -48,12 +48,13 @@ public abstract class PistonHeadRendererMixin {
         return renderState;
     }
 
-    @WrapOperation(method = "submit(Lnet/minecraft/client/renderer/blockentity/state/PistonHeadRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitMovingBlock(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/block/MovingBlockRenderState;)V", ordinal = 0))
-    private void submit(SubmitNodeCollector instance, PoseStack poseStack, MovingBlockRenderState renderState, Operation<Void> original, @Local CameraRenderState cameraRenderState) {
+    //~ if >=26.2 'MovingBlockRenderState;)V' -> 'MovingBlockRenderState;I)V'
+    @WrapOperation(method = "submit(Lnet/minecraft/client/renderer/blockentity/state/PistonHeadRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitMovingBlock(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/block/MovingBlockRenderState;I)V", ordinal = 0))
+    private void submit(SubmitNodeCollector instance, PoseStack poseStack, MovingBlockRenderState renderState, /*? if >=26.2 {*/int i, /*?}*/ Operation<Void> original, @Local CameraRenderState cameraRenderState) {
         LegacyMovingBlockRenderState legacyMovingBlockRenderState = LegacyMovingBlockRenderState.of(renderState);
 
         if (legacyMovingBlockRenderState.getEnhancedSubmit() != null) {
             legacyMovingBlockRenderState.getEnhancedSubmit().renderer().submit(legacyMovingBlockRenderState.getEnhancedSubmit().renderState(), poseStack, instance, cameraRenderState);
-        } else original.call(instance, poseStack, renderState);
+        } else original.call(instance, poseStack, renderState /*? if >=26.2 {*/, i/*?}*/);
     }
 }

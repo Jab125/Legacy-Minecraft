@@ -83,7 +83,9 @@ public abstract class LoomScreenMixin extends AbstractContainerScreen<LoomMenu> 
     @Shadow
     protected abstract int totalRowCount();
 
-    @Shadow
+    // TODO 26.2: what?
+    //? if <26.2
+    //@Shadow
     @Inject(method = "init", at = @At("HEAD"))
     public void init(CallbackInfo ci) {
         boolean sd = LegacyOptions.getUIMode().isSD();
@@ -215,7 +217,10 @@ public abstract class LoomScreenMixin extends AbstractContainerScreen<LoomMenu> 
             }
         }
         GuiGraphicsExtractor.pose().popMatrix();
-        Minecraft.getInstance().gameRenderer.getLighting().setupFor(Lighting.Entry.ITEMS_3D);
+        Minecraft.getInstance().gameRenderer.
+                //$ if <26.2 'getLighting()' else 'lighting()'
+                lighting()
+                .setupFor(Lighting.Entry.ITEMS_3D);
     }
 
     @Override

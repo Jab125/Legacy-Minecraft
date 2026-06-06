@@ -36,6 +36,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Math;
 import wily.factoryapi.FactoryAPI;
+import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.FactoryAPIPlatform;
 import wily.factoryapi.base.Stocker;
 import wily.factoryapi.base.client.FactoryGuiGraphics;
@@ -389,7 +390,7 @@ public record PackAlbum(String id, int version, Component displayName, Component
 
         public static void applyResourceChanges(Minecraft minecraft, List<String> oldSelection, List<String> newSelection, boolean persistSelection, Runnable runnable) {
             GlobalPacks.globalResources.get().applyPacks(minecraft.getResourcePackRepository(), newSelection);
-            minecraft.setScreen(new LegacyLoadingScreen());
+            FactoryAPIClient.setScreen(new LegacyLoadingScreen());
             if (!oldSelection.equals(getSelectedIds(minecraft.getResourcePackRepository()))) {
                 if (persistSelection) updateSavedResourcePacks();
                 Minecraft.getInstance().reloadResourcePacks().thenRun(runnable);
@@ -545,8 +546,8 @@ public record PackAlbum(String id, int version, Component displayName, Component
                     return true;
                 }
                 if (keyEvent.key() == InputConstants.KEY_O) {
-                    Screen screen = Minecraft.getInstance().screen;
-                    minecraft.setScreen(new ConfirmationScreen(minecraft.screen, ConfirmationScreen::getPanelWidth, () -> LegacyOptions.getUIMode().isSD() ? 108 : 133, ALBUM_OPTIONS, ALBUM_OPTIONS_MESSAGE, b -> {
+                    Screen screen = FactoryAPIClient.getScreen();
+                    FactoryAPIClient.setScreen(new ConfirmationScreen(FactoryAPIClient.getScreen(), ConfirmationScreen::getPanelWidth, () -> LegacyOptions.getUIMode().isSD() ? 108 : 133, ALBUM_OPTIONS, ALBUM_OPTIONS_MESSAGE, b -> {
                     }) {
                         @Override
                         protected void addButtons() {
@@ -556,11 +557,11 @@ public record PackAlbum(String id, int version, Component displayName, Component
                                 while (!resourceById(TEMPLATE_ALBUM + (repeat > 0 ? "_" + repeat : "")).equals(MINECRAFT))
                                     repeat++;
                                 String id = TEMPLATE_ALBUM + (repeat > 0 ? "_" + repeat : "");
-                minecraft.setScreen(createAlbumEditScreen(parent, b.getMessage(), LegacyComponents.getResourceAlbumTemplate(repeat), LegacyComponents.getResourceAlbumTemplateDescription(), (name, description) -> {
-                                    minecraft.setScreen(new PackSelectionScreen(packRepository, r -> {
+                FactoryAPIClient.setScreen(createAlbumEditScreen(parent, b.getMessage(), LegacyComponents.getResourceAlbumTemplate(repeat), LegacyComponents.getResourceAlbumTemplateDescription(), (name, description) -> {
+                                    FactoryAPIClient.setScreen(new PackSelectionScreen(packRepository, r -> {
                                         PackAlbum.resourceAlbums.put(id, new PackAlbum(id, 0, name, description, Optional.empty(), Optional.empty(), getSelectableIds(packRepository), Optional.empty()));
                                         save();
-                                        Minecraft.getInstance().setScreen(parent);
+                                        FactoryAPIClient.setScreen(parent);
                                         packRepository.setSelected(PackAlbum.Selector.this.oldSelection);
                                         updateSavedAlbum();
                                         setSelectedIndex(albums.size());
@@ -570,10 +571,10 @@ public record PackAlbum(String id, int version, Component displayName, Component
                             AbstractButton editButton;
                             renderableVList.addRenderable(editButton = Button.builder(EDIT_ALBUM, b -> {
                                 PackAlbum editAlbum = getSelectedAlbum();
-                                minecraft.setScreen(createAlbumEditScreen(parent, b.getMessage(), editAlbum.displayName, editAlbum.description, (name, description) -> {
+                                FactoryAPIClient.setScreen(createAlbumEditScreen(parent, b.getMessage(), editAlbum.displayName, editAlbum.description, (name, description) -> {
                                     PackAlbum.resourceAlbums.put(editAlbum.id(), new PackAlbum(editAlbum.id(), editAlbum.version(), name, description, editAlbum.iconSprite(), editAlbum.backgroundSprite(), editAlbum.packs(), editAlbum.displayPack()));
                                     save();
-                                    Minecraft.getInstance().setScreen(parent);
+                                    FactoryAPIClient.setScreen(parent);
                                     packRepository.setSelected(PackAlbum.Selector.this.oldSelection);
                                     updateSavedAlbum();
                                 }));
@@ -584,7 +585,7 @@ public record PackAlbum(String id, int version, Component displayName, Component
                                 save();
                                 updateSavedAlbum();
                                 setSelectedIndex(0);
-                                minecraft.setScreen(screen);
+                                FactoryAPIClient.setScreen(screen);
                             }).build());
                             if (DownloadedResourceAlbums.isManagedAlbum(getSelectedAlbum().id())) {
                                 editButton.active = false;
@@ -615,17 +616,16 @@ public record PackAlbum(String id, int version, Component displayName, Component
 
         public void openPackSelectionScreen() {
             if (DownloadedResourceAlbums.isManagedAlbum(getSelectedAlbum().id())) return;
-            if (minecraft.screen != null) {
-                Screen screen = minecraft.screen;
+            if (FactoryAPIClient.getScreen() instanceof Screen screen) {
                 packRepository.setSelected(CustomSkinPackStore.preserveSelection(packRepository, DownloadedSkinPackStore.preserveSelection(packRepository, getSelectedAlbum().packs())));
                 List<String> oldSelection = getSelectedIds(packRepository);
-                minecraft.setScreen(new PackSelectionScreen(packRepository, p -> {
+                FactoryAPIClient.setScreen(new PackSelectionScreen(packRepository, p -> {
                     if (!oldSelection.equals(getSelectedIds(p))) {
                         albums.put(getSelectedAlbum().id(), getSelectedAlbum().withPacks(List.copyOf(getSelectableIds(p))));
                         updateSavedAlbum();
                         save();
                     }
-                    minecraft.setScreen(screen);
+                    FactoryAPIClient.setScreen(screen);
                     packRepository.setSelected(this.oldSelection);
                 }, packPath, getMessage()));
             }

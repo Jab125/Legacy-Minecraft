@@ -19,6 +19,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import wily.factoryapi.FactoryAPIClient;
 import wily.legacy.Legacy4JClient;
 import wily.legacy.client.CommonColor;
 import wily.legacy.client.screen.ControlTooltip;
@@ -38,18 +39,18 @@ public abstract class MultilineEditBoxMixin extends AbstractWidget implements Co
 
     @Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
     private void keyPressed(KeyEvent keyEvent, CallbackInfoReturnable<Boolean> cir) {
-        Screen screen = Minecraft.getInstance().screen;
+        Screen screen = FactoryAPIClient.getScreen();
         if (KeyboardScreen.isOpenKey(keyEvent.key()) && screen != null) {
-            Minecraft.getInstance().setScreen(KeyboardScreen.fromStaticListener(this, screen));
+            FactoryAPIClient.setScreen(KeyboardScreen.fromStaticListener(this, screen));
             cir.setReturnValue(true);
         }
     }
 
     @Inject(method = "onClick", at = @At("HEAD"), cancellable = true)
     private void onClick(MouseButtonEvent event, boolean bl, CallbackInfo ci) {
-        Screen screen = Minecraft.getInstance().screen;
+        Screen screen = FactoryAPIClient.getScreen();
         if (event.hasShiftDown() || Legacy4JClient.controllerManager.isControllerTheLastInput()) {
-            Minecraft.getInstance().setScreen(KeyboardScreen.fromStaticListener(this, screen));
+            FactoryAPIClient.setScreen(KeyboardScreen.fromStaticListener(this, screen));
             ci.cancel();
         }
     }

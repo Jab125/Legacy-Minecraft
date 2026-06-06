@@ -78,7 +78,7 @@ public class HowToPlayScreen extends LegacyScreen {
         boolean next;
         if ((next = keyEvent.key() == InputConstants.KEY_RETURN) && hasNextPage() || keyEvent.key() == InputConstants.KEY_X && hasPreviousPage()) {
             LegacySoundUtil.playSimpleUISound(SoundEvents.UI_BUTTON_CLICK.value(), 1.0f);
-            minecraft.setScreen(Section.list.get(sectionIndex + (next ? 1 : -1)).build(parent));
+            FactoryAPIClient.setScreen(Section.list.get(sectionIndex + (next ? 1 : -1)).build(parent));
             return true;
         }
         if (getScrollableRenderer().keyPressed(keyEvent.key())) return true;

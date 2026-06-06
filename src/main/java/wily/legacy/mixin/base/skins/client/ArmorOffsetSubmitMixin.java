@@ -12,7 +12,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import wily.legacy.skins.client.render.ArmorOffsetRenderContext;
 
-@Mixin(SubmitNodeStorage.ModelSubmit.class)
+//~ if >=26.2 'SubmitNodeStorage.ModelSubmit.class' -> 'ModelFeatureRenderer.Submit.class'
+@Mixin(ModelFeatureRenderer.Submit.class)
 public abstract class ArmorOffsetSubmitMixin implements ArmorOffsetRenderContext.SubmitAccess {
     @Unique
     private ArmorOffsetRenderContext.Offsets consoleskins$armorOffsets;
@@ -23,11 +24,7 @@ public abstract class ArmorOffsetSubmitMixin implements ArmorOffsetRenderContext
     }
 
     @Inject(method = "<init>", at = @At("RETURN"), require = 0)
-    private void consoleskins$captureArmorOffsets(PoseStack.Pose pose, Model<?> model, Object state,
-                                                  int light, int overlay, int color,
-                                                  TextureAtlasSprite sprite, int outlineColor,
-                                                  ModelFeatureRenderer.CrumblingOverlay crumblingOverlay,
-                                                  CallbackInfo ci) {
+    private void consoleskins$captureArmorOffsets(CallbackInfo ci) {
         consoleskins$armorOffsets = ArmorOffsetRenderContext.submitOffsets();
     }
 }

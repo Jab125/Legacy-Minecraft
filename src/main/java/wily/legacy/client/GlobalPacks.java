@@ -22,6 +22,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackRepository;
 import org.jetbrains.annotations.Nullable;
+import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.FactoryAPIPlatform;
 import wily.factoryapi.base.Stocker;
 import wily.factoryapi.base.client.FactoryGuiGraphics;
@@ -228,14 +229,13 @@ public record GlobalPacks(List<String> list, boolean applyOnTop) {
         }
 
         public void openPackSelectionScreen() {
-            if (minecraft.screen != null) {
-                Screen screen = minecraft.screen;
+            if (FactoryAPIClient.getScreen() instanceof Screen screen /*null check and assignment at the same time!*/) {
                 Collection<String> packs = packRepository.getSelectedIds();
                 packRepository.setSelected(CustomSkinPackStore.preserveSelection(packRepository, DownloadedSkinPackStore.preserveSelection(packRepository, getSelectedIds())));
-                minecraft.setScreen(new PackSelectionScreen(packRepository, p -> {
+                FactoryAPIClient.setScreen(new PackSelectionScreen(packRepository, p -> {
                     updateModel();
                     packRepository.setSelected(packs);
-                    minecraft.setScreen(screen);
+                    FactoryAPIClient.setScreen(screen);
                 }, packPath, getMessage()));
             }
         }

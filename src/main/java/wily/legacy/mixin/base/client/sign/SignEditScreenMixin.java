@@ -30,28 +30,29 @@ public abstract class SignEditScreenMixin extends AbstractSignEditScreen {
         return height / 2f + 15.5f + getYOffset();
     }
 
-    @ModifyArg(method = "extractSignBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;sign(Lnet/minecraft/client/model/Model$Simple;FLnet/minecraft/world/level/block/state/properties/WoodType;IIII)V"))
-    private float renderSignBackground(float original) {
-        return original * 144 / 93;
-    }
-
-    @ModifyArg(method = "extractSignBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;sign(Lnet/minecraft/client/model/Model$Simple;FLnet/minecraft/world/level/block/state/properties/WoodType;IIII)V"), index = 3)
-    private int changeSignX0(int original) {
-        return original - 30;
-    }
-
-    @ModifyArg(method = "extractSignBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;sign(Lnet/minecraft/client/model/Model$Simple;FLnet/minecraft/world/level/block/state/properties/WoodType;IIII)V"), index = 5)
-    private int changeSignX1(int original) {
-        return original + 30;
-    }
-
-    @ModifyArg(method = "extractSignBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;sign(Lnet/minecraft/client/model/Model$Simple;FLnet/minecraft/world/level/block/state/properties/WoodType;IIII)V"), index = 4)
-    private int changeSignY0(int original) {
-        return height / 2 - 40 + getYOffset();
-    }
-
-    @ModifyArg(method = "extractSignBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;sign(Lnet/minecraft/client/model/Model$Simple;FLnet/minecraft/world/level/block/state/properties/WoodType;IIII)V"), index = 6)
-    private int changeSignY1(int original) {
-        return height / 2 + 120 + getYOffset();
-    }
+// TODO 26.2
+//    @ModifyArg(method = "extractSignBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;sign(Lnet/minecraft/client/model/Model$Simple;FLnet/minecraft/world/level/block/state/properties/WoodType;IIII)V"))
+//    private float renderSignBackground(float original) {
+//        return original * 144 / 93;
+//    }
+//
+//    @ModifyArg(method = "extractSignBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;sign(Lnet/minecraft/client/model/Model$Simple;FLnet/minecraft/world/level/block/state/properties/WoodType;IIII)V"), index = 3)
+//    private int changeSignX0(int original) {
+//        return original - 30;
+//    }
+//
+//    @ModifyArg(method = "extractSignBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;sign(Lnet/minecraft/client/model/Model$Simple;FLnet/minecraft/world/level/block/state/properties/WoodType;IIII)V"), index = 5)
+//    private int changeSignX1(int original) {
+//        return original + 30;
+//    }
+//
+//    @ModifyArg(method = "extractSignBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;sign(Lnet/minecraft/client/model/Model$Simple;FLnet/minecraft/world/level/block/state/properties/WoodType;IIII)V"), index = 4)
+//    private int changeSignY0(int original) {
+//        return height / 2 - 40 + getYOffset();
+//    }
+//
+//    @ModifyArg(method = "extractSignBackground", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;sign(Lnet/minecraft/client/model/Model$Simple;FLnet/minecraft/world/level/block/state/properties/WoodType;IIII)V"), index = 6)
+//    private int changeSignY1(int original) {
+//        return height / 2 + 120 + getYOffset();
+//    }
 }

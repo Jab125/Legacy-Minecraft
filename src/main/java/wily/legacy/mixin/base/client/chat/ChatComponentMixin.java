@@ -24,6 +24,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
+import wily.factoryapi.FactoryAPIClient;
 import wily.legacy.client.CommonColor;
 import wily.legacy.client.LegacyOptions;
 import wily.legacy.client.screen.OverlayPanelScreen;
@@ -49,7 +50,7 @@ public abstract class ChatComponentMixin {
     //? if >=1.21.11 {
     @Inject(method = "extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/gui/Font;IIILnet/minecraft/client/gui/components/ChatComponent$DisplayMode;Z)V", at = @At(value = "HEAD"), cancellable = true)
     private void renderWithFont(CallbackInfo ci) {
-        if (minecraft.screen != null && !isChatFocused()) {
+        if (FactoryAPIClient.getScreen() != null && !isChatFocused()) {
             ci.cancel();
             return;
         }
@@ -170,7 +171,7 @@ public abstract class ChatComponentMixin {
 
     @Inject(method = "isChatFocused", at = @At(value = "HEAD"), cancellable = true)
     private void isChatFocused(CallbackInfoReturnable<Boolean> cir) {
-        if (minecraft.screen instanceof OverlayPanelScreen s && s.parent instanceof ChatScreen)
+        if (FactoryAPIClient.getScreen() instanceof OverlayPanelScreen s && s.parent instanceof ChatScreen)
             cir.setReturnValue(true);
     }
 }

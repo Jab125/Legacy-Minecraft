@@ -1,14 +1,16 @@
 //? if >=26.1 {
 package wily.legacy.mixin.base.client.gui;
 
-import net.minecraft.client.gui.contextualbar.LocatorBarRenderer;
+//~ if >=26.2 'contextualbar.LocatorBarRenderer;' -> 'contextualbar.LocatorBar;'
+import net.minecraft.client.gui.contextualbar.LocatorBar;
 import net.minecraft.util.ARGB;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import wily.legacy.util.client.LegacyRenderUtil;
 
-@Mixin(LocatorBarRenderer.class)
+//~ if >=26.2 'LocatorBarRenderer.class' -> 'LocatorBar.class'
+@Mixin(LocatorBar.class)
 public class LocatorBarRendererMixin {
 
     @ModifyArg(method = "lambda$extractRenderState$1", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIIII)V"), index = 6)

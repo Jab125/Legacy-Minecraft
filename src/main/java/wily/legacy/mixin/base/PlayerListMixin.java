@@ -1,6 +1,6 @@
 package wily.legacy.mixin.base;
 
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements/*? if >=26.2 {*/.triggers/*?}*/.CriteriaTriggers;
 import net.minecraft.server.level.ServerPlayer;
 //? if >1.20.2 {
 //?}

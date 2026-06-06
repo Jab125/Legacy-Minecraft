@@ -102,7 +102,7 @@ public class OptionsScreen extends PanelVListScreen {
     public boolean keyPressed(KeyEvent keyEvent) {
         if (super.keyPressed(keyEvent)) return true;
         if (keyEvent.key() == InputConstants.KEY_O && advancedOptionsScreen != null) {
-            minecraft.setScreen(advancedOptionsScreen);
+            FactoryAPIClient.setScreen(advancedOptionsScreen);
             return true;
         }
         return false;
@@ -199,7 +199,7 @@ public class OptionsScreen extends PanelVListScreen {
                         return;
                     }
                     t.selected = false;
-                    screen.minecraft.setScreen(createLegacySettingsMenusWarningScreen(screen));
+                    FactoryAPIClient.setScreen(createLegacySettingsMenusWarningScreen(screen));
                 },
                 LegacyOptions.legacySettingsMenus::get);
     }
@@ -278,7 +278,7 @@ public class OptionsScreen extends PanelVListScreen {
     }
 
     private static void reopenLegacySettingsMenusScreen(Screen screen) {
-        Minecraft.getInstance().setScreen(Section.ADVANCED_USER_INTERFACE.build(refreshLegacySettingsParent(screen)));
+        FactoryAPIClient.setScreen(Section.ADVANCED_USER_INTERFACE.build(refreshLegacySettingsParent(screen)));
     }
 
     private static Screen refreshLegacySettingsParent(Screen screen) {
@@ -290,7 +290,7 @@ public class OptionsScreen extends PanelVListScreen {
 
     private static void showOptionsPresetWarningIfNeeded(Screen parent, Minecraft minecraft) {
         if (!LegacyOptions.optionsPreset.get().isNone() && !LegacyOptions.optionsPreset.get().get().isApplied()) {
-            minecraft.setScreen(new OptionsPresetScreen(parent, LegacyOptions.optionsPreset.get().get()));
+            FactoryAPIClient.setScreen(new OptionsPresetScreen(parent, LegacyOptions.optionsPreset.get().get()));
         }
     }
 
@@ -318,20 +318,32 @@ public class OptionsScreen extends PanelVListScreen {
 
         public static OptionInstance<?> createResolutionOptionInstance(OptionsScreen screen) {
             Monitor monitor = mc.getWindow().findBestMonitor();
-            int j = monitor == null ? -1 : mc.getWindow().getPreferredFullscreenVideoMode().map(monitor::getVideoModeIndex).orElse(-1);
+            int j = monitor == null ? -1 : mc.getWindow().getPreferredFullscreenVideoMode().map(monitor::
+                                                                                                //$ if <26.1 'getVideoModeIndex' else 'indexOfMode'
+                                                                                                indexOfMode
+            ).orElse(-1);
             return new OptionInstance<>("options.fullscreen.resolution", OptionInstance.noTooltip(), (component, integer) -> {
                 if (monitor == null)
                     return Component.translatable("options.fullscreen.unavailable");
                 else if (integer == -1) {
                     return Options.genericValueLabel(component, Component.translatable("options.fullscreen.current"));
                 }
-                VideoMode videoMode = monitor.getMode(integer);
+                VideoMode videoMode = monitor
+                        //$ if <26.1 '.getMode' else '.mode'
+                        .mode
+                                (integer);
                 return Options.genericValueLabel(component, Component.translatable("options.fullscreen.entry", videoMode.getWidth(), videoMode.getHeight(), videoMode.getRefreshRate(), videoMode.getRedBits() + videoMode.getGreenBits() + videoMode.getBlueBits()));
-            }, new OptionInstance.IntRange(-1, monitor != null ? monitor.getModeCount() - 1 : -1), j, integer -> {
+            }, new OptionInstance.IntRange(-1, monitor != null ? monitor.
+                                                                         //$ if <26.1 'getModeCount()' else 'modeCount()'
+                                                                         modeCount()
+                                                                                        - 1 : -1), j, integer -> {
                 if (monitor == null)
                     return;
-                mc.getWindow().setPreferredFullscreenVideoMode(integer == -1 ? Optional.empty() : Optional.of(monitor.getMode(integer)));
-                FactoryAPIClient.SECURE_EXECUTOR.executeNowIfPossible(mc.getWindow()::changeFullscreenVideoMode, () -> screen != mc.screen);
+                mc.getWindow().setPreferredFullscreenVideoMode(integer == -1 ? Optional.empty() : Optional.of(monitor
+                                                                                                              //$ if <26.1 '.getMode' else '.mode'
+                                                                                                              .mode
+                                                                                                                      (integer)));
+                FactoryAPIClient.SECURE_EXECUTOR.executeNowIfPossible(mc.getWindow()::changeFullscreenVideoMode, () -> screen != FactoryAPIClient.getScreen());
             });
         }
 

@@ -3,7 +3,11 @@ package wily.legacy.client;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.gui.Font;
 import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.client.renderer.MultiBufferSource;
+//? if <26.2 {
+/*import net.minecraft.client.renderer.MultiBufferSource;
+*///?} else {
+import net.minecraft.client.renderer.feature.NameTagFeatureRenderer;
+//?}
 import net.minecraft.client.renderer.SubmitNodeStorage;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import org.joml.Matrix4fc;
@@ -11,11 +15,13 @@ import org.joml.Matrix4fc;
 public interface LegacyNameTag {
     LegacyNameTag NEXT_SUBMIT = new Instance();
 
-    static LegacyNameTag of(SubmitNodeStorage.NameTagSubmit nameTagSubmit) {
+    //~ if >=26.2 'SubmitNodeStorage.NameTagSubmit' -> 'NameTagFeatureRenderer.Submit'
+    static LegacyNameTag of(NameTagFeatureRenderer.Submit nameTagSubmit) {
         return (LegacyNameTag) (Object) nameTagSubmit;
     }
 
-    static SubmitNodeStorage.NameTagSubmit withColor(SubmitNodeStorage.NameTagSubmit nameTagSubmit, float[] color) {
+    //~ if >=26.2 'SubmitNodeStorage.NameTagSubmit' -> 'NameTagFeatureRenderer.Submit'
+    static NameTagFeatureRenderer.Submit withColor(NameTagFeatureRenderer.Submit nameTagSubmit, float[] color) {
         of(nameTagSubmit).setNameTagColor(color);
         return nameTagSubmit;
     }
@@ -24,12 +30,15 @@ public interface LegacyNameTag {
         return Math.max(0.1f, (float) Math.sqrt(distanceToCameraSq) / 16f);
     }
 
-    static void renderNameTagOutline(Font font, MultiBufferSource.BufferSource bufferSource, SubmitNodeStorage.NameTagSubmit submit, boolean seeThrough) {
+    // TODO 26.2
+    //? if <26.2 {
+    /*static void renderNameTagOutline(Font font, MultiBufferSource.BufferSource bufferSource, SubmitNodeStorage.NameTagSubmit submit, boolean seeThrough) {
         float thickness = getThickness(submit.distanceToCameraSq());
         float[] color = LegacyNameTag.of(submit).getNameTagColor();
         if (!LegacyOptions.displayNameTagBorder.get() || thickness >= 1 || color == null) return;
         renderOutline(bufferSource.getBuffer(seeThrough ? RenderTypes.textBackgroundSeeThrough() : RenderTypes.textBackground()), submit.pose(), submit.x() - 1.1f, submit.y() - 1.1f, font.width(submit.text()) + 2.1f, 10.1f, thickness, color[0], color[1], color[2], 1.0f);
     }
+    *///?}
 
     static void renderOutline(VertexConsumer consumer, Matrix4fc matrix4f, float x, float y, float width, float height, float thickness, float r, float g, float b, float a) {
         fill(consumer, matrix4f, x, y, x + width, y + thickness, r, g, b, a);

@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.base.client.UIAccessor;
 import wily.legacy.client.LegacyOptions;
 import wily.legacy.client.LegacySaveCache;
@@ -57,9 +58,9 @@ public class PauseScreenMixin extends Screen implements ControlTooltip.Event, Re
             LegacyLoadingScreen.openFakeManualSaveScreen(PauseScreenMixin.this);
             return;
         }
-        minecraft.setScreen(new ConfirmationScreen(PauseScreenMixin.this, LegacyComponents.ENABLE_AUTO_SAVE, LegacyComponents.ENABLE_AUTO_SAVE_MESSAGE, b1 -> {
+        FactoryAPIClient.setScreen(new ConfirmationScreen(PauseScreenMixin.this, LegacyComponents.ENABLE_AUTO_SAVE, LegacyComponents.ENABLE_AUTO_SAVE_MESSAGE, b1 -> {
             setAutoSave(1, button);
-            minecraft.setScreen(PauseScreenMixin.this);
+            FactoryAPIClient.setScreen(PauseScreenMixin.this);
         }));
     }
 
@@ -69,23 +70,23 @@ public class PauseScreenMixin extends Screen implements ControlTooltip.Event, Re
         renderableVLists = Collections.singletonList(renderableVList);
         renderableVList.addRenderables(
                 Button.builder(Component.translatable("menu.returnToGame"), button -> {
-                    this.minecraft.setScreen(null);
+                    FactoryAPIClient.setScreen(null);
                     this.minecraft.mouseHandler.grabMouse();
                 }).build(),
-                Button.builder(Component.translatable("menu.options"), button -> this.minecraft.setScreen(new HelpAndOptionsScreen(this))).build(),
-                leaderboardsButton = Button.builder(Component.empty(), button -> this.minecraft.setScreen(LeaderboardsScreen.getActualLeaderboardsScreenInstance(this))).build(),
-                Button.builder(Component.translatable("gui.advancements"), button -> this.minecraft.setScreen(LegacyAdvancementsScreen.getActualAdvancementsScreenInstance(this))).build()
+                Button.builder(Component.translatable("menu.options"), button -> FactoryAPIClient.setScreen(new HelpAndOptionsScreen(this))).build(),
+                leaderboardsButton = Button.builder(Component.empty(), button -> FactoryAPIClient.setScreen(LeaderboardsScreen.getActualLeaderboardsScreenInstance(this))).build(),
+                Button.builder(Component.translatable("gui.advancements"), button -> FactoryAPIClient.setScreen(LegacyAdvancementsScreen.getActualAdvancementsScreenInstance(this))).build()
         );
         if (LegacySaveCache.hasSaveSystem(minecraft))
-            renderableVList.addRenderable(saveButton = Button.builder(LegacyOptions.autoSaveInterval.get() > 0 ? LegacyComponents.DISABLE_AUTO_SAVE : LegacyComponents.SAVE_GAME, button -> minecraft.setScreen(new ConfirmationScreen(this, LegacyOptions.autoSaveInterval.get() > 0 ? LegacyComponents.DISABLE_AUTO_SAVE : LegacyComponents.SAVE_GAME, LegacyOptions.autoSaveInterval.get() > 0 ? LegacyComponents.DISABLE_AUTO_SAVE_MESSAGE : LegacyComponents.SAVE_GAME_MESSAGE, b -> {
+            renderableVList.addRenderable(saveButton = Button.builder(LegacyOptions.autoSaveInterval.get() > 0 ? LegacyComponents.DISABLE_AUTO_SAVE : LegacyComponents.SAVE_GAME, button -> FactoryAPIClient.setScreen(new ConfirmationScreen(this, LegacyOptions.autoSaveInterval.get() > 0 ? LegacyComponents.DISABLE_AUTO_SAVE : LegacyComponents.SAVE_GAME, LegacyOptions.autoSaveInterval.get() > 0 ? LegacyComponents.DISABLE_AUTO_SAVE_MESSAGE : LegacyComponents.SAVE_GAME_MESSAGE, b -> {
                 if (LegacyOptions.autoSaveInterval.get() > 0) {
                     setAutoSave(0, button);
-                    minecraft.setScreen(PauseScreenMixin.this);
+                    FactoryAPIClient.setScreen(PauseScreenMixin.this);
                 } else {
                     startManualSaveFlow(button);
                 }
             }))).build());
-        renderableVList.addRenderable(Button.builder(Component.translatable("menu.quit"), button -> minecraft.setScreen(new ExitConfirmationScreen(this))).build());
+        renderableVList.addRenderable(Button.builder(Component.translatable("menu.quit"), button -> FactoryAPIClient.setScreen(new ExitConfirmationScreen(this))).build());
     }
 
     //? if >1.20.1 {

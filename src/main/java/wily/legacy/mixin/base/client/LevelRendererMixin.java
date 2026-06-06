@@ -19,12 +19,15 @@ import wily.legacy.client.LevelRendererAccessor;
 
 @Mixin(LevelRenderer.class)
 public abstract class LevelRendererMixin implements LevelRendererAccessor {
-    @Inject(method = "getLightCoords(Lnet/minecraft/client/renderer/LevelRenderer$BrightnessGetter;Lnet/minecraft/world/level/BlockAndLightGetter;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;)I", at = @At("RETURN"), cancellable = true)
+    // TODO 26.2 a lot of stuff moved to LevelExtractor
+    //? if <26.2 {
+    /*@Inject(method = "getLightCoords(Lnet/minecraft/client/renderer/LevelRenderer$BrightnessGetter;Lnet/minecraft/world/level/BlockAndLightGetter;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;)I", at = @At("RETURN"), cancellable = true)
     private static void getLightCoords(LevelRenderer.BrightnessGetter brightnessGetter, BlockAndLightGetter level, BlockState state, BlockPos pos, CallbackInfoReturnable<Integer> cir) {
         if (LegacyChunkLoading.hasPendingFeatures(pos)) {
             cir.setReturnValue(LightCoordsUtil.max(cir.getReturnValue(), LightCoordsUtil.FULL_SKY));
         }
     }
+    *///?}
 
     //? if <1.21.2 {
     /*@Shadow protected abstract void createLightSky();
@@ -65,17 +68,21 @@ public abstract class LevelRendererMixin implements LevelRendererAccessor {
     @Final
     @Mutable
     private SkyRenderer skyRenderer;
-    @Shadow
+    //? if <26.2 {
+    /*@Shadow
     @Final
     private Minecraft minecraft;
 
     @Shadow
     public abstract void onResourceManagerReload(ResourceManager resourceManager);
+    *///?}
 
     @Override
     public void updateSkyBuffers() {
         if (skyRenderer == null) return;
-        onResourceManagerReload(minecraft.getResourceManager());
+        // TODO 26.2
+        //? if <26.2
+        //onResourceManagerReload(minecraft.getResourceManager());
     }
     //?}
 

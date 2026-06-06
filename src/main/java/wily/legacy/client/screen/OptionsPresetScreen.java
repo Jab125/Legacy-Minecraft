@@ -3,6 +3,7 @@ package wily.legacy.client.screen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
+import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.base.config.FactoryConfig;
 import wily.legacy.Legacy4JClient;
 import wily.legacy.client.LegacyOptions;
@@ -45,7 +46,7 @@ public class OptionsPresetScreen extends ConfirmationScreen {
 
     private void applyPreset() {
         if (enablesLegacySettingsMenus()) {
-            minecraft.setScreen(OptionsScreen.createLegacySettingsMenusWarningScreen(this, s -> {
+            FactoryAPIClient.setScreen(OptionsScreen.createLegacySettingsMenusWarningScreen(this, s -> {
                 preset.applyAndSave();
                 updateSelectedPresetState();
                 OptionsScreen.enableLegacySettingsMenus(parent);

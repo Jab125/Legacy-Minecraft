@@ -1,4 +1,5 @@
-package wily.legacy.mixin.base.client;
+//? if <26.2 {
+/*package wily.legacy.mixin.base.client;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.gui.Font;
@@ -33,3 +34,4 @@ public abstract class NameTagFeatureMixin {
         return color == null ? original : ColorUtil.colorFromFloat(color[0], color[1], color[2], 1.0f);
     }
 }
+*///?}

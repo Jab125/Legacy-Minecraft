@@ -6,6 +6,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+//? if >=26.2 {
+import net.minecraft.world.entity.EntityTypes;
+//?}
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.decoration.ArmorStand;
@@ -39,40 +42,40 @@ public final class ConsoleMobCaps {
     }
 
     static TrackedMobCap bucketForType(EntityType<?> type) {
-        if (type == EntityType.CHICKEN) {
+        if (type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.CHICKEN) {
             return TrackedMobCap.CHICKENS;
         }
-        if (type == EntityType.WOLF) {
+        if (type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.WOLF) {
             return TrackedMobCap.WOLVES;
         }
-        if (type == EntityType.MOOSHROOM) {
+        if (type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.MOOSHROOM) {
             return TrackedMobCap.MOOSHROOMS;
         }
         if (isAquaticCapType(type)) {
             return TrackedMobCap.SQUIDS;
         }
-        if (type == EntityType.BAT) {
+        if (type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.BAT) {
             return TrackedMobCap.AMBIENT;
         }
-        if (type == EntityType.VILLAGER) {
+        if (type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.VILLAGER) {
             return TrackedMobCap.VILLAGERS;
         }
-        if (type == EntityType.PHANTOM) {
+        if (type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.PHANTOM) {
             return TrackedMobCap.PHANTOMS;
         }
-        if (type == EntityType.ARMOR_STAND) {
+        if (type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.ARMOR_STAND) {
             return TrackedMobCap.ARMOR_STANDS;
         }
-        if (type == EntityType.PAINTING || type == EntityType.ITEM_FRAME || type == EntityType.GLOW_ITEM_FRAME) {
+        if (type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.PAINTING || type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.ITEM_FRAME || type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.GLOW_ITEM_FRAME) {
             return TrackedMobCap.HANGING;
         }
-        if (type == EntityType.SNOW_GOLEM) {
+        if (type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.SNOW_GOLEM) {
             return TrackedMobCap.SNOW_GOLEMS;
         }
-        if (type == EntityType.IRON_GOLEM) {
+        if (type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.IRON_GOLEM) {
             return TrackedMobCap.IRON_GOLEMS;
         }
-        if (type == EntityType.WITHER || type == EntityType.ENDER_DRAGON) {
+        if (type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.WITHER || type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.ENDER_DRAGON) {
             return TrackedMobCap.BOSSES;
         }
 
@@ -150,25 +153,25 @@ public final class ConsoleMobCaps {
         if (bucket == TrackedMobCap.GENERAL_ANIMALS && tracker.count(TrackedMobCap.GENERAL_ANIMALS) >= TrackedMobCap.GENERAL_ANIMALS.naturalLimit()) {
             return false;
         }
-        if (type == EntityType.CHICKEN) {
+        if (type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.CHICKEN) {
             return tracker.count(TrackedMobCap.CHICKENS) < TrackedMobCap.CHICKENS.naturalLimit();
         }
-        if (type == EntityType.WOLF) {
+        if (type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.WOLF) {
             return tracker.count(TrackedMobCap.WOLVES) < TrackedMobCap.WOLVES.naturalLimit();
         }
-        if (type == EntityType.MOOSHROOM) {
+        if (type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.MOOSHROOM) {
             return tracker.count(TrackedMobCap.MOOSHROOMS) < TrackedMobCap.MOOSHROOMS.naturalLimit();
         }
         if (isAquaticCapType(type)) {
             return tracker.count(TrackedMobCap.SQUIDS) < TrackedMobCap.SQUIDS.naturalLimit();
         }
-        if (type == EntityType.GHAST) {
+        if (type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.GHAST) {
             return tracker.count(type) < 4;
         }
         if (bucket == TrackedMobCap.PHANTOMS) {
             return tracker.count(bucket) < bucket.naturalLimit();
         }
-        if (type == EntityType.ENDERMAN && Level.END.equals(level.dimension())) {
+        if (type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.ENDERMAN && Level.END.equals(level.dimension())) {
             int endermanCap = TrackedMobCap.MONSTERS.naturalLimit();
             if (level.getDifficulty() == Difficulty.NORMAL) {
                 endermanCap -= TrackedMobCap.MONSTERS.naturalLimit() / 4;
@@ -272,13 +275,13 @@ public final class ConsoleMobCaps {
         }
 
         WorldMobCapTracker tracker = LegacyMobCaps.tracker(level);
-        if (type == EntityType.SNOW_GOLEM) {
+        if (type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.SNOW_GOLEM) {
             return tracker.count(TrackedMobCap.SNOW_GOLEMS) < TrackedMobCap.SNOW_GOLEMS.manualLimit();
         }
-        if (type == EntityType.IRON_GOLEM) {
+        if (type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.IRON_GOLEM) {
             return tracker.count(TrackedMobCap.IRON_GOLEMS) < TrackedMobCap.IRON_GOLEMS.manualLimit();
         }
-        if (type == EntityType.WITHER) {
+        if (type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.WITHER) {
             return tracker.count(TrackedMobCap.BOSSES) < TrackedMobCap.BOSSES.manualLimit();
         }
         return true;
@@ -333,15 +336,15 @@ public final class ConsoleMobCaps {
     }
 
     private static boolean isAquaticCapType(EntityType<?> type) {
-        return type == EntityType.SQUID
-            || type == EntityType.GLOW_SQUID
-            || type == EntityType.COD
-            || type == EntityType.SALMON
-            || type == EntityType.PUFFERFISH
-            || type == EntityType.TROPICAL_FISH
-            || type == EntityType.DOLPHIN
-            || type == EntityType.AXOLOTL
-            || type == EntityType.TADPOLE;
+        return type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.SQUID
+            || type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.GLOW_SQUID
+            || type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.COD
+            || type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.SALMON
+            || type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.PUFFERFISH
+            || type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.TROPICAL_FISH
+            || type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.DOLPHIN
+            || type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.AXOLOTL
+            || type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.TADPOLE;
     }
 
     private static int countLoaded(ServerLevel level, Predicate<Entity> predicate) {

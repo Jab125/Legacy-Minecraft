@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.OptionInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.base.config.FactoryConfig;
 import wily.factoryapi.util.DynamicUtil;
 import wily.legacy.Legacy4JClient;
@@ -35,7 +36,7 @@ public record OptionsPreset(Identifier id, Optional<Component> name, Optional<Co
     public void apply() {
         vanillaOptions.forEach((key, value) -> setVanillaOption(VANILLA_OPTIONS_MAP.get(key), value));
         legacyOptions.forEach((key, value) -> setConfig(LegacyOptions.CLIENT_STORAGE.configMap.get(key), value));
-        if (Minecraft.getInstance().screen instanceof OptionsScreen screen) {
+        if (FactoryAPIClient.getScreen() instanceof OptionsScreen screen) {
             screen.updateWidgets(true);
         }
     }

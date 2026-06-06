@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import wily.legacy.Legacy4JClient;
 import wily.legacy.util.LegacyTags;
+import wily.legacy.util.client.LegacyMCUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -316,7 +317,7 @@ public final class LegacyChunkLoading {
         Minecraft minecraft = Minecraft.getInstance();
         Runnable dirty = () -> {
             if (minecraft.level != null) {
-                minecraft.levelRenderer.setSectionDirty(SectionPos.x(section), SectionPos.y(section), SectionPos.z(section));
+                LegacyMCUtil.levelRendererOrExtractor(minecraft).setSectionDirty(SectionPos.x(section), SectionPos.y(section), SectionPos.z(section));
             }
         };
         if (minecraft.isSameThread()) {

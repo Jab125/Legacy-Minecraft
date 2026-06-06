@@ -27,6 +27,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.base.client.FactoryGuiGraphics;
 import wily.factoryapi.base.client.UIAccessor;
 import wily.factoryapi.util.FactoryScreenUtil;
@@ -163,7 +164,11 @@ public abstract class PackSelectionScreenMixin extends Screen implements Control
                     FactoryScreenUtil.enableBlend();
                     FactoryGuiGraphics.of(GuiGraphicsExtractor).blit(e.getIconTexture(), getX() + 5, getY() + 5, 0.0f, 0.0f, 20, 20, 20, 20);
                     FactoryScreenUtil.disableBlend();
-                    if ((minecraft.options.touchscreen().get().booleanValue() || isHovered) && showHoverOverlay()) {
+                    if ((
+                            //? if <26.2 {
+                            /*minecraft.options.touchscreen().get().booleanValue() ||
+                            *///?}
+                         isHovered) && showHoverOverlay()) {
                         GuiGraphicsExtractor.fill(getX() + 5, getY() + 5, getX() + 25, getY() + 25, -1601138544);
                         int p = mouseX - getX();
                         int q = mouseY - getY();
@@ -241,9 +246,9 @@ public abstract class PackSelectionScreenMixin extends Screen implements Control
                     if (e.getCompatibility().isCompatible()) {
                         e.select();
                     } else
-                        minecraft.setScreen(new ConfirmationScreen(self(), INCOMPATIBLE_CONFIRM_TITLE, e.getCompatibility().getConfirmation(), (b) -> {
+                        FactoryAPIClient.setScreen(new ConfirmationScreen(self(), INCOMPATIBLE_CONFIRM_TITLE, e.getCompatibility().getConfirmation(), (b) -> {
                             e.select();
-                            if (minecraft.screen != null) minecraft.screen.onClose();
+                            if (FactoryAPIClient.getScreen() != null) FactoryAPIClient.getScreen().onClose();
                         }));
                 }
 

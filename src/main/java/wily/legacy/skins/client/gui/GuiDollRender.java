@@ -7,6 +7,9 @@ import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.core.ClientAsset;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
+//? if >=26.2 {
+import net.minecraft.world.entity.EntityTypes;
+//?}
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.PlayerSkin;
@@ -77,7 +80,7 @@ public final class GuiDollRender {
         }
         float yaw = normalizeYaw(yawOffset + 180.0F);
         state.id = DOLL_RENDER_STATE_ID;
-        state.entityType = EntityType.PLAYER;
+        state.entityType = /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.PLAYER;
         state.lightCoords = 15728880;
         state.boundingBoxHeight = bboxHeight;
         state.boundingBoxWidth = bboxWidth;
@@ -118,7 +121,10 @@ public final class GuiDollRender {
 
     private static void applyPreviewLighting() {
         Minecraft mc = Minecraft.getInstance();
-        if (mc != null) mc.gameRenderer.getLighting().setupFor(Lighting.Entry.ENTITY_IN_UI);
+        if (mc != null) mc.gameRenderer.
+                //$ if <26.2 'getLighting()' else 'lighting()'
+                lighting()
+                .setupFor(Lighting.Entry.ENTITY_IN_UI);
     }
 
     private record PreviewLayout(

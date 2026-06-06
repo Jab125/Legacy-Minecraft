@@ -297,6 +297,7 @@ public abstract class CloudRendererMixin {
 
     }
 
+    //~ if >=26.2 'getMainCamera()' -> 'mainCamera()' {
     @Unique
     private int legacy$getRelativeCameraPos(float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
@@ -304,11 +305,11 @@ public abstract class CloudRendererMixin {
             return 0;
         }
 
-        double cameraY = minecraft.gameRenderer.getMainCamera().position().y;
-        float cloudHeight = LegacyCloudAtmosphere.areLegacyCloudHeightAndTextureEnabled() ? LEGACY_CLOUD_HEIGHT : minecraft.gameRenderer.getMainCamera().attributeProbe().getValue(EnvironmentAttributes.CLOUD_HEIGHT, partialTicks);
+        double cameraY = minecraft.gameRenderer.mainCamera().position().y;
+        float cloudHeight = LegacyCloudAtmosphere.areLegacyCloudHeightAndTextureEnabled() ? LEGACY_CLOUD_HEIGHT : minecraft.gameRenderer.mainCamera().attributeProbe().getValue(EnvironmentAttributes.CLOUD_HEIGHT, partialTicks);
         double top = cloudHeight + CLOUD_BASE_HEIGHT + CLOUD_TOP_EXTENSION;
         double bottom = cloudHeight - CLOUD_BOTTOM_EXTENSION;
-
+    //~}
         if (legacy$lastRelativeCameraPos == 0) {
             if (cameraY > top + CLOUD_STATE_HYSTERESIS) {
                 return 1;

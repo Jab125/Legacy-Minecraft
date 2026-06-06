@@ -16,6 +16,7 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.gamerules.GameRule;
 import net.minecraft.world.level.gamerules.GameRuleType;
 import net.minecraft.world.level.gamerules.GameRules;
+import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.base.client.SimpleLayoutRenderable;
 import wily.factoryapi.base.client.UIDefinition;
 import wily.factoryapi.base.network.CommonNetwork;
@@ -99,7 +100,7 @@ public class GameHostOptionsScreen extends PanelVListScreen {
     }
 
     protected Button createTeleportButton(boolean toPlayer, Component component) {
-        return new LegacyButton(component, b1 -> minecraft.setScreen(new HostOptionsScreen(title) {
+        return new LegacyButton(component, b1 -> FactoryAPIClient.setScreen(new HostOptionsScreen(title) {
             @Override
             protected void addHostOptionsButton() {
             }

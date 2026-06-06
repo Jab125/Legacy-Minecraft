@@ -26,6 +26,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import wily.factoryapi.FactoryAPIClient;
 import wily.legacy.client.ControlType;
 import wily.legacy.client.controller.BindingState;
 import wily.legacy.client.controller.Controller;
@@ -107,7 +108,7 @@ public abstract class BookEditScreenMixin extends Screen implements Controller.E
     @Override
     public void onClose() {
         if (!pages.equals(initialPages)) {
-            minecraft.setScreen(new ConfirmationScreen(this, EXIT_BOOK, EXIT_BOOK_MESSAGE, b -> minecraft.setScreen(null)));
+            FactoryAPIClient.setScreen(new ConfirmationScreen(this, EXIT_BOOK, EXIT_BOOK_MESSAGE, b -> FactoryAPIClient.setScreen(null)));
         } else super.onClose();
     }
 
@@ -126,9 +127,9 @@ public abstract class BookEditScreenMixin extends Screen implements Controller.E
         this.addRenderableWidget(this.page);
         this.updatePageContent();
         this.numberOfPages = this.getPageNumberMessage();
-        this.addRenderableWidget(Button.builder(Component.translatable("book.signButton"), button -> this.minecraft.setScreen(this.signScreen)).bounds(this.width / 2 - 108, panel.y + panel.height + 5, 100, 20).build());
+        this.addRenderableWidget(Button.builder(Component.translatable("book.signButton"), button -> FactoryAPIClient.setScreen(this.signScreen)).bounds(this.width / 2 - 108, panel.y + panel.height + 5, 100, 20).build());
         this.addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (button) -> {
-            this.minecraft.setScreen(null);
+            FactoryAPIClient.setScreen(null);
             this.saveChanges();
         }).bounds(this.width / 2 + 8, panel.y + panel.height + 5, 100, 20).build());
 

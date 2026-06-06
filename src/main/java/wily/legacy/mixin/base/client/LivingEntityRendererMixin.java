@@ -14,6 +14,9 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+//? if >=26.2 {
+import net.minecraft.world.entity.EntityTypes;
+//?}
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Final;
 import wily.factoryapi.base.client.FactoryRenderStateExtension;
@@ -67,7 +70,7 @@ public abstract class LivingEntityRendererMixin extends EntityRenderer<LivingEnt
 
     @Inject(method = "extractRenderState(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;F)V", at = @At("TAIL"))
     private void extractRenderState(LivingEntity entity, LivingEntityRenderState renderState, float f, CallbackInfo ci) {
-        if (LegacyOptions.legacyDrownedHeight.get() && entity.getType() == EntityType.DROWNED) renderState.scale *= DROWNED_SCALE;
+        if (LegacyOptions.legacyDrownedHeight.get() && entity.getType() == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.DROWNED) renderState.scale *= DROWNED_SCALE;
     }
 
     @Inject(method = "submit(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;)V", at = @At("HEAD"), cancellable = true)

@@ -36,6 +36,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
+//? if >=26.2 {
+import net.minecraft.world.entity.EntityTypes;
+//?}
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
@@ -112,9 +115,11 @@ public abstract class MinecraftMixin {
     @Shadow
     @Final
     public Font font;
-    @Shadow
+    //? if <26.2 {
+    /*@Shadow
     @Nullable
     public Screen screen;
+    *///?}
     @Shadow
     @Nullable
     public HitResult hitResult;
@@ -143,8 +148,6 @@ public abstract class MinecraftMixin {
     @Final
     private SoundManager soundManager;
 
-    @Shadow
-    public abstract void setScreen(@Nullable Screen screen);
 
     @Shadow
     public abstract Window getWindow();
@@ -197,7 +200,7 @@ public abstract class MinecraftMixin {
     private void handleKeybinds(CallbackInfo ci) {
         if (legacy$shieldPauseSyncCooldown > 0) legacy$shieldPauseSyncCooldown--;
         legacy$handleDropKey();
-        if (player != null && screen == null && player.isUsingItem() && player.getUseItem().getItem() instanceof ShieldItem && LegacyGameRules.getSidedBooleanGamerule(player, LegacyGameRules.LEGACY_SHIELD_CONTROLS) && (options.keyAttack.isDown() || options.keyUse.isDown())) {
+        if (player != null && FactoryAPIClient.getScreen() == null && player.isUsingItem() && player.getUseItem().getItem() instanceof ShieldItem && LegacyGameRules.getSidedBooleanGamerule(player, LegacyGameRules.LEGACY_SHIELD_CONTROLS) && (options.keyAttack.isDown() || options.keyUse.isDown())) {
             legacy$pauseShield();
         }
         if (!options.keyUse.isDown()) lastPlayerBlockUsePos = null;
@@ -256,7 +259,7 @@ public abstract class MinecraftMixin {
 
     @Unique
     private boolean legacy$triesInvalidPainting(ItemStack item, InteractionResult result) {
-        return item.getItem() instanceof HangingEntityItemAccessor hanging && hanging.getType() == EntityType.PAINTING && (result instanceof InteractionResult.Fail || result instanceof InteractionResult.Success);
+        return item.getItem() instanceof HangingEntityItemAccessor hanging && hanging.getType() == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.PAINTING && (result instanceof InteractionResult.Fail || result instanceof InteractionResult.Success);
     }
 
     @Unique
@@ -340,7 +343,7 @@ public abstract class MinecraftMixin {
         while (options.keyDrop.consumeClick()) {
             clicked = true;
         }
-        if (screen == null && !player.isSpectator() && !down && (legacy$dropKeyDown || clicked)) {
+        if (FactoryAPIClient.getScreen() == null && !player.isSpectator() && !down && (legacy$dropKeyDown || clicked)) {
             player.drop(hasControlDown());
         }
         legacy$dropKeyDown = down;
@@ -406,21 +409,26 @@ public abstract class MinecraftMixin {
         legacy$suppressedUseAnimationHand = null;
     }
 
-    @Inject(method = "startUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;useItemOn(Lnet/minecraft/client/player/LocalPlayer;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/BlockHitResult;)Lnet/minecraft/world/InteractionResult;"))
-    private void startUseItemCreativeBlockPlacing(CallbackInfo ci, @Local InteractionHand hand, @Local BlockHitResult hit) {
+    @WrapOperation(method = "startUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;useItemOn(Lnet/minecraft/client/player/LocalPlayer;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/BlockHitResult;)Lnet/minecraft/world/InteractionResult;"))
+    private InteractionResult startUseItemCreativeBlockPlacing(MultiPlayerGameMode instance, LocalPlayer player, InteractionHand hand, BlockHitResult hit, Operation<InteractionResult> original) {
+        InteractionResult toReturn = original.call(instance, player, hand, hit);
         if (LegacyOptions.legacyCreativeBlockPlacing.get() && rightClickDelay == 4 && player.getAbilities().instabuild && ControlTooltip.canPlace(self(), player.getItemInHand(hand), hand)) {
             if (lastPlayerBlockUsePos == null) lastPlayerBlockUsePos = player.position();
             rightClickDelay = 0;
         }
         if (level.getBlockState(hit.getBlockPos()).getBlock() instanceof BedBlock || player.getAbilities().flying && player.isSprinting())
             rightClickDelay = -1;
+        return toReturn;
     }
 
-    @Inject(method = "startUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;useItemOn(Lnet/minecraft/client/player/LocalPlayer;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/BlockHitResult;)Lnet/minecraft/world/InteractionResult;", shift = At.Shift.AFTER))
-    private void rememberConduitRotation(CallbackInfo ci, @Local InteractionHand hand, @Local BlockHitResult hit) {
-        if (!(player.getItemInHand(hand).getItem() instanceof BlockItem blockItem) || blockItem.getBlock() != Blocks.CONDUIT) return;
+    @WrapOperation(method = "startUseItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;useItemOn(Lnet/minecraft/client/player/LocalPlayer;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/BlockHitResult;)Lnet/minecraft/world/InteractionResult;"))
+    private InteractionResult rememberConduitRotation(MultiPlayerGameMode instance, LocalPlayer player, InteractionHand hand, BlockHitResult hit, Operation<InteractionResult> original) {
+        InteractionResult toReturn = original.call(instance, player, hand, hit);
+        if (!(player.getItemInHand(hand).getItem() instanceof BlockItem blockItem) || blockItem.getBlock() != Blocks.CONDUIT)
+            return null;
         BlockPlaceContext context = new BlockPlaceContext(player, hand, player.getItemInHand(hand), hit);
         if (level.getBlockState(context.getClickedPos()).is(Blocks.CONDUIT)) ConduitRotationCache.remember(level, context.getClickedPos(), player.getYRot());
+        return toReturn;
     }
 
     @ModifyExpressionValue(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isSleeping()Z"))
@@ -433,7 +441,7 @@ public abstract class MinecraftMixin {
         return original || LegacyOptions.unfocusedInputs.get();
     }
 
-    @Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sounds/SoundManager;updateSource(Lnet/minecraft/client/Camera;)V"))
+    @WrapOperation(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sounds/SoundManager;updateSource(Lnet/minecraft/client/Camera;)V"))
     public void runSoundTick(boolean bl, CallbackInfo ci) {
         float deltaTicks = FactoryAPIClient.getPartialTick();
         realtimeDeltaTickResidual += deltaTicks;
@@ -500,7 +508,7 @@ public abstract class MinecraftMixin {
     private void openToastAdvancement(AdvancementToast toast) {
         FactoryAPIClient.getToasts().clear();
         LegacyAdvancementsScreen screen = new LegacyAdvancementsScreen(null);
-        setScreen(screen);
+        FactoryAPIClient.setScreen(screen);
         screen.focusRenderable(r -> r instanceof LegacyAdvancementsScreen.AdvancementButton b && b.id.equals(AdvancementToastAccessor.of(toast).getAdvancementId()), i -> screen.getTabList().tabButtons.get(i).onPress(new KeyEvent(InputConstants.KEY_RETURN, 0, 0)));
     }
 
@@ -540,7 +548,8 @@ public abstract class MinecraftMixin {
     private void resizeDisplay(CallbackInfo ci) {
         LegacyTipManager.rebuildActual();
         LegacyTipManager.rebuildActualLoading();
-        gui.getChat().rescaleChat();
+        //~ if >=26.2 'gui.getChat()' -> 'gui.hud.getChat()'
+        gui.hud.getChat().rescaleChat();
     }
 
     @ModifyArg(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;ZZ)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;setScreenAndShow(Lnet/minecraft/client/gui/screens/Screen;)V"))
@@ -553,16 +562,18 @@ public abstract class MinecraftMixin {
         return disconnectScreen instanceof LegacyLoadingScreen ? disconnectScreen : arg;
     }
 
-    @Inject(method = "setScreen", at = @At("HEAD"), cancellable = true)
+    // TODO 26.2
+    //? if <26.2 {
+    /*@Inject(method = "setScreen", at = @At("HEAD"), cancellable = true)
     public void setScreen(Screen screen, CallbackInfo ci) {
         oldScreen = this.screen;
         Screen replacement = Legacy4JClient.getReplacementScreen(screen);
         if (replacement != screen) {
             ci.cancel();
-            setScreen(replacement);
+            FactoryAPIClient.setScreen(replacement);
             return;
         }
-        if (Minecraft.getInstance().screen == null && Minecraft.getInstance().level != null && screen != null && !(screen instanceof LegacyLoading) && (screen instanceof PauseScreen || !screen.isPauseScreen()))
+        if (FactoryAPIClient.getScreen() == null && Minecraft.getInstance().level != null && screen != null && !(screen instanceof LegacyLoading) && (screen instanceof PauseScreen || !screen.isPauseScreen()))
             LegacySoundUtil.playSimpleUISound(SoundEvents.UI_BUTTON_CLICK.value(), 1.0f);
         if (screen == null && level != null) {
             LegacyGuiElements.lastGui = Util.getMillis();
@@ -570,6 +581,7 @@ public abstract class MinecraftMixin {
             ControlTooltip.Renderer.GUI_EVENT.invoker.accept(gui, ControlTooltip.Event.of(gui).getControlTooltips());
         }
     }
+    *///?}
 
     @WrapWithCondition(method = "runTick(Z)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sounds/SoundManager;pauseAllExcept([Lnet/minecraft/sounds/SoundSource;)V"))
     public boolean pauseGame(SoundManager instance, SoundSource[] soundSources) {
@@ -582,11 +594,14 @@ public abstract class MinecraftMixin {
         return false;
     }
 
-    @ModifyVariable(method = "buildInitialScreens", at = @At(value = "STORE"))
+    // TODO 26.2
+    //? if <26.2 {
+    /*@ModifyVariable(method = "buildInitialScreens", at = @At(value = "STORE"))
     private Runnable addInitialScreens(Runnable run) {
         return () -> {
             run.run();
-            if (screen != null) setScreen(LegacyRenderUtil.getInitialScreen());
+            if (screen != null) FactoryAPIClient.setScreen(LegacyRenderUtil.getInitialScreen());
         };
     }
+    *///?}
 }

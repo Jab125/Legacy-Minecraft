@@ -34,6 +34,9 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.EntityType;
+//? if >=26.2 {
+import net.minecraft.world.entity.EntityTypes;
+//?}
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -197,7 +200,8 @@ public class LegacyUIElementTypes {
         UIDefinitionManager.ElementType.parseElements(uiDefinition, elementName, element, UIDefinitionManager.ElementType::parseNumber, "x", "y", "width", "height", "scale");
         uiDefinition.addStatic(UIDefinition.createAfterInit(a -> accessorFunction.apply(a).addRenderable(elementName, a.createModifiableRenderable(elementName, (GuiGraphicsExtractor, i, j, f) -> {
             ArmorStandRenderState state = createArmorStandState(a.getElementValue(elementName + ".fakeItem", ItemStack.EMPTY, ItemStack.class));
-            Minecraft.getInstance().gameRenderer.getLighting().setupFor(Lighting.Entry.ENTITY_IN_UI);
+            //~ if >=26.2 '.getLighting()' -> '.lighting()'
+            Minecraft.getInstance().gameRenderer.lighting().setupFor(Lighting.Entry.ENTITY_IN_UI);
             int x = a.getInteger(elementName + ".x", 0);
             int y = a.getInteger(elementName + ".y", 0);
             int width = a.getInteger(elementName + ".width", 0);
@@ -367,7 +371,7 @@ public class LegacyUIElementTypes {
 
     private static ArmorStandRenderState createArmorStandState(ItemStack armor) {
         ArmorStandRenderState state = new ArmorStandRenderState();
-        state.entityType = EntityType.ARMOR_STAND;
+        state.entityType = /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.ARMOR_STAND;
         state.boundingBoxWidth = 0.5F;
         state.boundingBoxHeight = 1.975F;
         state.eyeHeight = 1.7775F;

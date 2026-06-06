@@ -7,6 +7,7 @@ import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
+import wily.factoryapi.FactoryAPIClient;
 import wily.legacy.client.LegacyOptions;
 
 import java.util.Collections;
@@ -30,7 +31,7 @@ public class RenderableVListScreen extends LegacyScreen implements RenderableVLi
     }
 
     public static Button.Builder openScreenButton(Component component, Supplier<Screen> supplier) {
-        return Button.builder(component, button -> Minecraft.getInstance().setScreen(supplier.get()));
+        return Button.builder(component, button -> FactoryAPIClient.setScreen(supplier.get()));
     }
 
     @Override

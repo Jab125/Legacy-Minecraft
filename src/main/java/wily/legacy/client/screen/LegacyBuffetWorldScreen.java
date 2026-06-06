@@ -12,6 +12,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
+import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.base.client.FactoryGuiGraphics;
 import wily.factoryapi.util.FactoryScreenUtil;
 import wily.legacy.client.LegacyBiomeOverride;
@@ -26,7 +27,7 @@ public class LegacyBuffetWorldScreen extends PanelVListScreen {
 
     public LegacyBuffetWorldScreen(CreateWorldScreen screen, HolderLookup.RegistryLookup<Biome> biomeGetter, Consumer<Holder<Biome>> consumer) {
         super(screen, s -> Panel.centered(s, () -> 282, () -> Math.min(248, s.height)), Component.translatable("createWorld.customize.buffet.title"));
-        parent = Minecraft.getInstance().screen instanceof WorldMoreOptionsScreen s ? s : screen;
+        parent = FactoryAPIClient.getScreen() instanceof WorldMoreOptionsScreen s ? s : screen;
         renderableVList.layoutSpacing(l -> 0);
         this.applySettings = consumer;
         biomeGetter.listElements().forEach(this::addBiome);

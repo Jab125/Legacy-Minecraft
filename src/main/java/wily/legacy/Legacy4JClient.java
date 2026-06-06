@@ -27,6 +27,9 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.core.*;
 import net.minecraft.world.InteractionHand;
+//? if >=26.2 {
+import net.minecraft.world.entity.EntityTypes;
+//?}
 import net.minecraft.world.entity.raid.Raid;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.*;
@@ -210,7 +213,7 @@ public class Legacy4JClient {
                 info.copyFrom(i);
         });
         LeaderboardsScreen.refreshStatsBoards(minecraft);
-        if (minecraft.screen instanceof LeaderboardsScreen s && LeaderboardsScreen.statsBoards.get(s.selectedStatBoard).statsList.isEmpty())
+        if (FactoryAPIClient.getScreen() instanceof LeaderboardsScreen s && LeaderboardsScreen.statsBoards.get(s.selectedStatBoard).statsList.isEmpty())
             minecraft.executeIfPossible(() -> s.changeStatBoard(false));
         if (minecraft.player != null) {
             LegacyOptions.classicCrafting.set(LegacyOptions.classicCrafting.get());
@@ -240,7 +243,7 @@ public class Legacy4JClient {
         else if (screen instanceof DisconnectedScreen s)
             return ConfirmationScreen.createInfoScreen(getReplacementScreen(DisconnectedScreenAccessor.of(s).getParent()), s.getTitle(), DisconnectedScreenAccessor.of(s).getReason());
         else if (screen instanceof AlertScreen s) {
-            return new ConfirmationScreen(Minecraft.getInstance().screen, ConfirmationScreen::getPanelWidth, () -> LegacyOptions.getUIMode().isSD() ? 50 : 75, s.getTitle(), s.messageText, LegacyScreen::onClose) {
+            return new ConfirmationScreen(FactoryAPIClient.getScreen(), ConfirmationScreen::getPanelWidth, () -> LegacyOptions.getUIMode().isSD() ? 50 : 75, s.getTitle(), s.messageText, LegacyScreen::onClose) {
                 protected void addButtons() {
                     renderableVList.addRenderable(okButton = Button.builder(Component.translatable("gui.ok"), b -> s.callback.run()).bounds(panel.x + 15, panel.y + panel.height - 30, 200, 20).build());
                 }
@@ -254,9 +257,9 @@ public class Legacy4JClient {
                 hideNextExperimentalWorldWarning = false;
                 Minecraft minecraft = Minecraft.getInstance();
                 minecraft.execute(() -> BackupConfirmScreenAccessor.of(s).proceed(false, false));
-                return minecraft.screen;
+                return FactoryAPIClient.getScreen();
             }
-            return new ConfirmationScreen(Minecraft.getInstance().screen, ConfirmationScreen::getPanelWidth, () -> (LegacyOptions.getUIMode().isSD() ? 94 : 141) + (BackupConfirmScreenAccessor.of(s).hasCacheErase() ? LegacyOptions.getUIMode().isSD() ? 11 : 14 : 0), s.getTitle(), BackupConfirmScreenAccessor.of(s).getDescription(), LegacyScreen::onClose) {
+            return new ConfirmationScreen(FactoryAPIClient.getScreen(), ConfirmationScreen::getPanelWidth, () -> (LegacyOptions.getUIMode().isSD() ? 94 : 141) + (BackupConfirmScreenAccessor.of(s).hasCacheErase() ? LegacyOptions.getUIMode().isSD() ? 11 : 14 : 0), s.getTitle(), BackupConfirmScreenAccessor.of(s).getDescription(), LegacyScreen::onClose) {
                 boolean eraseCache = false;
 
                 protected void addButtons() {
@@ -309,40 +312,40 @@ public class Legacy4JClient {
             }
         }
 
-        if (minecraft.screen instanceof ReplaceableScreen r && r.canReplace()) minecraft.setScreen(r.getReplacement());
+        if (FactoryAPIClient.getScreen() instanceof ReplaceableScreen r && r.canReplace()) FactoryAPIClient.setScreen(r.getReplacement());
 
         while (keyCrafting.consumeClick()) {
             if (minecraft.player != null && (minecraft.player.isCreative() || minecraft.player.isSpectator())) {
-                if (minecraft.player.isSpectator()) minecraft.gui.getSpectatorGui().onHotbarActionKeyPressed();
-                else minecraft.setScreen(CreativeModeScreen.getActualCreativeScreenInstance(minecraft));
+                if (minecraft.player.isSpectator()) FactoryAPIClient.getGuiOrHud(minecraft).getSpectatorGui().onHotbarActionKeyPressed();
+                else FactoryAPIClient.setScreen(CreativeModeScreen.getActualCreativeScreenInstance(minecraft));
                 continue;
             }
             if (minecraft.hitResult instanceof BlockHitResult r && minecraft.level.getBlockState(r.getBlockPos()).getBlock() instanceof CraftingTableBlock) {
                 minecraft.gameMode.useItemOn(minecraft.player, InteractionHand.MAIN_HAND, r);
             } else if (LegacyOptions.hasClassicCrafting()) {
                 minecraft.getTutorial().onOpenInventory();
-                minecraft.setScreen(new InventoryScreen(minecraft.player));
+                FactoryAPIClient.setScreen(new InventoryScreen(minecraft.player));
             } else if (LegacyOptions.hasMixedCrafting()) {
-                minecraft.setScreen(MixedCraftingScreen.playerCraftingScreen(minecraft.player));
+                FactoryAPIClient.setScreen(MixedCraftingScreen.playerCraftingScreen(minecraft.player));
             } else if (hasModOnServer()) {
                 CommonNetwork.sendToServer(ServerOpenClientMenuPayload.playerCrafting());
             } else {
                 minecraft.getTutorial().onOpenInventory();
-                minecraft.setScreen(new InventoryScreen(minecraft.player));
+                FactoryAPIClient.setScreen(new InventoryScreen(minecraft.player));
             }
         }
         while (keyHostOptions.consumeClick()) {
-            minecraft.setScreen(new HostOptionsScreen());
+            FactoryAPIClient.setScreen(new HostOptionsScreen());
         }
         while (keyLegacy4JSettings.consumeClick()) {
-            minecraft.setScreen(new Legacy4JSettingsScreen(Minecraft.getInstance().screen));
+            FactoryAPIClient.setScreen(new Legacy4JSettingsScreen(FactoryAPIClient.getScreen()));
         }
         boolean left;
         while ((left = keyCycleHeldLeft.consumeClick()) || keyCycleHeldRight.consumeClick()) {
             if (minecraft.player != null) {
                 if (minecraft.player.isSpectator()) {
-                    if (minecraft.gui.getSpectatorGui().isMenuActive())
-                        minecraft.gui.getSpectatorGui().onMouseScrolled(left ? -1 : 1);
+                    if (FactoryAPIClient.getGuiOrHud(minecraft).getSpectatorGui().isMenuActive())
+                        FactoryAPIClient.getGuiOrHud(minecraft).getSpectatorGui().onMouseScrolled(left ? -1 : 1);
                 } else {
                     minecraft.player.getInventory().setSelectedSlot(Stocker.cyclic(0, minecraft.player.getInventory().getSelectedSlot() + (left ? -1 : 1), 9));
                 }
@@ -377,7 +380,7 @@ public class Legacy4JClient {
     }
 
     public static void postTick(Minecraft minecraft) {
-        if (minecraft.level != null && minecraft.screen == null && LegacyOptions.hints.get() && LegacyTipManager.getActualTip() == null) {
+        if (minecraft.level != null && FactoryAPIClient.getScreen() == null && LegacyOptions.hints.get() && LegacyTipManager.getActualTip() == null) {
             HitResult hit = minecraft.hitResult;
             if (hit instanceof BlockHitResult blockHitResult) {
                 BlockState state = minecraft.level.getBlockState(blockHitResult.getBlockPos());
@@ -438,7 +441,7 @@ public class Legacy4JClient {
             return hasModOnServer() && gameRules != null && gameRules.get(key);
         });
         ControlType.UpdateEvent.EVENT.register((last, actual) -> {
-            UIAccessor uiAccessor = Minecraft.getInstance().screen == null ? FactoryScreenUtil.getGuiAccessor() : FactoryScreenUtil.getScreenAccessor();
+            UIAccessor uiAccessor = FactoryAPIClient.getScreen() == null ? FactoryScreenUtil.getGuiAccessor() : FactoryScreenUtil.getScreenAccessor();
             uiAccessor.reloadUI();
             LegacyTipManager.rebuildActual();
         });
@@ -589,7 +592,10 @@ public class Legacy4JClient {
         FactoryRenderStateExtension.types.add(new FactoryRenderStateExtension.Type<>(VillagerRenderState.class, LegacyVillagerRenderState::new));
 
         FactoryAPIClient.registerRenderLayer(r -> {
-            if (r.getEntityRenderer(EntityType.GHAST) instanceof GhastRenderer renderer) {
+            if (r.getEntityRenderer(
+                    //$ if >=26.2 'EntityTypes' else 'EntityType'
+                    EntityTypes
+                            .GHAST) instanceof GhastRenderer renderer) {
                 r.register(renderer, new EyesLayer<>(renderer) {
                     @Override
                     public void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int i, GhastRenderState entityRenderState, float f, float g) {
@@ -603,7 +609,10 @@ public class Legacy4JClient {
                     }
                 });
             }
-            if (r.getEntityRenderer(EntityType.DROWNED) instanceof DrownedRenderer renderer) {
+            if (r.getEntityRenderer(
+                    //$ if >=26.2 'EntityTypes' else 'EntityType'
+                    EntityTypes
+                            .DROWNED) instanceof DrownedRenderer renderer) {
                 r.register(renderer, new EyesLayer<>(renderer) {
                     @Override
                     public RenderType renderType() {
@@ -641,7 +650,10 @@ public class Legacy4JClient {
     }
 
     public static void updateChunks() {
-        FactoryAPIClient.SECURE_EXECUTOR.execute(() -> Minecraft.getInstance().levelRenderer.allChanged());
+        FactoryAPIClient.SECURE_EXECUTOR.execute(() -> Minecraft.getInstance().
+                //$ if >=26.2 'levelExtractor' else 'levelRenderer'
+                levelExtractor
+                .allChanged());
     }
 
     public static void updateSkyShape() {
@@ -694,8 +706,8 @@ public class Legacy4JClient {
 
     public static void onClientPlayerInfoChange() {
         Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.screen instanceof HostOptionsScreen s) s.reloadPlayerButtons();
-        else if (minecraft.screen instanceof LeaderboardsScreen s) {
+        if (FactoryAPIClient.getScreen() instanceof HostOptionsScreen s) s.reloadPlayerButtons();
+        else if (FactoryAPIClient.getScreen() instanceof LeaderboardsScreen s) {
             s.rebuildRenderableVList(minecraft);
             UIAccessor.of(s).reloadUI();
         }

@@ -6,12 +6,23 @@ import com.mojang.blaze3d.platform.CompareOp;
 import com.mojang.blaze3d.shaders.UniformType;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
+//? if >=26.2 {
+import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.blaze3d.pipeline.BindGroupLayout;
+//?}
 import net.minecraft.client.renderer.RenderPipelines;
 import wily.factoryapi.mixin.base.RenderPipelinesAccessor;
 import wily.legacy.Legacy4J;
 
 public class LegacyRenderPipelines {
-    public static final RenderPipeline LEGACY_SKY = RenderPipelinesAccessor.register(RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET).withLocation(Legacy4J.createModLocation("pipeline/sky")).withVertexShader("core/sky").withFragmentShader("core/sky").withVertexFormat(DefaultVertexFormat.POSITION, VertexFormat.Mode.QUADS).build());
+    public static final RenderPipeline LEGACY_SKY = RenderPipelinesAccessor.register(RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET).withLocation(Legacy4J.createModLocation("pipeline/sky")).withVertexShader("core/sky").withFragmentShader("core/sky")
+            //? if >=26.2 {
+            .withVertexBinding(0, DefaultVertexFormat.POSITION)
+            .withPrimitiveTopology(PrimitiveTopology.QUADS)
+            //?} else {
+            /*.withVertexFormat(DefaultVertexFormat.POSITION, VertexFormat.Mode.QUADS)
+            *///?}
+            .build());
     public static final RenderPipeline LEGACY_FLAT_CLOUDS = RenderPipelinesAccessor.register(
             RenderPipeline.builder(RenderPipelines.CLOUDS_SNIPPET)
                     .withLocation(Legacy4J.createModLocation("pipeline/flat_clouds"))
@@ -66,10 +77,16 @@ public class LegacyRenderPipelines {
     public static final RenderPipeline GAMMA = RenderPipelinesAccessor.register(
             RenderPipeline.builder(RenderPipelines.POST_PROCESSING_SNIPPET)
                     .withLocation(Legacy4J.createModLocation("pipeline/gamma"))
-                    .withSampler("InSampler")
+                    //? if <26.2 {
+                    /*.withSampler("InSampler")
+                    *///?} else {
+                    .withBindGroupLayout(BindGroupLayout.builder().withSampler("Sampler1").withUniform("GammaInfo", UniformType.UNIFORM_BUFFER).build())
+                    //?}
                     .withVertexShader("core/screenquad")
                     .withFragmentShader(Legacy4J.createModLocation("core/gamma"))
-                    .withUniform("GammaInfo", UniformType.UNIFORM_BUFFER)
+                    //? if <26.2 {
+                    /*.withUniform("GammaInfo", UniformType.UNIFORM_BUFFER)
+                    *///?}
                     .build()
     );
 }

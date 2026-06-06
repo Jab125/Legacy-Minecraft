@@ -5,6 +5,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import wily.factoryapi.FactoryAPIClient;
 import wily.legacy.client.CommonColor;
 import wily.legacy.client.LegacyOptions;
 import wily.legacy.client.screen.ConfirmationScreen;
@@ -100,7 +101,7 @@ public class CreateCustomSkinPackScreen extends ConfirmationScreen {
             iconPath = selected;
         } catch (Exception ex) {
             if (minecraft != null)
-                minecraft.setScreen(ConfirmationScreen.createInfoScreen(this, title, Component.literal(errorText(ex))));
+                FactoryAPIClient.setScreen(ConfirmationScreen.createInfoScreen(this, title, Component.literal(errorText(ex))));
         }
     }
 
@@ -112,7 +113,7 @@ public class CreateCustomSkinPackScreen extends ConfirmationScreen {
             CustomSkinPackStore.enableResourcePack(minecraft);
             SkinsClientBootstrap.reloadChangeSkinScreen(minecraft, rootParent == null ? parent : rootParent, targetPackId, null, reorder);
         } catch (IOException ex) {
-            minecraft.setScreen(ConfirmationScreen.createInfoScreen(this, reorder ? EDIT_TITLE : title, Component.literal(errorText(ex))));
+            FactoryAPIClient.setScreen(ConfirmationScreen.createInfoScreen(this, reorder ? EDIT_TITLE : title, Component.literal(errorText(ex))));
         }
     }
 

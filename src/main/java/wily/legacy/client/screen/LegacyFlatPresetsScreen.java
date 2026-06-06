@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorPreset;
+import wily.factoryapi.FactoryAPIClient;
 import wily.legacy.Legacy4J;
 import wily.legacy.client.CommonColor;
 import wily.legacy.util.LegacySprites;
@@ -46,9 +47,9 @@ public class LegacyFlatPresetsScreen extends PanelVListScreen {
 
                     @Override
                     public void onPress(InputWithModifiers input) {
-                        minecraft.setScreen(new ConfirmationScreen(LegacyFlatPresetsScreen.this, Component.translatable("legacy.menu.create_flat_world.load_preset"), Component.translatable("legacy.menu.create_flat_world.load_preset_message"), b -> {
+                        FactoryAPIClient.setScreen(new ConfirmationScreen(LegacyFlatPresetsScreen.this, Component.translatable("legacy.menu.create_flat_world.load_preset"), Component.translatable("legacy.menu.create_flat_world.load_preset_message"), b -> {
                             applyPreset.accept(holder);
-                            minecraft.setScreen(parent);
+                            FactoryAPIClient.setScreen(parent);
                         }));
                     }
                 });

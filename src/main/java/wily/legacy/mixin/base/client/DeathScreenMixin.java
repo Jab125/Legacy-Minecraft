@@ -19,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import wily.factoryapi.FactoryAPIClient;
 import wily.legacy.client.CommonColor;
 import wily.legacy.client.screen.ControlTooltip;
 import wily.legacy.client.screen.ExitConfirmationScreen;
@@ -75,7 +76,7 @@ public abstract class DeathScreenMixin extends Screen implements ControlTooltip.
         if (this.hardcore) {
             ExitConfirmationScreen.exit(minecraft, true);
         } else {
-            this.minecraft.setScreen(new ExitConfirmationScreen(this));
+            FactoryAPIClient.setScreen(new ExitConfirmationScreen(this));
         }
     }
 

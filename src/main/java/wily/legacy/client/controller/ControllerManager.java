@@ -20,6 +20,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import org.lwjgl.glfw.GLFW;
+import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.FactoryEvent;
 import wily.factoryapi.base.Stocker;
 import wily.factoryapi.base.client.UIAccessor;
@@ -119,7 +120,7 @@ public class ControllerManager {
 
     public void setRawPointerPos(double x, double y, boolean onlyVirtual) {
         Window window = minecraft.getWindow();
-        if (minecraft.screen instanceof LegacyMenuAccess<?> a && LegacyOptions.limitCursor.get()) {
+        if (FactoryAPIClient.getScreen() instanceof LegacyMenuAccess<?> a && LegacyOptions.limitCursor.get()) {
             ScreenRectangle rect = a.getMenuRectangleLimit();
             double scaleX = getGuiScaleX();
             double scaleY = getGuiScaleY();
@@ -193,18 +194,18 @@ public class ControllerManager {
                 );
 
             if (state.is(ControllerBinding.START) && state.justPressed)
-                if (minecraft.screen == null) minecraft.pauseGame(false);
-                else if (minecraft.screen instanceof AbstractContainerScreen<?> || minecraft.screen instanceof PauseScreen)
-                    minecraft.screen.onClose();
+                if (FactoryAPIClient.getScreen() == null) minecraft.pauseGame(false);
+                else if (FactoryAPIClient.getScreen() instanceof AbstractContainerScreen<?> || FactoryAPIClient.getScreen() instanceof PauseScreen)
+                    FactoryAPIClient.getScreen().onClose();
 
             s:
-            if (minecraft.screen != null) {
+            if (FactoryAPIClient.getScreen() != null) {
                 if (state.pressed && state.canClick()) {
                     minecraft.setLastInputType(InputType.KEYBOARD_ARROW);
-                    minecraft.screen.afterKeyboardAction();
+                    FactoryAPIClient.getScreen().afterKeyboardAction();
                 }
-                Controller.Event.of(minecraft.screen).bindingStateTick(state);
-                if (minecraft.screen == null) break s;
+                Controller.Event.of(FactoryAPIClient.getScreen()).bindingStateTick(state);
+                if (FactoryAPIClient.getScreen() == null) break s;
 
                 if (!isCursorDisabled) {
                     double sensitivity = LegacyOptions.interfaceSensitivity.get() * 2;
@@ -244,32 +245,32 @@ public class ControllerManager {
                                 minecraft.mouseHandler.ypos() + moveY * getGuiScaleY());
                     }
 
-                    if (minecraft.screen instanceof LegacyMenuAccess<?> menu) {
+                    if (FactoryAPIClient.getScreen() instanceof LegacyMenuAccess<?> menu) {
                         if (state.is(ControllerBinding.LEFT_STICK) && state.released)
                             centerPointerOnHovered(menu);
                     }
 
-                    if (state.is(ControllerBinding.LEFT_TRIGGER) && state.justPressed && minecraft.screen instanceof LegacyMenuAccess<?> m && m.getMenu().getCarried().getCount() > 1) {
-                        if (minecraft.screen.isDragging()) {
-                            minecraft.screen.mouseReleased(new MouseButtonEvent(getPointerX(), getPointerY(), new MouseButtonInfo(0, 0)));
-                            minecraft.screen.setDragging(false);
+                    if (state.is(ControllerBinding.LEFT_TRIGGER) && state.justPressed && FactoryAPIClient.getScreen() instanceof LegacyMenuAccess<?> m && m.getMenu().getCarried().getCount() > 1) {
+                        if (FactoryAPIClient.getScreen().isDragging()) {
+                            FactoryAPIClient.getScreen().mouseReleased(new MouseButtonEvent(getPointerX(), getPointerY(), new MouseButtonInfo(0, 0)));
+                            FactoryAPIClient.getScreen().setDragging(false);
                         } else {
-                            minecraft.screen.mouseClicked(getMouseEvent(0), false);
-                            minecraft.screen.mouseDragged(getMouseEvent(0), 0, 0);
-                            minecraft.screen.setDragging(true);
+                            FactoryAPIClient.getScreen().mouseClicked(getMouseEvent(0), false);
+                            FactoryAPIClient.getScreen().mouseDragged(getMouseEvent(0), 0, 0);
+                            FactoryAPIClient.getScreen().setDragging(true);
                         }
                     }
-                    if (minecraft.screen.isDragging() && (state.is(ControllerBinding.LEFT_STICK) || state.is(ControllerBinding.DPAD_DOWN) || state.is(ControllerBinding.DPAD_LEFT) || state.is(ControllerBinding.DPAD_RIGHT) || state.is(ControllerBinding.DPAD_UP)) && state.pressed)
-                        minecraft.screen.mouseDragged(getMouseEvent(0), 0, 0);
+                    if (FactoryAPIClient.getScreen().isDragging() && (state.is(ControllerBinding.LEFT_STICK) || state.is(ControllerBinding.DPAD_DOWN) || state.is(ControllerBinding.DPAD_LEFT) || state.is(ControllerBinding.DPAD_RIGHT) || state.is(ControllerBinding.DPAD_UP)) && state.pressed)
+                        FactoryAPIClient.getScreen().mouseDragged(getMouseEvent(0), 0, 0);
 
-                    if (state.is(ControllerBinding.UP_BUTTON) && state.justPressed && minecraft.screen instanceof LegacyMenuAccess<?> a && a.isMouseDragging()) {
+                    if (state.is(ControllerBinding.UP_BUTTON) && state.justPressed && FactoryAPIClient.getScreen() instanceof LegacyMenuAccess<?> a && a.isMouseDragging()) {
                         minecraft.gameMode.handleContainerInput(a.getMenu().containerId, a.getHoveredSlot().index, 0, ContainerInput.QUICK_MOVE, minecraft.player);
-                        minecraft.screen.mouseDragged(getMouseEvent(0), 0, 0);
+                        FactoryAPIClient.getScreen().mouseDragged(getMouseEvent(0), 0, 0);
                         LegacySoundUtil.playSimpleUISound(SoundEvents.UI_BUTTON_CLICK.value(), 1.0f);
                     }
-                    int mouseClick = Controller.Event.of(minecraft.screen).getBindingMouseClick(state);
+                    int mouseClick = Controller.Event.of(FactoryAPIClient.getScreen()).getBindingMouseClick(state);
                     if (mouseClick != -1 &&
-                            (!state.is(ControllerBinding.LEFT_TRIGGER) || (minecraft.screen instanceof LegacyMenuAccess<?> a && a.isOutsideClick(mouseClick)))) {
+                            (!state.is(ControllerBinding.LEFT_TRIGGER) || (FactoryAPIClient.getScreen() instanceof LegacyMenuAccess<?> a && a.isOutsideClick(mouseClick)))) {
                         isControllerSimulatingInput = true;
                         if (state.pressed && state.onceClick(true))
                             ((MouseHandlerAccessor) minecraft.mouseHandler).pressMouse(minecraft.getWindow().handle(), new MouseButtonInfo(mouseClick, 0), 1);
@@ -281,9 +282,9 @@ public class ControllerManager {
 
                 ControllerBinding<?> cursorBinding = LegacyKeyMapping.of(Legacy4JClient.keyToggleCursor).getBinding();
                 if (cursorBinding != null && state.is(cursorBinding) && state.canClick()) toggleCursor();
-                Controller.Event.of(minecraft.screen).simulateKeyAction(this, state);
+                Controller.Event.of(FactoryAPIClient.getScreen()).simulateKeyAction(this, state);
                 if (state.is(ControllerBinding.RIGHT_STICK) && state instanceof BindingState.Axis stick && Math.abs(stick.y) > Math.abs(stick.x) && state.pressed && state.canClick())
-                    minecraft.screen.mouseScrolled(getPointerX(), getPointerY()/*? if >1.20.1 {*/, 0/*?}*/, Math.signum(-stick.y));
+                    FactoryAPIClient.getScreen().mouseScrolled(getPointerX(), getPointerY()/*? if >1.20.1 {*/, 0/*?}*/, Math.signum(-stick.y));
 
                 Predicate<Predicate<BindingState.Axis>> isStickAnd = s ->
                         state.is(ControllerBinding.LEFT_STICK) && state instanceof BindingState.Axis stick && s.test(stick) &&
@@ -313,7 +314,7 @@ public class ControllerManager {
             if (LegacyKeyMapping.of(keyMapping).getBinding() == null) break;
             BindingState state = LegacyKeyMapping.of(keyMapping).getBinding().state();
             Screen screen;
-            if (this.minecraft.screen == null || (screen = this.minecraft.screen) instanceof PauseScreen/*? if >1.20.1 {*/ && !((PauseScreen) screen).showsPauseMenu()/*?}*/) {
+            if (FactoryAPIClient.getScreen() == null || (screen = FactoryAPIClient.getScreen()) instanceof PauseScreen/*? if >1.20.1 {*/ && !((PauseScreen) screen).showsPauseMenu()/*?}*/) {
                 if (state.is(ControllerBinding.START) && state.pressed) {
                     keyMapping.setDown(false);
                 } else {
@@ -332,10 +333,16 @@ public class ControllerManager {
 
         ControllerBinding<?> binding = LegacyKeyMapping.of(minecraft.options.keyScreenshot).getBinding();
         if (binding != null && binding.state().justPressed) {
-            Screenshot.grab(this.minecraft.gameDirectory, this.minecraft.getMainRenderTarget(), component -> this.minecraft.execute(() -> this.minecraft.gui.getChat().addClientSystemMessage(component)));
+            Screenshot.grab(this.minecraft.gameDirectory, this.minecraft
+                    //? if <26.2 {
+                    /*.getMainRenderTarget()
+                    *///?} else {
+                    .gameRenderer.mainRenderTarget()
+                    //?}
+                    , component -> this.minecraft.execute(() -> FactoryAPIClient.getGuiOrHud(minecraft).getChat().addClientSystemMessage(component)));
         }
 
-        if (minecraft.screen != null) Controller.Event.of(minecraft.screen).controllerTick(controller);
+        if (FactoryAPIClient.getScreen() != null) Controller.Event.of(FactoryAPIClient.getScreen()).controllerTick(controller);
         if (LegacyTipManager.getActualTip() != null) LegacyTipManager.getActualTip().controllerTick(controller);
     }
 
@@ -382,12 +389,12 @@ public class ControllerManager {
     }
 
     public boolean isHoveringWidget() {
-        return (minecraft.screen instanceof LegacyMenuAccess<?> menu && menu.findHoveredSlot() != null) || minecraft.screen.getChildAt(getPointerX(), getPointerY()).isPresent();
+        return (FactoryAPIClient.getScreen() instanceof LegacyMenuAccess<?> menu && menu.findHoveredSlot() != null) || FactoryAPIClient.getScreen().getChildAt(getPointerX(), getPointerY()).isPresent();
     }
 
     public void centerPointerOnHovered(LegacyMenuAccess<?> menu) {
         if (!menu.movePointerToSlot(menu.findHoveredSlot()))
-            minecraft.screen.getChildAt(getPointerX(), getPointerY()).ifPresent(listener -> ComponentPath.path(listener, minecraft.screen).applyFocus(true));
+            FactoryAPIClient.getScreen().getChildAt(getPointerX(), getPointerY()).ifPresent(listener -> ComponentPath.path(listener, FactoryAPIClient.getScreen()).applyFocus(true));
     }
 
     public void simulateKeyAction(Predicate<BindingState> canSimulate, int key, BindingState state) {
@@ -396,7 +403,7 @@ public class ControllerManager {
 
     public void simulateKeyAction(Predicate<BindingState> canSimulate, int key, BindingState state, boolean onlyScreen) {
         boolean clicked = state.pressed && state.canClick();
-        if (canSimulate.test(state) && (!Controller.Event.of(minecraft.screen).onceClickBindings(state) || state.released || state.onceClick(true))) {
+        if (canSimulate.test(state) && (!Controller.Event.of(FactoryAPIClient.getScreen()).onceClickBindings(state) || state.released || state.onceClick(true))) {
             simulateKeyAction(key, state, clicked, onlyScreen);
         }
     }
@@ -423,8 +430,8 @@ public class ControllerManager {
     }
 
     public void simulateScreenKeyAction(int key, boolean press) {
-        if (press) minecraft.screen.keyPressed(new KeyEvent(key, 0, 0));
-        else minecraft.screen.keyReleased(new KeyEvent(key, 0, 0));
+        if (press) FactoryAPIClient.getScreen().keyPressed(new KeyEvent(key, 0, 0));
+        else FactoryAPIClient.getScreen().keyReleased(new KeyEvent(key, 0, 0));
     }
 
     public double getGuiScaleX() {
@@ -468,7 +475,7 @@ public class ControllerManager {
     }
 
     public void tryDisableCursor() {
-        if (getCursorMode().isAlways() || minecraft.screen == null || minecraft.screen instanceof Controller.Event e && !e.disableCursorOnInit())
+        if (getCursorMode().isAlways() || FactoryAPIClient.getScreen() == null || FactoryAPIClient.getScreen() instanceof Controller.Event e && !e.disableCursorOnInit())
             return;
         disableCursor();
     }
@@ -480,7 +487,7 @@ public class ControllerManager {
 
     public void resetCursor() {
         if (!resetCursor || isCursorDisabled) return;
-        if (allowCursorAtFirstInventorySlot() && minecraft.screen instanceof LegacyMenuAccess<?> a) {
+        if (allowCursorAtFirstInventorySlot() && FactoryAPIClient.getScreen() instanceof LegacyMenuAccess<?> a) {
             for (Slot slot : a.getMenu().slots) {
                 if (slot.getContainerSlot() == 0 && (minecraft.player == null || slot.container == minecraft.player.getInventory())) {
                     a.movePointerToSlot(slot);
@@ -511,7 +518,7 @@ public class ControllerManager {
             case ALWAYS -> enableCursor();
             case NEVER -> {
                 tryDisableCursor();
-                if (minecraft.screen != null) UIAccessor.of(minecraft.screen).reloadUI();
+                if (FactoryAPIClient.getScreen() != null) UIAccessor.of(FactoryAPIClient.getScreen()).reloadUI();
             }
         }
     }

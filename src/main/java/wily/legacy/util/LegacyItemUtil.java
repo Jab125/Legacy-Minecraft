@@ -178,7 +178,8 @@ public class LegacyItemUtil {
         if (item == Items.INK_SAC) return DyeColor.BLACK;
         if (item == Items.LAPIS_LAZULI) return DyeColor.BLUE;
         if (item == Items.COCOA_BEANS) return DyeColor.BROWN;
-        if (item == Items.WHITE_DYE) return DyeColor.WHITE;
+        //? if <26.2 {
+        /*if (item == Items.WHITE_DYE) return DyeColor.WHITE;
         if (item == Items.ORANGE_DYE) return DyeColor.ORANGE;
         if (item == Items.MAGENTA_DYE) return DyeColor.MAGENTA;
         if (item == Items.LIGHT_BLUE_DYE) return DyeColor.LIGHT_BLUE;
@@ -194,6 +195,11 @@ public class LegacyItemUtil {
         if (item == Items.GREEN_DYE) return DyeColor.GREEN;
         if (item == Items.RED_DYE) return DyeColor.RED;
         if (item == Items.BLACK_DYE) return DyeColor.BLACK;
+        *///?} else {
+        for (DyeColor value : DyeColor.values()) {
+            if (Items.DYE.pick(value) == item) return value;
+        }
+        //?}
         return null;
     }
 
@@ -208,7 +214,8 @@ public class LegacyItemUtil {
     }
 
     public static Item getDyeItem(DyeColor color) {
-        return switch (color) {
+        //? if <26.2 {
+        /*return switch (color) {
             case WHITE -> Items.WHITE_DYE;
             case ORANGE -> Items.ORANGE_DYE;
             case MAGENTA -> Items.MAGENTA_DYE;
@@ -226,10 +233,14 @@ public class LegacyItemUtil {
             case RED -> Items.RED_DYE;
             case BLACK -> Items.BLACK_DYE;
         };
+        *///?} else {
+        return Items.DYE.pick(color);
+        //?}
     }
 
     public static Item getBannerItem(DyeColor color) {
-        return switch (color) {
+        //? if <26.2 {
+        /*return switch (color) {
             case WHITE -> Items.WHITE_BANNER;
             case ORANGE -> Items.ORANGE_BANNER;
             case MAGENTA -> Items.MAGENTA_BANNER;
@@ -247,6 +258,9 @@ public class LegacyItemUtil {
             case RED -> Items.RED_BANNER;
             case BLACK -> Items.BLACK_BANNER;
         };
+        *///?} else {
+        return Items.BANNER.pick(color);
+        //?}
     }
 
     public static int getPotionLevel(ItemStack stack) {

@@ -20,6 +20,7 @@ import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.LevelSummary;
 import org.jetbrains.annotations.Nullable;
+import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.FactoryAPIPlatform;
 import wily.factoryapi.base.client.FactoryGuiGraphics;
 import wily.factoryapi.base.client.UIAccessor;
@@ -83,7 +84,7 @@ public class LoadSaveScreen extends PanelBackgroundScreen {
                 return;
             }
             publishScreen.setGameType(gameTypeSlider.getObjectValue());
-            minecraft.setScreen(publishScreen);
+            FactoryAPIClient.setScreen(publishScreen);
         }, () -> publishScreen.publish);
         hostPrivileges = hasCommands(summary);
         trustPlayers = LegacyClientWorldSettings.of(summary.getSettings()).trustPlayers();
@@ -161,7 +162,7 @@ public class LoadSaveScreen extends PanelBackgroundScreen {
     public static void loadWorld(Screen screen, Minecraft minecraft, LevelStorageSource source, LevelSummary summary) {
         SaveRenderableList.resetIconCache();
         PackAlbum album = getSelectedResourceAlbum(summary);
-        PackAlbum.Selector.applyResourceChanges(minecraft, PackAlbum.getSelectedIds(minecraft.getResourcePackRepository()), album.packs(), false, () -> new WorldOpenFlows(minecraft, source)./*? if <1.20.3 {*//*loadLevel*//*?} else if <1.20.5 {*//*checkForBackupAndLoad*//*?} else {*/openWorld/*?}*/(/*? if <1.20.3 {*//*screen, *//*?}*/summary.getLevelId()/*? if >1.20.2 {*/, () -> minecraft.setScreen(screen)/*?}*/));
+        PackAlbum.Selector.applyResourceChanges(minecraft, PackAlbum.getSelectedIds(minecraft.getResourcePackRepository()), album.packs(), false, () -> new WorldOpenFlows(minecraft, source)./*? if <1.20.3 {*//*loadLevel*//*?} else if <1.20.5 {*//*checkForBackupAndLoad*//*?} else {*/openWorld/*?}*/(/*? if <1.20.3 {*//*screen, *//*?}*/summary.getLevelId()/*? if >1.20.2 {*/, () -> FactoryAPIClient.setScreen(screen)/*?}*/));
         Legacy4JClient.serverPlayerJoinConsumer = serverPlayer -> {
             MinecraftServer server = FactoryAPIPlatform.getEntityServer(serverPlayer);
             LegacyClientWorldSettings.of(server.getWorldData()).setSelectedResourceAlbum(album);
@@ -191,7 +192,7 @@ public class LoadSaveScreen extends PanelBackgroundScreen {
         addRenderableWidget(accessor.putWidget("difficultySlider", new LegacySliderButton<>(layoutX, panel.y + 90, getLayoutWidth(), 16, b -> b.getDefaultMessage(Component.translatable("options.difficulty"), b.getObjectValue().getDisplayName()), b -> Tooltip.create(difficulty.getInfo()), difficulty, () -> Arrays.asList(Difficulty.values()), b -> difficulty = b.getObjectValue()))).active = !LegacyClientWorldSettings.of(summary.getSettings()).isDifficultyLocked() && !summary.isHardcore();
         Button moreOptionsButton = addRenderableWidget(accessor.putWidget("moreOptionsButton", Button.builder(Component.translatable("createWorld.tab.more.title"), button -> {
             focusMoreOptionsButton = true;
-            minecraft.setScreen(new WorldMoreOptionsScreen(this));
+            FactoryAPIClient.setScreen(new WorldMoreOptionsScreen(this));
         }).bounds(layoutX, panel.y + 178, getLayoutWidth(), 20).build()));
         Button loadButton = addRenderableWidget(accessor.putWidget("loadButton", Button.builder(Component.translatable("legacy.menu.load_save.load"), button -> onLoad()).bounds(layoutX, panel.y + 203, getLayoutWidth(), 20).build()));
         addRenderableWidget(accessor.putWidget("gameTypeSlider", gameTypeSlider));
@@ -223,7 +224,7 @@ public class LoadSaveScreen extends PanelBackgroundScreen {
         ResourceKey<Level> level = dimensionsToReset.get(index);
 
         Component dimensionName = LegacyComponents.getDimensionName(level);
-        minecraft.setScreen(new ConfirmationScreen(this, Component.translatable("legacy.menu.load_save.reset", dimensionName), Component.translatable("legacy.menu.load_save.reset_message", dimensionName, dimensionName), b -> {
+        FactoryAPIClient.setScreen(new ConfirmationScreen(this, Component.translatable("legacy.menu.load_save.reset", dimensionName), Component.translatable("legacy.menu.load_save.reset_message", dimensionName, dimensionName), b -> {
             if (index == dimensionsToReset.size() - 1) {
                 completeLoad();
             } else confirmDimensionToReset(index + 1);

@@ -11,7 +11,9 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.client.renderer.MultiBufferSource;
+//? if <26.2 {
+/*import net.minecraft.client.renderer.MultiBufferSource;
+*///?}
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -67,7 +69,8 @@ public abstract class ItemInHandRendererMixin {
         if (minecraft.player == null || minecraft.player.isRemoved()) ci.cancel();
     }
 
-    @Inject(method = "renderHandsWithItems", at = @At("HEAD"))
+    //~ if >=26.2 'renderHandsWithItems' -> 'submitHandsWithItems'
+    @Inject(method = "submitHandsWithItems", at = @At("HEAD"))
     public void renderItemLight(float f, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LocalPlayer localPlayer, int i, CallbackInfo ci, @Local(ordinal = 0, argsOnly = true) LocalIntRef original) {
         int light = getLight(localPlayer.getMainHandItem(), localPlayer.getOffhandItem());
         if (LegacyOptions.itemLightingInHand.get() && light > 0)
@@ -128,12 +131,13 @@ public abstract class ItemInHandRendererMixin {
         return invisible && !Legacy4JClient.isHostInvisible(minecraft.player);
     }
 
-    @ModifyExpressionValue(method = "renderArmWithItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/AbstractClientPlayer;isInvisible()Z"))
+    //~ if >=26.2 'renderArmWithItem' -> 'submitArmWithItem' {
+    @ModifyExpressionValue(method = "submitArmWithItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/AbstractClientPlayer;isInvisible()Z"))
     private boolean allowFirstPersonHostInvisibleArm(boolean invisible) {
         return invisible && !Legacy4JClient.isHostInvisible(minecraft.player);
     }
 
-    @Inject(method = "renderArmWithItem", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;pushPose()V", shift = At.Shift.AFTER))
+    @Inject(method = "submitArmWithItem", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;pushPose()V", shift = At.Shift.AFTER))
     private void renderItemInHand(AbstractClientPlayer abstractClientPlayer, float f, float g, InteractionHand interactionHand, float h, ItemStack itemStack, float i, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int j, CallbackInfo ci) {
         int screenWidth = minecraft.getWindow().getScreenWidth();
         int screenHeight = minecraft.getWindow().getScreenHeight();
@@ -142,7 +146,8 @@ public abstract class ItemInHandRendererMixin {
         if (d != 0) poseStack.translate((humanoidArm == HumanoidArm.RIGHT ? 1 : -1) * d / 4, 0, d / 4);
     }
 
-    @Inject(method = "renderArmWithItem", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;pushPose()V", shift = At.Shift.AFTER), cancellable = true)
+    @Inject(method = "submitArmWithItem", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;pushPose()V", shift = At.Shift.AFTER), cancellable = true)
+    //~}
     private void renderArmWithItem(AbstractClientPlayer abstractClientPlayer, float f, float g, InteractionHand interactionHand, float h, ItemStack itemStack, float i, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int j, CallbackInfo ci) {
         HumanoidArm humanoidArm = interactionHand == InteractionHand.MAIN_HAND ? abstractClientPlayer.getMainArm() : abstractClientPlayer.getMainArm().getOpposite();
         int k = humanoidArm == HumanoidArm.RIGHT ? 1 : -1;

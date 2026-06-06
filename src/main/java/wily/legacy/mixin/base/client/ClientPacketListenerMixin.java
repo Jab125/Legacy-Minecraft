@@ -4,6 +4,9 @@ import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+//? if >=26.2 {
+import net.minecraft.client.gui.Hud;
+//?}
 import net.minecraft.client.multiplayer.*;
 import net.minecraft.client.sounds.MusicManager;
 import net.minecraft.network.Connection;
@@ -22,6 +25,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import wily.factoryapi.FactoryAPIClient;
 import wily.legacy.Legacy4JClient;
 import wily.legacy.client.LegacyDragonEggTeleportParticles;
 import wily.legacy.client.ConduitRotationCache;
@@ -48,9 +52,9 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
     @Inject(method = "handleRespawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;setId(I)V"))
     public void handleRespawn(ClientboundRespawnPacket clientboundRespawnPacket, CallbackInfo ci, @Local(ordinal = 0) ResourceKey<Level> newLevel, @Local(ordinal = 1) ResourceKey<Level> oldLevel) {
         if (!clientboundRespawnPacket.shouldKeep(ClientboundRespawnPacket.KEEP_ALL_DATA)) {
-            minecraft.setScreen(LegacyLoadingScreen.getRespawningScreen(levelLoadTracker::isLevelReady));
+            FactoryAPIClient.setScreen(LegacyLoadingScreen.getRespawningScreen(levelLoadTracker::isLevelReady));
         } else if (LegacyOptions.legacyLoadingAndConnecting.get() && oldLevel != newLevel)
-            minecraft.setScreen(LegacyLoadingScreen.getDimensionChangeScreen(levelLoadTracker::isLevelReady, oldLevel, newLevel));
+            FactoryAPIClient.setScreen(LegacyLoadingScreen.getDimensionChangeScreen(levelLoadTracker::isLevelReady, oldLevel, newLevel));
     }
 
     @Redirect(method = "handleRespawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/sounds/MusicManager;stopPlaying()V"))
@@ -102,12 +106,12 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
 
     @WrapWithCondition(method = /*? if <1.21.2 {*//*"handleContainerSetSlot"*//*?} else {*/"handleSetCursorItem"/*?}*/, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/AbstractContainerMenu;setCarried(Lnet/minecraft/world/item/ItemStack;)V"))
     public boolean handleContainerSetSlot(AbstractContainerMenu instance, ItemStack itemStack) {
-        return !(minecraft.screen instanceof CreativeModeScreen);
+        return !(FactoryAPIClient.getScreen() instanceof CreativeModeScreen);
     }
 
     @Inject(method = "handleContainerSetSlot", at = @At("RETURN"))
     public void handleContainerSetSlot(ClientboundContainerSetSlotPacket clientboundContainerSetSlotPacket, CallbackInfo ci) {
-        if (this.minecraft.screen instanceof CreativeModeScreen) {
+        if (FactoryAPIClient.getScreen() instanceof CreativeModeScreen) {
             minecraft.player.inventoryMenu.setRemoteSlot(clientboundContainerSetSlotPacket.getSlot(), clientboundContainerSetSlotPacket.getItem());
             minecraft.player.inventoryMenu.broadcastChanges();
         }
@@ -115,11 +119,13 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
 
     @WrapWithCondition(method = "handleContainerSetSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/inventory/AbstractContainerMenu;setItem(IILnet/minecraft/world/item/ItemStack;)V", ordinal = 0))
     public boolean handleContainerSetSlot(AbstractContainerMenu instance, int i, int j, ItemStack itemStack) {
-        return !(minecraft.screen instanceof CreativeModeScreen);
+        return !(FactoryAPIClient.getScreen() instanceof CreativeModeScreen);
     }
 
-    @Redirect(method = "handleSetEntityPassengersPacket", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;setOverlayMessage(Lnet/minecraft/network/chat/Component;Z)V"))
-    public void handleSetEntityPassengersPacket(Gui instance, Component component, boolean bl) {
+    //~ if >=26.2 'net/minecraft/client/gui/Gui' -> 'net/minecraft/client/gui/Hud'
+    @Redirect(method = "handleSetEntityPassengersPacket", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Hud;setOverlayMessage(Lnet/minecraft/network/chat/Component;Z)V"))
+    //~ if >=26.2 'Gui' -> 'Hud'
+    public void handleSetEntityPassengersPacket(Hud instance, Component component, boolean bl) {
 
     }
 
@@ -135,7 +141,7 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
 
     @Inject(method = "handleAwardStats", at = @At("RETURN"))
     public void handleAwardStats(ClientboundAwardStatsPacket clientboundAwardStatsPacket, CallbackInfo ci) {
-        if (minecraft.screen instanceof LeaderboardsScreen s) s.onStatsUpdated();
+        if (FactoryAPIClient.getScreen() instanceof LeaderboardsScreen s) s.onStatsUpdated();
     }
 
     @Inject(method = "handleSystemChat", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/protocol/PacketUtils;ensureRunningOnSameThread(Lnet/minecraft/network/protocol/Packet;Lnet/minecraft/network/PacketListener;Lnet/minecraft/network/PacketProcessor;)V", shift = At.Shift.AFTER), cancellable = true)
@@ -158,10 +164,12 @@ public abstract class ClientPacketListenerMixin extends ClientCommonPacketListen
             content = Component.empty().withStyle(s -> s.withColor(CommonColor.DEATH_MESSAGE_TEXT.get() & 0x00FFFFFF)).append(content);
         }
         if (!LegacyOptions.systemMessagesAsOverlay.get()) {
-            minecraft.getChatListener().handleSystemMessage(content, false);
+            //~ if >=26.2 'minecraft.getChatListener()' -> 'minecraft.gui.chatListener()'
+            minecraft.gui.chatListener().handleSystemMessage(content, false);
             ci.cancel();
         } else if (content != clientboundSystemChatPacket.content()) {
-            minecraft.getChatListener().handleSystemMessage(content, clientboundSystemChatPacket.overlay());
+            //~ if >=26.2 'minecraft.getChatListener()' -> 'minecraft.gui.chatListener()'
+            minecraft.gui.chatListener().handleSystemMessage(content, clientboundSystemChatPacket.overlay());
             ci.cancel();
         }
     }

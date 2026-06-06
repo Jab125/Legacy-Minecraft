@@ -9,6 +9,10 @@ import net.minecraft.server.Services;
 import net.minecraft.server.WorldStem;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.progress.LevelLoadListener;
+//? if >=26.2 {
+import net.minecraft.server.notifications.NotificationManager;
+import net.minecraft.world.level.gamerules.GameRules;
+//?}
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.LevelStorageSource;
@@ -41,8 +45,13 @@ public abstract class IntegratedServerMixin extends MinecraftServer {
     @Shadow
     private boolean paused;
 
-    public IntegratedServerMixin(Thread thread, LevelStorageSource.LevelStorageAccess levelStorageAccess, PackRepository packRepository, WorldStem worldStem, Proxy proxy, DataFixer dataFixer, Services services, LevelLoadListener levelLoadListener) {
+    //? if <26.2 {
+    /*public IntegratedServerMixin(Thread thread, LevelStorageSource.LevelStorageAccess levelStorageAccess, PackRepository packRepository, WorldStem worldStem, Proxy proxy, DataFixer dataFixer, Services services, LevelLoadListener levelLoadListener) {
         super(thread, levelStorageAccess, packRepository, worldStem, Optional.empty(), proxy, dataFixer, services, levelLoadListener, false);
+    *///?} else {
+    public IntegratedServerMixin(Thread serverThread, LevelStorageSource.LevelStorageAccess storageSource, PackRepository packRepository, WorldStem worldStem, Optional<GameRules> gameRules, Proxy proxy, DataFixer fixerUpper, Services services, LevelLoadListener levelLoadListener, boolean propagatesCrashes, NotificationManager notificationManager) {
+        super(serverThread, storageSource, packRepository, worldStem, gameRules, proxy, fixerUpper, services, levelLoadListener, propagatesCrashes, notificationManager);
+    //?}
     }
 
 

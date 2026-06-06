@@ -23,6 +23,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import wily.factoryapi.FactoryAPIClient;
 import wily.legacy.client.screen.ControlTooltip;
 import wily.legacy.client.screen.KeyboardScreen;
 import wily.legacy.client.screen.WidgetPanel;
@@ -55,7 +56,7 @@ public abstract class AbstractSignEditScreenMixin extends Screen implements Cont
         @Override
         public boolean keyPressed(KeyEvent keyEvent) {
             if (KeyboardScreen.isOpenKey(keyEvent.key())) {
-                minecraft.setScreen(new KeyboardScreen(isSign() ? 60 : -100, () -> this, AbstractSignEditScreenMixin.this));
+                FactoryAPIClient.setScreen(new KeyboardScreen(isSign() ? 60 : -100, () -> this, AbstractSignEditScreenMixin.this));
                 return true;
             }
             if (keyEvent.isUp() && line > 0) {

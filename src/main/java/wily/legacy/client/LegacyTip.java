@@ -14,6 +14,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.base.client.AdvancedTextWidget;
 import wily.factoryapi.base.client.SimpleLayoutRenderable;
 import wily.factoryapi.util.FactoryScreenUtil;
@@ -37,7 +38,7 @@ public class LegacyTip extends SimpleLayoutRenderable implements Toast, Controll
     protected boolean centered = false;
     protected boolean compactMode;
     protected Minecraft minecraft = Minecraft.getInstance();
-    protected Screen initScreen = minecraft.screen;
+    protected Screen initScreen = FactoryAPIClient.getScreen();
 
 
     public LegacyTip(Component tip, int width, int height, boolean compactMode) {
@@ -55,7 +56,7 @@ public class LegacyTip extends SimpleLayoutRenderable implements Toast, Controll
         title(title);
         height = (title == null ? LegacyOptions.getUIMode().isSD() ? 14 : 26 : LegacyOptions.getUIMode().isSD() ? 22 : 38) + tipLabel.getHeight();
         setY(25);
-        canRemove(() -> initScreen != minecraft.screen);
+        canRemove(() -> initScreen != FactoryAPIClient.getScreen());
     }
 
     public LegacyTip(Component tip) {

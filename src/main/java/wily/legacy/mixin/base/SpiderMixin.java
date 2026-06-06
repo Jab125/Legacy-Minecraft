@@ -4,6 +4,9 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+//? if >=26.2 {
+import net.minecraft.world.entity.EntityTypes;
+//?}
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.monster.skeleton.Skeleton;
@@ -22,7 +25,7 @@ public class SpiderMixin {
         if (!isNetherPlayerSpawn(level, reason)) return;
         Spider spider = (Spider) (Object) this;
         if (!(spider.getFirstPassenger() instanceof Skeleton skeleton)) return;
-        Mob witherSkeleton = EntityType.WITHER_SKELETON.create(spider.level(), EntitySpawnReason.JOCKEY);
+        Mob witherSkeleton = /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.WITHER_SKELETON.create(spider.level(), EntitySpawnReason.JOCKEY);
         if (witherSkeleton == null) return;
         skeleton.stopRiding();
         skeleton.discard();

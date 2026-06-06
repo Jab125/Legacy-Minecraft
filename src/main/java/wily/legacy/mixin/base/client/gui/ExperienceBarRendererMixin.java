@@ -1,8 +1,8 @@
 package wily.legacy.mixin.base.client.gui;
-
+//~ if >=26.2 'ContextualBarRenderer' -> 'ContextualBar' {
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.contextualbar.ContextualBarRenderer;
+import net.minecraft.client.gui.contextualbar.ContextualBar;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.FormattedText;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,7 +15,7 @@ import wily.legacy.client.CommonColor;
 import wily.legacy.client.LegacyOptions;
 import wily.legacy.util.client.LegacyRenderUtil;
 
-@Mixin(ContextualBarRenderer.class)
+@Mixin(ContextualBar.class)
 public interface ExperienceBarRendererMixin {
 
     @Inject(method = "extractExperienceLevel", at = @At("HEAD"), cancellable = true)
@@ -36,3 +36,4 @@ public interface ExperienceBarRendererMixin {
         guiGraphics.pose().popMatrix();
     }
 }
+//~}

@@ -14,6 +14,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.vehicle.boat.AbstractBoat;
+import wily.factoryapi.FactoryAPIClient;
 import wily.factoryapi.base.Bearer;
 import wily.factoryapi.base.config.FactoryConfig;
 import wily.factoryapi.base.config.FactoryConfigControl;
@@ -117,7 +118,8 @@ public class LegacyOptions {
             Legacy4JClient.updateChunks();
             Legacy4JClient.updateSkyShape();
             if (minecraft.levelRenderer != null) {
-                minecraft.levelRenderer.getCloudRenderer().markForRebuild();
+                //~ if >=26.2 '.getCloudRenderer()' -> '.cloudRenderer()'
+                minecraft.levelRenderer.cloudRenderer().markForRebuild();
             }
         });
     }
@@ -412,7 +414,7 @@ public class LegacyOptions {
 
     public static float getLeftStickDeadZone() {
         Minecraft minecraft = Minecraft.getInstance();
-        return minecraft.screen == null && minecraft.player != null && minecraft.player.getControlledVehicle() instanceof AbstractBoat ? 0.5f + leftStickDeadZone.get().floatValue() / 2 : leftStickDeadZone.get().floatValue();
+        return FactoryAPIClient.getScreen() == null && minecraft.player != null && minecraft.player.getControlledVehicle() instanceof AbstractBoat ? 0.5f + leftStickDeadZone.get().floatValue() / 2 : leftStickDeadZone.get().floatValue();
     }
 
     public static boolean hasClassicCrafting() {

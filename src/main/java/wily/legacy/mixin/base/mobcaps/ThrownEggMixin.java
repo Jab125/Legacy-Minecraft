@@ -4,6 +4,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+//? if >=26.2 {
+import net.minecraft.world.entity.EntityTypes;
+//?}
 import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownEgg;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
@@ -22,7 +25,7 @@ public class ThrownEggMixin {
         )
     )
     private Entity gateChickenHatching(EntityType<?> type, Level level, EntitySpawnReason reason, HitResult hitResult) {
-        if (level instanceof ServerLevel serverLevel && type == EntityType.CHICKEN && !ConsoleMobCaps.canHatchChicken(serverLevel)) {
+        if (level instanceof ServerLevel serverLevel && type == /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.CHICKEN && !ConsoleMobCaps.canHatchChicken(serverLevel)) {
             return null;
         }
 

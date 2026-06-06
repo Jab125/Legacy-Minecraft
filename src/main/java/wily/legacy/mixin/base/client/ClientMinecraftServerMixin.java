@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import wily.factoryapi.FactoryAPIClient;
 import wily.legacy.Legacy4J;
 import wily.legacy.client.CommonColor;
 import wily.legacy.client.LegacyOptions;
@@ -79,7 +80,7 @@ public abstract class ClientMinecraftServerMixin {
 
         if (ticksUntilAutosave <= 0) {
             Minecraft minecraft = Minecraft.getInstance();
-            if (minecraft.screen == null) minecraft.execute(LegacyLoadingScreen::startFakeAutoSave);
+            if (FactoryAPIClient.getScreen() == null) minecraft.execute(LegacyLoadingScreen::startFakeAutoSave);
             else ticksUntilAutosave++;
         }
     }

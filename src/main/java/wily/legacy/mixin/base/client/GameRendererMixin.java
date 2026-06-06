@@ -45,13 +45,17 @@ public abstract class GameRendererMixin {
     @Shadow
     protected abstract void takeAutoScreenshot(Path path);
 
-    @Inject(method = "extractGui", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/toasts/ToastManager;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V", shift = At.Shift.AFTER))
+    // TODO 26.2 ActualGuiMixin
+    //? if <26.2 {
+    /*@Inject(method = "extractGui", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/toasts/ToastManager;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V", shift = At.Shift.AFTER))
     private void extractGui(DeltaTracker deltaTracker, boolean bl, boolean bl2, CallbackInfo ci, @Local GuiGraphicsExtractor graphics) {
         LegacyRenderUtil.renderGameOverlay(graphics);
         ScreenshotToast.render(graphics);
     }
+    *///?}
 
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/render/GuiRenderer;render(Lcom/mojang/blaze3d/buffers/GpuBufferSlice;)V", shift = At.Shift.AFTER))
+    //~ if >=26.2 'render(Lcom/mojang/blaze3d/buffers/GpuBufferSlice;)' -> 'render()'
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/render/GuiRenderer;render()V", shift = At.Shift.AFTER))
     private void render(DeltaTracker deltaTracker, boolean bl, CallbackInfo ci) {
         if (canRenderLegacyGamma()) LegacyGamma.INSTANCE.render();
     }

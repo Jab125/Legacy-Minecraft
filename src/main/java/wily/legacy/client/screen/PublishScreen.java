@@ -9,6 +9,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.server.IntegratedServer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.commands.PublishCommand;
 import net.minecraft.util.HttpUtil;
 import net.minecraft.world.level.GameType;
@@ -116,8 +117,13 @@ public class PublishScreen extends ConfirmationScreen {
         if (!publish) return;
         Minecraft minecraft = Minecraft.getInstance();
         FactoryAPIClient.SECURE_EXECUTOR.executeNowIfPossible(() -> {
-            if (!server.publishServer(gameTypeSlider.getObjectValue(), server.getWorldData()./*? if <1.20.5 {*//*getAllowCommands*//*?} else {*/isAllowCommands/*?}*/() && LegacyClientWorldSettings.of(server.getWorldData()).trustPlayers(), this.port)) {
-                minecraft.gui.getChat().addClientSystemMessage(Component.translatable("commands.publish.failed"));
+            if (!server.publishServer(
+                    //? if >=26.2 {
+                    MinecraftServer.MultiplayerScope.LAN,
+                    //?}
+                    gameTypeSlider.getObjectValue(), server.getWorldData()./*? if <1.20.5 {*//*getAllowCommands*//*?} else {*/isAllowCommands/*?}*/() && LegacyClientWorldSettings.of(server.getWorldData()).trustPlayers(), this.port)) {
+                //~ if >=26.2 'gui.getChat()' -> 'gui.hud.getChat()'
+                minecraft.gui.hud.getChat().addClientSystemMessage(Component.translatable("commands.publish.failed"));
             }
         }, () -> minecraft.player != null);
     }

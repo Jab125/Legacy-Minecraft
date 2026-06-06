@@ -15,12 +15,16 @@ import wily.legacy.client.LegacyOptions;
 
 @Mixin(EntityRenderer.class)
 public class EntityRendererMixin {
-    @WrapOperation(method = "submitNameDisplay(Lnet/minecraft/client/renderer/entity/state/EntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitNameTag(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/phys/Vec3;ILnet/minecraft/network/chat/Component;ZIDLnet/minecraft/client/renderer/state/level/CameraRenderState;)V"))
-    private void submitNameTag(SubmitNodeCollector instance, PoseStack poseStack, Vec3 vec3, int color, Component component, boolean b, int i, double v, CameraRenderState cameraRenderState, Operation<Void> original) {
+	//~ if >=26.2 'ZIDL' -> 'ZIL'
+    @WrapOperation(method = "submitNameDisplay(Lnet/minecraft/client/renderer/entity/state/EntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/level/CameraRenderState;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitNameTag(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/world/phys/Vec3;ILnet/minecraft/network/chat/Component;ZILnet/minecraft/client/renderer/state/level/CameraRenderState;)V"))
+	//~ if >=26.2 'boolean b, int i, double v' -> 'boolean b, int i'
+    private void submitNameTag(SubmitNodeCollector instance, PoseStack poseStack, Vec3 vec3, int color, Component component, boolean b, int i, CameraRenderState cameraRenderState, Operation<Void> original) {
         if (LegacyOptions.displayNameTagBorder.get() && !LegacyNameTag.NEXT_SUBMIT.hasColor()) {
             LegacyNameTag.NEXT_SUBMIT.setNameTagColor(new float[]{0, 0, 0});
-            original.call(instance, poseStack, vec3, color, component, b, i, v, cameraRenderState);
+        //~ if >=26.2 'b, i, v' -> 'b, i' {
+            original.call(instance, poseStack, vec3, color, component, b, i, cameraRenderState);
             LegacyNameTag.NEXT_SUBMIT.setNameTagColor(null);
-        } else original.call(instance, poseStack, vec3, color, component, b, i, v, cameraRenderState);
+        } else original.call(instance, poseStack, vec3, color, component, b, i, cameraRenderState);
+        //~}
     }
 }

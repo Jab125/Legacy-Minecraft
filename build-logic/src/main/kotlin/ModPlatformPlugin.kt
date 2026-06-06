@@ -341,6 +341,10 @@ abstract class ModPlatformPlugin @Inject constructor() : Plugin<Project> {
 					replace("renderContextualInfoBar", "extractContextualInfoBar")
 				}
 			}
+			swaps["gui_to_hud"] = when {
+				eval(current.version, ">=26.2") -> "Hud"
+				else -> "Gui"
+			}
 		}
 	}
 

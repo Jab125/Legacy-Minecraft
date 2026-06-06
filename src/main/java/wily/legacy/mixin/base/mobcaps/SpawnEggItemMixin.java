@@ -10,6 +10,9 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+//? if >=26.2 {
+import net.minecraft.world.entity.EntityTypes;
+//?}
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.equine.TraderLlama;
@@ -51,12 +54,21 @@ public class SpawnEggItemMixin {
     }
 
     @Inject(method = "spawnMob", at = @At("HEAD"), cancellable = true)
-    private static void gateSpawnEggUse(LivingEntity user, ItemStack stack, Level level, BlockPos pos, boolean alignPosition, boolean invertY, CallbackInfoReturnable<InteractionResult> cir) {
+    private static void gateSpawnEggUse(
+            //? if >=26.2 {
+            EntityType<?> type,
+            //?}
+            LivingEntity user, ItemStack stack,
+            //$ if >=26.2 'ServerLevel' else 'Level'
+            ServerLevel
+                    level, BlockPos pos, boolean alignPosition, boolean invertY, CallbackInfoReturnable<InteractionResult> cir) {
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
 
-        EntityType<?> type = SpawnEggItem.getType(stack);
+        //? if <26.2 {
+        /*EntityType<?> type = SpawnEggItem.getType(stack);
+        *///?}
         if (type == null) {
             return;
         }
@@ -99,7 +111,7 @@ public class SpawnEggItemMixin {
     private static void spawnTraderLlamas(ServerLevel level, WanderingTrader trader) {
         for (int[] offset : TRADER_LLAMA_OFFSETS) {
             BlockPos pos = trader.blockPosition().offset(offset[0], 0, offset[1]);
-            TraderLlama llama = EntityType.TRADER_LLAMA.spawn(level, pos, EntitySpawnReason.EVENT);
+            TraderLlama llama = /*? if <26.2 {*//*EntityType*//*?} else {*/EntityTypes/*?}*/.TRADER_LLAMA.spawn(level, pos, EntitySpawnReason.EVENT);
             if (llama != null) {
                 llama.setLeashedTo(trader, true);
             }

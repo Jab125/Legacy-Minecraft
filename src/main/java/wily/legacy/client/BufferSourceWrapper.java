@@ -1,4 +1,5 @@
-package wily.legacy.client;
+//? if <26.2 {
+/*package wily.legacy.client;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -28,9 +29,9 @@ public class BufferSourceWrapper extends MultiBufferSource.BufferSource {
             @Override
             public VertexConsumer getBuffer(RenderType renderType) {
                 if (renderType == Sheets.cutoutBlockSheet()) return super.getBuffer(Sheets.translucentBlockItemSheet());
-                else if (renderType.format() == DefaultVertexFormat./*? if >=26.1 {*/ENTITY/*?} else {*//*NEW_ENTITY*//*?}*/ && !((RenderSetupAccessor)(Object) ((RenderTypeAccessor) renderType).getState()).getTextureBindings().isEmpty())
+                else if (renderType.format() == DefaultVertexFormat./^? if >=26.1 {^/ENTITY/^?} else {^//^NEW_ENTITY^//^?}^/ && !((RenderSetupAccessor)(Object) ((RenderTypeAccessor) renderType).getState()).getTextureBindings().isEmpty())
                     return super.getBuffer(
-                            RenderTypes./*? if >=26.1 {*/entityTranslucentCullItemTarget/*?} else {*//*itemEntityTranslucentCull*//*?}*/(
+                            RenderTypes./^? if >=26.1 {^/entityTranslucentCullItemTarget/^?} else {^//^itemEntityTranslucentCull^//^?}^/(
                                     ((RenderSetupAccessor)(Object) ((RenderTypeAccessor) renderType).getState()).getTextureBindings().get("Sampler0").location()));
                 return super.getBuffer(renderType);
             }
@@ -73,3 +74,4 @@ public class BufferSourceWrapper extends MultiBufferSource.BufferSource {
         return vertexConsumerFunction.apply(source.getBuffer(overrideRenderType == null ? renderType : overrideRenderType));
     }
 }
+*///?}

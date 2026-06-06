@@ -17,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 /*import wily.legacy.client.screen.DisplayRecipe;
 import net.minecraft.client.gui.screens.recipebook.GhostRecipe;
 *///?}
+import wily.factoryapi.FactoryAPIClient;
 import wily.legacy.client.screen.LegacyMenuAccess;
 
 @Mixin(RecipeBookComponent.class)
@@ -41,7 +42,7 @@ public class RecipeBookComponentMixin {
 
     @Redirect(method = "initVisuals", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/screens/recipebook/RecipeBookComponent;xOffset:I", opcode = Opcodes.PUTFIELD))
     private void initVisuals(RecipeBookComponent instance, int value) {
-        xOffset = this.widthTooNarrow ? 0 : minecraft.screen instanceof LegacyMenuAccess<?> a ? a.getMenuRectangle().width() / 2 - 2 : 86;
+        xOffset = this.widthTooNarrow ? 0 : FactoryAPIClient.getScreen() instanceof LegacyMenuAccess<?> a ? a.getMenuRectangle().width() / 2 - 2 : 86;
     }
 
     //? if <1.21.2 {
@@ -82,7 +83,7 @@ public class RecipeBookComponentMixin {
     *///?} else {
     @ModifyReturnValue(method = "isOffsetNextToMainGUI", at = @At("RETURN"))
     private boolean isOffset(boolean original) {
-        return minecraft.screen instanceof LegacyMenuAccess<?> a ? a.getMenuRectangle().width() / 2 - 2 == xOffset : original;
+        return FactoryAPIClient.getScreen() instanceof LegacyMenuAccess<?> a ? a.getMenuRectangle().width() / 2 - 2 == xOffset : original;
     }
     //?}
 }

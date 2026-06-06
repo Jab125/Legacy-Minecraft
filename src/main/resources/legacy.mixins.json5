@@ -1,6 +1,6 @@
 {
   "refmap": "legacy.refmap.json",
-  "required": true,
+  "required": false,
   "package": "wily.legacy.mixin.base",
   "compatibilityLevel": "JAVA_17",
   "plugin": "wily.legacy.mixin.LegacyMixinPlugin",
@@ -79,7 +79,9 @@
     "client.enchantment.EnchantmentScreenMixin",
     "client.EndCrystalModelMixin",
     "client.EndCrystalRendererMixin",
-    "client.NameTagFeatureMixin",
+    // TODO 26.2
+    //? if <26.2
+    //"client.NameTagFeatureMixin",
     "client.FireworkEntityRendererMixin",
     "client.AirBasedFogEnvironmentMixin",
     "client.AtmosphericFogEnvironmentMixin",
@@ -153,7 +155,9 @@
     "client.TutorialToastMixin",
     "client.witch.WitchModelMixin",
     "client.DisconnectedScreenMixin",
-    "client.BufferSourceAccessor",
+    //? if <26.2 {
+    /*"client.BufferSourceAccessor",
+    *///?}
     "client.BackupConfirmScreenMixin",
     "client.PaintingRendererMixin",
     "piston.PistonHeadRendererMixin",
@@ -198,7 +202,9 @@
     "client.CloudTextureDataAccessor",
     "client.NameTagSubmitMixin",
     "client.EntityRendererMixin",
-    "client.NameTagFeatureRendererStorageMixin",
+    // TODO 26.2
+    //? if <26.2
+    //"client.NameTagFeatureRendererStorageMixin",
     "client.AvatarRendererMixin",
     "client.LevelLoadingScreenAccessor",
     "client.MovingBlockRenderStateMixin",
