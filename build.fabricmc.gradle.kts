@@ -3,11 +3,15 @@ plugins {
 	id("net.fabricmc.fabric-loom")
 }
 
+val projectVersion = stonecutter.current.version
+val semver = if (stonecutter.current.version == "26.2") "26.2-pre.4" else stonecutter.current.version
+val realver = if (stonecutter.current.version == "26.2") "26.2-pre-4" else stonecutter.current.version
+
 platform {
 	loader = "fabric"
 	dependencies {
 		required("minecraft") {
-			versionRange = stonecutter.current.version
+			versionRange = semver
 		}
 		required("fabric-api") {
 			slug("fabric-api")
@@ -51,7 +55,7 @@ loom {
 
 fabricApi {
 	configureDataGeneration {
-		outputDirectory = file("${rootDir}/versions/datagen/${stonecutter.current.version.split("-")[0]}/src/main/generated")
+		outputDirectory = file("${rootDir}/versions/datagen/${projectVersion.split("-")[0]}/src/main/generated")
 		client = true
 	}
 }
@@ -63,15 +67,16 @@ repositories {
 	maven("https://raw.githubusercontent.com/Kyubion-Studios/Mod-Resources/main/maven/") { name = "Kyubion Mod Resources" }
 	maven("https://maven.isxander.dev/releases")
 	maven("https://maven.caffeinemc.net/releases") { name = "CaffeineMC" }
+	mavenLocal()
 }
 
 dependencies {
-	minecraft("com.mojang:minecraft:${stonecutter.current.version}")
+	minecraft("com.mojang:minecraft:${realver}")
 	implementation(libs.fabric.loader)
 	implementation("net.fabricmc.fabric-api:fabric-api:${prop("fabric_api_version")}")
 	implementation("com.terraformersmc:modmenu:${prop("modmenu_version")}")
 	api(include(prop("sdl_dependency")) as Any)
-	api("wily.factory_api:factory_api-fabric:${stonecutter.current.version}-${prop("factory_api_version")}")
+	api("wily.factory_api:factory_api-fabric:${projectVersion}-${prop("factory_api_version")}")
 
 //	compileOnly("maven.modrinth:world-host:${prop("world_host_version")}")
 	compileOnly("maven.modrinth:vivecraft:${prop("vivecraft_version")}")
