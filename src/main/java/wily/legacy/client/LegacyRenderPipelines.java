@@ -28,7 +28,11 @@ public class LegacyRenderPipelines {
                     .withLocation(Legacy4J.createModLocation("pipeline/flat_clouds"))
                     .withVertexShader(Legacy4J.createModLocation("core/legacy_rendertype_clouds"))
                     .withFragmentShader(Legacy4J.createModLocation("core/legacy_clouds"))
-                    .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true))
+                    //? if >=26.2 {
+                    .withDepthStencilState(DepthStencilState.DEFAULT)
+                    //?} else {
+                    /*.withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true))
+                    *///?}
                     .withCull(false)
                     .build()
     );
@@ -37,7 +41,11 @@ public class LegacyRenderPipelines {
                     .withLocation(Legacy4J.createModLocation("pipeline/clouds"))
                     .withVertexShader(Legacy4J.createModLocation("core/legacy_rendertype_clouds"))
                     .withFragmentShader(Legacy4J.createModLocation("core/legacy_clouds"))
-                    .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true))
+                    //? if >=26.2 {
+                    .withDepthStencilState(DepthStencilState.DEFAULT)
+                    //?} else {
+                    /*.withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true))
+                    *///?}
                     .build()
     );
     public static final RenderPipeline LEGACY_WARM_FLAT_CLOUDS = RenderPipelinesAccessor.register(
@@ -45,7 +53,11 @@ public class LegacyRenderPipelines {
                     .withLocation(Legacy4J.createModLocation("pipeline/warm_flat_clouds"))
                     .withVertexShader(Legacy4J.createModLocation("core/legacy_rendertype_clouds"))
                     .withFragmentShader(Legacy4J.createModLocation("core/legacy_clouds_warm"))
-                    .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true))
+                    //? if >=26.2 {
+                    .withDepthStencilState(DepthStencilState.DEFAULT)
+                    //?} else {
+                    /*.withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true))
+                    *///?}
                     .withCull(false)
                     .build()
     );
@@ -54,7 +66,11 @@ public class LegacyRenderPipelines {
                     .withLocation(Legacy4J.createModLocation("pipeline/warm_clouds"))
                     .withVertexShader(Legacy4J.createModLocation("core/legacy_rendertype_clouds"))
                     .withFragmentShader(Legacy4J.createModLocation("core/legacy_clouds_warm"))
-                    .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true))
+                    //? if >=26.2 {
+                    .withDepthStencilState(DepthStencilState.DEFAULT)
+                    //?} else {
+                    /*.withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true))
+                    *///?}
                     .build()
     );
     public static final RenderPipeline LEGACY_PACK_FLAT_CLOUDS = RenderPipelinesAccessor.register(
@@ -62,7 +78,11 @@ public class LegacyRenderPipelines {
                     .withLocation(Legacy4J.createModLocation("pipeline/pack_flat_clouds"))
                     .withVertexShader(Legacy4J.createModLocation("core/legacy_rendertype_clouds"))
                     .withFragmentShader("core/rendertype_clouds")
-                    .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true))
+                    //? if >=26.2 {
+                    .withDepthStencilState(DepthStencilState.DEFAULT)
+                    //?} else {
+                    /*.withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true))
+                    *///?}
                     .withCull(false)
                     .build()
     );
@@ -71,7 +91,11 @@ public class LegacyRenderPipelines {
                     .withLocation(Legacy4J.createModLocation("pipeline/pack_clouds"))
                     .withVertexShader(Legacy4J.createModLocation("core/legacy_rendertype_clouds"))
                     .withFragmentShader("core/rendertype_clouds")
-                    .withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true))
+                    //? if >=26.2 {
+                    .withDepthStencilState(DepthStencilState.DEFAULT)
+                    //?} else {
+                    /*.withDepthStencilState(new DepthStencilState(CompareOp.LESS_THAN_OR_EQUAL, true))
+                    *///?}
                     .build()
     );
     public static final RenderPipeline GAMMA = RenderPipelinesAccessor.register(
