@@ -47,6 +47,7 @@
     "client.beacon.BeamMixin",
     "client.BiomeAmbientSoundsHandlerMixin",
     "client.BitmapProviderMixin",
+    "client.BlockModelLighterMixin",
     "client.book.BookEditScreenMixin",
     "client.book.BookViewScreenMixin",
     "client.bosshealth.BossHealthOverlayMixin",
