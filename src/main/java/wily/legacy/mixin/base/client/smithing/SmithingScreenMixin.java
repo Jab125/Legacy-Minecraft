@@ -10,8 +10,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.SmithingMenu;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
+import org.joml.Quaternionfc;
+import org.joml.Vector3fc;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -41,10 +41,10 @@ public abstract class SmithingScreenMixin extends ItemCombinerScreen<SmithingMen
     //? if >1.20.1
     @Shadow
     @Final
-    private static Vector3f ARMOR_STAND_TRANSLATION;
+    private static Vector3fc ARMOR_STAND_TRANSLATION;
     @Shadow
     @Final
-    private static Quaternionf ARMOR_STAND_ANGLE;
+    private static Quaternionfc ARMOR_STAND_ANGLE;
     @Shadow
     private ArmorStandRenderState armorStandPreview;
     @Shadow

@@ -194,7 +194,7 @@
     "client.bosshealth.EndDragonFightMixin",
     "client.bosshealth.WitherBossMixin",
     "client.GuiItemRenderStateMixin",
-    "client.chat.ChatFormattingMixin",
+    "client.chat.TextColorMixin",
     "client.StyleMixin",
     "client.KeyboardHandlerAccessor",
     "client.InputWithModifiersMixin",
