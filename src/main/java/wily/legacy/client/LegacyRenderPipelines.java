@@ -80,7 +80,7 @@ public class LegacyRenderPipelines {
                     //? if <26.2 {
                     /*.withSampler("InSampler")
                     *///?} else {
-                    .withBindGroupLayout(BindGroupLayout.builder().withSampler("Sampler1").withUniform("GammaInfo", UniformType.UNIFORM_BUFFER).build())
+                    .withBindGroupLayout(BindGroupLayout.builder().withSampler("InSampler").withUniform("GammaInfo", UniformType.UNIFORM_BUFFER).build())
                     //?}
                     .withVertexShader("core/screenquad")
                     .withFragmentShader(Legacy4J.createModLocation("core/gamma"))
