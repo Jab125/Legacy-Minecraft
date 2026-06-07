@@ -23,7 +23,7 @@ public class MouseHandlerMixin {
         if (Legacy4JClient.controllerManager.isCursorDisabled) cir.setReturnValue(-1d);
     }
 
-    @Inject(method = "xpos", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "ypos", at = @At("HEAD"), cancellable = true)
     private void ypos(CallbackInfoReturnable<Double> cir) {
         if (Legacy4JClient.controllerManager.isCursorDisabled) cir.setReturnValue(-1d);
     }

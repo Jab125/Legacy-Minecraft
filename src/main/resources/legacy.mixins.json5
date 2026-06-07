@@ -10,6 +10,7 @@
     "client.GhostSlotsMixin",
     "client.MapDecorationRenderStateMixin",
     "client.AbstractRecipeBookScreenMixin",
+    "client.ActualGuiMixin",
     "client.crafter.CrafterScreenMixin",
     //? fabric || neoforge {
     "compat.sodium.FluidRendererFactoryMixin",
