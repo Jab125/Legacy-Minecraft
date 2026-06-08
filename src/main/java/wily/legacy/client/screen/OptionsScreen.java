@@ -593,6 +593,8 @@ public class OptionsScreen extends PanelVListScreen {
                                 Component.translatable("options.videoTitle"),
                                 LegacyOptions.of(createResolutionOptionInstance(o)),
                                 LegacyOptions.of(mc.options.fullscreen()),
+                                //? if >=26.2
+                                LegacyOptions.of(mc.options.preferredGraphicsBackend()),
                                 LegacyOptions.of(mc.options.cutoutLeaves()),
                                 LegacyOptions.of(mc.options.improvedTransparency()),
                                 LegacyOptions.of(mc.options.weatherRadius()),
