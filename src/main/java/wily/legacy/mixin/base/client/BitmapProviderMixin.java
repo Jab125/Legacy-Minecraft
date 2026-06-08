@@ -3,8 +3,6 @@ package wily.legacy.mixin.base.client;
 import com.mojang.blaze3d.font.GlyphInfo;
 import com.mojang.blaze3d.font.GlyphProvider;
 import com.mojang.blaze3d.platform.NativeImage;
-//? if >=26.2
-import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.gui.font.CodepointMap;
 import net.minecraft.client.gui.font.providers.BitmapProvider;
 import net.minecraft.resources.Identifier;
@@ -14,8 +12,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-//? if >=26.2
+//? if >=26.2 {
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import com.llamalad7.mixinextras.sugar.Local;
+//?}
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import wily.legacy.Legacy4J;
 import wily.legacy.client.LegacyGlyphInfo;
