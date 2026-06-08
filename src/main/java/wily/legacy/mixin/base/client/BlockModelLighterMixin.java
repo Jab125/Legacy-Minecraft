@@ -1,3 +1,4 @@
+//? if >=26.2 {
 package wily.legacy.mixin.base.client;
 
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
@@ -20,3 +21,4 @@ public class BlockModelLighterMixin {
         }
     }
 }
+//?}

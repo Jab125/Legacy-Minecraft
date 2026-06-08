@@ -49,7 +49,9 @@
     "client.beacon.BeamMixin",
     "client.BiomeAmbientSoundsHandlerMixin",
     "client.BitmapProviderMixin",
+    //? if >=26.2 {
     "client.BlockModelLighterMixin",
+    //?}
     "client.book.BookEditScreenMixin",
     "client.book.BookViewScreenMixin",
     "client.bosshealth.BossHealthOverlayMixin",

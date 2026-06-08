@@ -451,18 +451,24 @@ public final class LegacyChunkLoading {
         }
 
         if ((state.is(Blocks.DIRT_PATH) || state.is(Blocks.GRASS_BLOCK)) && hasPendingFeatureDelay(SectionPos.asLong(pos))) {
+            //? if >=26.2 {
             hiddenFeatureSections.add(SectionPos.asLong(pos));
+            //?}
             return true;
         }
 
         BlockPos above = pos.above();
         long section = SectionPos.asLong(above);
+        //? if <26.2 {
+        /*return hasPendingFeatureDelay(section) && isFeatureState(currentLevel.getBlockState(above));
+        *///?} else {
         if (!hasPendingFeatureDelay(section) || !isFeatureState(currentLevel.getBlockState(above))) {
             return false;
         }
         hiddenFeatureSections.add(SectionPos.asLong(pos));
         hiddenFeatureSections.add(section);
         return true;
+        //?}
     }
 
     private static boolean canRenderAsGrassUnderHiddenFeature(BlockState state) {
