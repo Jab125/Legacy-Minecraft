@@ -1,3 +1,4 @@
+//~ if >=26.2 '150' -> '300'
 #version 330
 
 uniform sampler2D InSampler;
