@@ -20,6 +20,8 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.ConnectScreen;
 import net.minecraft.client.gui.screens.FaviconTexture;
+//? if >=26.2
+import net.minecraft.client.gui.screens.friends.FriendsOverlayScreen;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -163,6 +165,8 @@ public class ServerRenderableList extends RenderableVList {
         Tooltip tooltip = component != null ? Tooltip.create(component) : null;
         if (LegacyOptions.displayRealmsButton.get())
             addIconButton(this, Legacy4J.createModLocation("creation_list/realms"), Component.translatable("menu.online"), b -> FactoryAPIClient.setScreen(new RealmsMainScreen(getScreen())), tooltip);
+        //? if >=26.2
+        addIconButton(this, Identifier.withDefaultNamespace("friends/friends"), Component.translatable("gui.friends.open"), b -> FactoryAPIClient.setScreen(new FriendsOverlayScreen(getScreen())), tooltip);
         if (FactoryAPI.isModLoaded("bhmenu"))
             addRenderable(BisectModCompat.createButton(this));
         for (int i = 0; i < servers.size(); i++) {
