@@ -431,7 +431,7 @@ public abstract class MinecraftMixin {
     private InteractionResult rememberConduitRotation(MultiPlayerGameMode instance, LocalPlayer player, InteractionHand hand, BlockHitResult hit, Operation<InteractionResult> original) {
         InteractionResult toReturn = original.call(instance, player, hand, hit);
         if (!(player.getItemInHand(hand).getItem() instanceof BlockItem blockItem) || blockItem.getBlock() != Blocks.CONDUIT)
-            return null;
+            return toReturn;
         BlockPlaceContext context = new BlockPlaceContext(player, hand, player.getItemInHand(hand), hit);
         if (level.getBlockState(context.getClickedPos()).is(Blocks.CONDUIT)) ConduitRotationCache.remember(level, context.getClickedPos(), player.getYRot());
         return toReturn;
