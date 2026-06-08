@@ -9,6 +9,7 @@ import net.minecraft.server.Services;
 import net.minecraft.server.WorldStem;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.progress.LevelLoadListener;
+import net.minecraft.server.notifications.NotificationManager;
 import net.minecraft.server.packs.repository.PackRepository;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.storage.LevelStorageSource;
@@ -56,7 +57,7 @@ public abstract class ClientMinecraftServerMixin {
     public abstract Iterable<ServerLevel> getAllLevels();
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void init(Thread thread, LevelStorageSource.LevelStorageAccess levelStorageAccess, PackRepository packRepository, WorldStem worldStem, Optional<GameRules> gameRules, Proxy proxy, DataFixer dataFixer, Services services, LevelLoadListener levelLoadListener, boolean bl, CallbackInfo ci) {
+    private void init(Thread thread, LevelStorageSource.LevelStorageAccess levelStorageAccess, PackRepository packRepository, WorldStem worldStem, Optional<GameRules> gameRules, Proxy proxy, DataFixer dataFixer, Services services, LevelLoadListener levelLoadListener, boolean bl, NotificationManager notificationManager, CallbackInfo ci) {
         ticksUntilAutosave *= Math.max(1, LegacyOptions.autoSaveInterval.get());
     }
 

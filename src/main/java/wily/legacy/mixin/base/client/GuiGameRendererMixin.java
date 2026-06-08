@@ -4,13 +4,10 @@ package wily.legacy.mixin.base.client;
 
 import net.minecraft.client.DeltaTracker;
 //?}
-import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.GameRenderer;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import wily.legacy.client.LegacyOptions;
 
 @Mixin(GameRenderer.class)
@@ -48,9 +45,9 @@ public class GuiGameRendererMixin {
         return LegacyOptions.displayHUD.get();
     }
     *///?} else {
-    @WrapWithCondition(method = "extractGui", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
-    private boolean render(Gui instance, GuiGraphicsExtractor GuiGraphicsExtractor, DeltaTracker deltaTracker) {
-        return LegacyOptions.displayHUD.get();
+    @ModifyArg(method = "extract", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractRenderState(Lnet/minecraft/client/DeltaTracker;ZZ)V"), index = 1)
+    private boolean render(boolean renderHud) {
+        return renderHud && LegacyOptions.displayHUD.get();
     }
     //?}
 }
