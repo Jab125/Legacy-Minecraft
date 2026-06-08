@@ -1,3 +1,4 @@
+//? if >=26.2 {
 package wily.legacy.mixin.base.client;
 
 import com.llamalad7.mixinextras.sugar.Local;
@@ -19,3 +20,4 @@ public class ActualGuiMixin {
         ScreenshotToast.render(graphics);
     }
 }
+//?}

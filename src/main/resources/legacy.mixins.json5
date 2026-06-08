@@ -10,7 +10,9 @@
     "client.GhostSlotsMixin",
     "client.MapDecorationRenderStateMixin",
     "client.AbstractRecipeBookScreenMixin",
+    //? if >=26.2 {
     "client.ActualGuiMixin",
+    //?}
     "client.crafter.CrafterScreenMixin",
     //? fabric || neoforge {
     "compat.sodium.FluidRendererFactoryMixin",
