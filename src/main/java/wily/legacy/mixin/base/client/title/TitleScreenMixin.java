@@ -46,8 +46,10 @@ public abstract class TitleScreenMixin extends Screen implements ControlTooltip.
     @Shadow
     @Nullable
     private SplashRenderer splash;
+    //? if >=26.2 {
     @Shadow
     private boolean fading;
+    //?}
     //? if forge || neoforge && <=1.20.4 {
     /*@Shadow(remap = false) private TitleScreenModUpdateIndicator modUpdateNotification;
      *///?}
@@ -118,7 +120,9 @@ public abstract class TitleScreenMixin extends Screen implements ControlTooltip.
 
     @Inject(method = "<init>(ZLnet/minecraft/client/gui/components/LogoRenderer;)V", at = @At("RETURN"))
     public void init(boolean bl, LogoRenderer logoRenderer, CallbackInfo ci) {
+        //? if >=26.2 {
         fading = LegacyOptions.titleScreenFade.get();
+        //?}
         rebuildMenuButtons();
     }
 
