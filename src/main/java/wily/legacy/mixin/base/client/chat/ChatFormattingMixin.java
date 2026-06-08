@@ -15,7 +15,7 @@ import wily.legacy.client.CommonColor;
 public class ChatFormattingMixin {
     //~ if >=26.2 'getColor' -> 'fromLegacyFormat'
     @Inject(method = "fromLegacyFormat", at = @At("HEAD"), cancellable = true)
-    //~ if >=26.2 'CallbackInfoReturnable<Integer> cir' -> 'ChatFormatting formatting, CallbackInfoReturnable<TextColor> cir'
+    //~ if >=26.2 'private void getColor(CallbackInfoReturnable<Integer> cir' -> 'private static void getColor(ChatFormatting formatting, CallbackInfoReturnable<TextColor> cir'
     private static void getColor(ChatFormatting formatting, CallbackInfoReturnable<TextColor> cir) {
         //? if <26.2 {
         /*ChatFormatting formatting = (ChatFormatting) (Object) this;

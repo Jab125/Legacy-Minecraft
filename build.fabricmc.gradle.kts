@@ -35,7 +35,9 @@ configurations.configureEach {
 }
 
 loom {
-	accessWidenerPath = rootProject.file(platform.awFile)
+	// Input in the shared `src/` directory; output in `versions/.../build/`
+	val awFile = rootProject.file(platform.awFile)
+	accessWidenerPath = sc.process(awFile, "build/processed.aw")
 	runs.named("client") {
 		client()
 		ideConfigGenerated(true)
@@ -64,10 +66,10 @@ repositories {
 	mavenCentral()
 	strictMaven("https://maven.terraformersmc.com/", "com.terraformersmc") { name = "TerraformersMC" }
 	strictMaven("https://api.modrinth.com/maven", "maven.modrinth") { name = "Modrinth" }
+	mavenLocal()
 	maven("https://raw.githubusercontent.com/Kyubion-Studios/Mod-Resources/main/maven/") { name = "Kyubion Mod Resources" }
 	maven("https://maven.isxander.dev/releases")
 	maven("https://maven.caffeinemc.net/releases") { name = "CaffeineMC" }
-	mavenLocal()
 }
 
 dependencies {

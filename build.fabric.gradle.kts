@@ -31,7 +31,9 @@ configurations.configureEach {
 }
 
 loom {
-	accessWidenerPath = rootProject.file(platform.awFile)
+	// Input in the shared `src/` directory; output in `versions/.../build/`
+	val awFile = rootProject.file(platform.awFile)
+	accessWidenerPath = sc.process(awFile, "build/processed.aw")
 	runs.named("client") {
 		client()
 		ideConfigGenerated(true)

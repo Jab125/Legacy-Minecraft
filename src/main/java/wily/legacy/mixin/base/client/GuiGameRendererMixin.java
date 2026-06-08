@@ -52,6 +52,7 @@ public class GuiGameRendererMixin {
     /*@WrapWithCondition(method = "extractGui", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V"))
     private boolean render(Gui instance, GuiGraphicsExtractor GuiGraphicsExtractor, DeltaTracker deltaTracker) {
         return LegacyOptions.displayHUD.get();
+    }
     *///?} else {
     @ModifyArg(method = "extract", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;extractRenderState(Lnet/minecraft/client/DeltaTracker;ZZ)V"), index = 1)
     private boolean render(boolean renderHud) {

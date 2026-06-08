@@ -13,6 +13,8 @@ import wily.legacy.Legacy4JClient;
 import wily.legacy.client.OptionInstanceAccessor;
 import wily.legacy.client.OptionsPreset;
 
+import java.util.function.Consumer;
+
 @Mixin(OptionInstance.class)
 public abstract class OptionInstanceMixin implements OptionInstanceAccessor {
     @Unique

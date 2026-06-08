@@ -10,9 +10,10 @@
     "X": {
       "item": "minecraft:apple"
     }
-    *///?}
+    *///?} else {
     "#": "minecraft:gold_block",
     "X": "minecraft:apple"
+    //?}
   },
   "pattern": [
     "###",

@@ -262,7 +262,7 @@ public final class LegacyCloudAtmosphere {
 
     private static float getSunriseCloudViewBlend(ClientLevel level, float partialTick) {
         Camera camera = Minecraft.getInstance().gameRenderer.
-                //$ if <26.1 'getMainCamera();' else 'mainCamera();'
+                //$ if <26.2 'getMainCamera();' else 'mainCamera();'
                 mainCamera();
         if (camera == null) {
             return 0.0f;

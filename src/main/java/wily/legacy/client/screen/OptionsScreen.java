@@ -319,7 +319,7 @@ public class OptionsScreen extends PanelVListScreen {
         public static OptionInstance<?> createResolutionOptionInstance(OptionsScreen screen) {
             Monitor monitor = mc.getWindow().findBestMonitor();
             int j = monitor == null ? -1 : mc.getWindow().getPreferredFullscreenVideoMode().map(monitor::
-                                                                                                //$ if <26.1 'getVideoModeIndex' else 'indexOfMode'
+                                                                                                //$ if <26.2 'getVideoModeIndex' else 'indexOfMode'
                                                                                                 indexOfMode
             ).orElse(-1);
             return new OptionInstance<>("options.fullscreen.resolution", OptionInstance.noTooltip(), (component, integer) -> {
@@ -329,18 +329,18 @@ public class OptionsScreen extends PanelVListScreen {
                     return Options.genericValueLabel(component, Component.translatable("options.fullscreen.current"));
                 }
                 VideoMode videoMode = monitor
-                        //$ if <26.1 '.getMode' else '.mode'
+                        //$ if <26.2 '.getMode' else '.mode'
                         .mode
                                 (integer);
                 return Options.genericValueLabel(component, Component.translatable("options.fullscreen.entry", videoMode.getWidth(), videoMode.getHeight(), videoMode.getRefreshRate(), videoMode.getRedBits() + videoMode.getGreenBits() + videoMode.getBlueBits()));
             }, new OptionInstance.IntRange(-1, monitor != null ? monitor.
-                                                                         //$ if <26.1 'getModeCount()' else 'modeCount()'
+                                                                         //$ if <26.2 'getModeCount()' else 'modeCount()'
                                                                          modeCount()
                                                                                         - 1 : -1), j, integer -> {
                 if (monitor == null)
                     return;
                 mc.getWindow().setPreferredFullscreenVideoMode(integer == -1 ? Optional.empty() : Optional.of(monitor
-                                                                                                              //$ if <26.1 '.getMode' else '.mode'
+                                                                                                              //$ if <26.2 '.getMode' else '.mode'
                                                                                                               .mode
                                                                                                                       (integer)));
                 FactoryAPIClient.SECURE_EXECUTOR.executeNowIfPossible(mc.getWindow()::changeFullscreenVideoMode, () -> screen != FactoryAPIClient.getScreen());
