@@ -1,6 +1,7 @@
 package wily.legacy.mixin.base.client.gui;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -130,6 +131,12 @@ public abstract class GuiMixin implements ControlTooltip.Event {
     }
 
 
+    //? if <26.2 {
+    /*@WrapMethod(method = "extractSlot")
+    void renderSlotWithTransparency(GuiGraphicsExtractor graphics, int i, int j, DeltaTracker deltaTracker, Player player, ItemStack itemStack, int k, Operation<Void> original) {
+        LegacyGuiItemRenderer.secureTranslucentRender(true, LegacyRenderUtil.getHUDOpacity(), b -> original.call(graphics, i, j, deltaTracker, player, itemStack, k));
+    }
+    *///?} else {
     @Inject(method = "extractSlot", at = @At("HEAD"))
     private void pushHotbarSlotOpacity(GuiGraphicsExtractor graphics, int i, int j, DeltaTracker deltaTracker, Player player, ItemStack itemStack, int k, CallbackInfo ci) {
         LegacyGuiItemRenderer.pushOpacity(LegacyRenderUtil.getHUDOpacity());
@@ -139,6 +146,7 @@ public abstract class GuiMixin implements ControlTooltip.Event {
     private void popHotbarSlotOpacity(GuiGraphicsExtractor graphics, int i, int j, DeltaTracker deltaTracker, Player player, ItemStack itemStack, int k, CallbackInfo ci) {
         LegacyGuiItemRenderer.popOpacity();
     }
+    //?}
 
     @WrapOperation(method = "extractSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;item(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;III)V"))
     private void renderHotbarItem(GuiGraphicsExtractor graphics, LivingEntity entity, ItemStack itemStack, int i, int j, int k, Operation<Void> original) {

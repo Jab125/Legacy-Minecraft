@@ -28,7 +28,9 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import wily.factoryapi.FactoryAPIClient;
+//? if >=26.2 {
 import wily.legacy.client.LegacyGuiItemRenderState;
+//?}
 import wily.legacy.client.LegacyGuiItemRenderer;
 import wily.legacy.client.LegacyOptions;
 import wily.legacy.client.MutablePIPRenderState;
@@ -73,7 +75,9 @@ public abstract class GuiGraphicsExtractorMixin {
 
     @WrapOperation(method = "item(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/level/Level;Lnet/minecraft/world/item/ItemStack;III)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/state/gui/GuiRenderState;addItem(Lnet/minecraft/client/renderer/state/gui/GuiItemRenderState;)V"))
     private void renderItem(GuiRenderState instance, GuiItemRenderState arg, Operation<Void> original, @Nullable LivingEntity livingEntity, @Nullable Level level, ItemStack itemStack, int i, int j, int k) {
+        //? if >=26.2 {
         LegacyGuiItemRenderState.of(arg).setOpacity(LegacyGuiItemRenderer.OPACITY);
+        //?}
         float g = (float) itemStack.getPopTime() - FactoryAPIClient.getGamePartialTick(true);
         if (g > 0.0F && (FactoryAPIClient.getScreen() == null || FactoryAPIClient.getScreen() instanceof LegacyMenuAccess<?> m && m.allowItemPopping())) {
             float h = 1.0F + g / 5.0F;
