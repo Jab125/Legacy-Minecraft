@@ -426,7 +426,6 @@ public class LegacyGuiItemRenderer implements AutoCloseable {
     private int cachedGuiScale;
     private boolean isValid = true;
     //? if >=26.2 {
-    // submitNodeStorage is the field's name in PictureAndPictureRenderer
     private final SubmitNodeStorage submitNodeCollector = new SubmitNodeStorage();
     //?}
 
@@ -477,7 +476,6 @@ public class LegacyGuiItemRenderer implements AutoCloseable {
         this.itemsAtlasDepth = gpuDevice.createTexture("UI items atlas depth", GpuTexture.USAGE_COPY_DST | GpuTexture.USAGE_RENDER_ATTACHMENT, GpuFormat.D32_FLOAT, i, i, 1, 1);
         this.itemsAtlasDepthView = gpuDevice.createTextureView(this.itemsAtlasDepth);
         gpuDevice.createCommandEncoder().clearColorAndDepthTextures(this.itemsAtlas, GuiRenderer.CLEAR_COLOR, this.itemsAtlasDepth, 1.0);
-        // TODO 26.2 do we set the projection matrix? (PictureAndPictureRenderer L91 decomp)
     }
 
     public void prepareItemElements(FeatureRenderDispatcher dispatcher,
@@ -663,7 +661,7 @@ public class LegacyGuiItemRenderer implements AutoCloseable {
         int k = set.size();
         int l = Mth.smallestSquareSide(k + k / 2);
         return Math.clamp(
-                Mth.smallestEncompassingPowerOfTwo(k * l),
+                Mth.smallestEncompassingPowerOfTwo(l * i),
                 512,
                 RenderSystem.getDevice().getDeviceInfo().limits().maxTextureSizeForFormat(GpuFormat.RGBA8_UNORM)
         );
