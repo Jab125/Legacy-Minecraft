@@ -3,6 +3,8 @@ package wily.legacy.mixin.base.client;
 import com.mojang.blaze3d.font.GlyphInfo;
 import com.mojang.blaze3d.font.GlyphProvider;
 import com.mojang.blaze3d.platform.NativeImage;
+//? if >=26.2
+import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.gui.font.CodepointMap;
 import net.minecraft.client.gui.font.providers.BitmapProvider;
 import net.minecraft.resources.Identifier;
@@ -12,6 +14,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+//? if >=26.2
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import wily.legacy.Legacy4J;
 import wily.legacy.client.LegacyGlyphInfo;
@@ -38,8 +42,13 @@ public abstract class BitmapProviderMixin {
     @Shadow
     protected abstract int getActualGlyphWidth(NativeImage nativeImage, int i, int j, int k, int l);
 
-    // TODO 26.2
-    //? if <26.2 {
+    //? if >=26.2 {
+    @ModifyArg(method = "load", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/font/CodepointMap;put(ILjava/lang/Object;)Ljava/lang/Object;"), index = 1)
+    private Object load(Object glyph, @Local(ordinal = 0) float f, @Local(ordinal = 10) int q) {
+        ((MutableBitmapGlyph) glyph).setGlyphInfo(new LegacyGlyphInfo((q + 1) * f, f));
+        return glyph;
+    }
+    //?} else {
     /*@Inject(method = "load", at = @At("HEAD"), cancellable = true)
     private void load(ResourceManager resourceManager, CallbackInfoReturnable<GlyphProvider> cir) throws IOException {
         Identifier resourceLocation = this.file.withPrefix("textures/");
