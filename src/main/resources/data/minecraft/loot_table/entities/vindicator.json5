@@ -5,14 +5,21 @@
       "bonus_rolls": 0.0,
       "conditions": [
         {
+          "condition": "minecraft:killed_by_player"
+        },
+        {
           "condition": "minecraft:inverted",
           "term": {
             "condition": "minecraft:entity_properties",
             "entity": "this",
             "predicate": {
+              //~ if >=26.2 '"type_specific"' -> '"minecraft:type_specific/raider"'
               "minecraft:type_specific/raider": {
                 "has_raid": false,
                 "is_captain": true
+                //? if <26.2 {
+                /*, "type": "minecraft:raider",
+                *///?}
               }
             }
           }
@@ -26,7 +33,7 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 2.0,
+                "max": 1.0,
                 "min": 0.0
               },
               "function": "minecraft:set_count"
@@ -41,7 +48,7 @@
               "function": "minecraft:enchanted_count_increase"
             }
           ],
-          "name": "minecraft:arrow"
+          "name": "minecraft:emerald"
         }
       ],
       "rolls": 1.0
@@ -56,9 +63,13 @@
           "condition": "minecraft:entity_properties",
           "entity": "this",
           "predicate": {
+            //~ if >=26.2 '"type_specific"' -> '"minecraft:type_specific/raider"'
             "minecraft:type_specific/raider": {
               "has_raid": false,
               "is_captain": true
+              //? if <26.2 {
+              /*, "type": "minecraft:raider",
+              *///?}
             }
           }
         }
@@ -99,9 +110,13 @@
               "condition": "minecraft:entity_properties",
               "entity": "this",
               "predicate": {
+                //~ if >=26.2 '"type_specific"' -> '"minecraft:type_specific/raider"'
                 "minecraft:type_specific/raider": {
                   "has_raid": true,
                   "is_captain": false
+                  //? if <26.2 {
+                  /*, "type": "minecraft:raider",
+                  *///?}
                 }
               }
             },
@@ -109,9 +124,13 @@
               "condition": "minecraft:entity_properties",
               "entity": "this",
               "predicate": {
+                //~ if >=26.2 '"type_specific"' -> '"minecraft:type_specific/raider"'
                 "minecraft:type_specific/raider": {
                   "has_raid": true,
                   "is_captain": true
+                  //? if <26.2 {
+                  /*, "type": "minecraft:raider",
+                  *///?}
                 }
               }
             }
@@ -127,5 +146,5 @@
       "rolls": 1.0
     }
   ],
-  "random_sequence": "minecraft:entities/pillager"
+  "random_sequence": "minecraft:entities/vindicator"
 }
