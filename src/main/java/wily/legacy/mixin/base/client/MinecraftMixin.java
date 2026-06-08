@@ -138,9 +138,9 @@ public abstract class MinecraftMixin {
     public long lastMillis;
     Vec3 lastPlayerBlockUsePos = null;
     //? if <26.2 {
-    @Unique
+    /*@Unique
     Screen oldScreen;
-    //?}
+    *///?}
     private boolean inventoryKeyLastPressed = false;
     private int inventoryKeyHold = 0;
     private int legacy$shieldPauseSyncCooldown = 0;
