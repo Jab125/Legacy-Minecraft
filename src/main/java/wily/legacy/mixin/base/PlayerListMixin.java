@@ -1,9 +1,6 @@
 package wily.legacy.mixin.base;
 
-import net.minecraft.advancements/*? if >=26.2 {*/.triggers/*?}*/.CriteriaTriggers;
 import net.minecraft.server.level.ServerPlayer;
-//? if >1.20.2 {
-//?}
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,7 +20,6 @@ public abstract class PlayerListMixin {
         ((LegacyPlayerInfo) cir.getReturnValue()).copyFrom(((LegacyPlayerInfo) serverPlayer));
         LegacyPlayerInfo.updateMayFlySurvival(cir.getReturnValue(), ((LegacyPlayerInfo) serverPlayer).mayFlySurvival(), true);
         ((LegacyPlayer) cir.getReturnValue()).copyFrom(((LegacyPlayer) serverPlayer));
-        CriteriaTriggers.CHANGED_DIMENSION.trigger(cir.getReturnValue(), serverPlayer.level().dimension(), cir.getReturnValue().level().dimension());
     }
 
     @Inject(method = "remove", at = @At("HEAD"), require = 0)
