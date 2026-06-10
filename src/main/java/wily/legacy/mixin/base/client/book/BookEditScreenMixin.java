@@ -127,7 +127,7 @@ public abstract class BookEditScreenMixin extends Screen implements Controller.E
         this.addRenderableWidget(this.page);
         this.updatePageContent();
         this.numberOfPages = this.getPageNumberMessage();
-        this.addRenderableWidget(Button.builder(Component.translatable("book.signButton"), button -> FactoryAPIClient..setScreen(this.signScreen)).bounds(this.width / 2 - 108, panel.screenButtonY(), 100, 20).build());
+        this.addRenderableWidget(Button.builder(Component.translatable("book.signButton"), button -> FactoryAPIClient.setScreen(this.signScreen)).bounds(this.width / 2 - 108, panel.screenButtonY(), 100, 20).build());
         this.addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (button) -> {
             FactoryAPIClient.setScreen(null);
             this.saveChanges();
