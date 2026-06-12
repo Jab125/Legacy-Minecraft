@@ -57,7 +57,7 @@ public class BoxAddonLayer extends RenderLayer {
         if (hatChildLike) head.translateAndRotate(ps);
         hat.translateAndRotate(ps);
         if (partScale != 1.0F) ps.scale(partScale, partScale, partScale);
-        //~ if >=26.2 'null, false, false, -1, null' -> 'null, -1, null,'
+        //~ if >=26.2 'null, false, false, -1, null' -> 'null, -1, null'
         for (ModelPart p : parts) collector.submitModelPart(p, ps, renderType, light, overlay, null, -1, null, outlineColor);
         ps.popPose();
     }
