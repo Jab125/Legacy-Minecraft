@@ -4,8 +4,8 @@ plugins {
 }
 
 val projectVersion = stonecutter.current.version
-val semver = if (stonecutter.current.version == "26.2") "26.2-rc.2" else stonecutter.current.version
-val realver = if (stonecutter.current.version == "26.2") "26.2-rc-2" else stonecutter.current.version
+val semver = if (stonecutter.current.version == "26.2") "26.2" else stonecutter.current.version
+val realver = if (stonecutter.current.version == "26.2") "26.2" else stonecutter.current.version
 
 platform {
 	loader = "fabric"
