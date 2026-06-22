@@ -637,7 +637,6 @@ public class OptionsScreen extends PanelVListScreen {
                                 LegacyOptions.enhancedItemTranslucency,
                                 LegacyOptions.loyaltyLines,
                                 LegacyOptions.merchantTradingIndicator,
-                                LegacyOptions.legacyBabyVillagerHead,
                                 LegacyOptions.legacyFireworks,
                                 LegacyOptions.legacyEvokerFangs,
                                 LegacyOptions.legacyDrownedHeight,

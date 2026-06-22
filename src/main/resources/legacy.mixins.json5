@@ -186,7 +186,6 @@
     "client.LightTextureMixin",
     "client.LightingMixin",
     "client.ClientLivingEntityMixin",
-    "client.VillagerModelMixin",
     "client.BubbleParticleMixin",
     "client.gui.SubtitleOverlayMixin",
     "client.ItemPickupParticleMixin",
