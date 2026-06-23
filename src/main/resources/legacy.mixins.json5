@@ -4,6 +4,9 @@
   "package": "wily.legacy.mixin.base",
   "compatibilityLevel": "JAVA_17",
   "plugin": "wily.legacy.mixin.LegacyMixinPlugin",
+  "mixinextras": {
+    "minVersion": "0.5.4"
+  },
   "client": [
     "client.GustParticleMixin",
     "client.PanoramaRendererMixin",
