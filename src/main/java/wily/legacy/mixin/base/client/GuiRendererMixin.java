@@ -75,12 +75,16 @@ public abstract class GuiRendererMixin {
     @Shadow
     @Final
     private FeatureRenderDispatcher featureRenderDispatcher;
-    @Unique
+    //? if <26.2 {
+    /*@Unique
     private Long2ObjectMap<LegacyGuiItemRenderer> guiItemRenderers = new Long2ObjectArrayMap<>();
+    *///?}
     @Unique
     private List<GuiEntityRenderer> guiEntityRenderers;
-    @Unique
+    //? if <26.2 {
+    /*@Unique
     private int legacyFrameNumber;
+    *///?}
 
     @Inject(method = "<init>", at = @At("TAIL"))
     void initTail(GuiRenderState guiRenderState,
@@ -98,7 +102,8 @@ public abstract class GuiRendererMixin {
         //?}
     }
 
-    @Inject(method = "prepareItemElements", at = @At("HEAD"))
+    //? if <26.2 {
+    /*@Inject(method = "prepareItemElements", at = @At("HEAD"))
     private void prepareItemElementsHead(CallbackInfo ci) {
         legacyFrameNumber++;
         if (guiItemRenderers == null) {
@@ -108,8 +113,7 @@ public abstract class GuiRendererMixin {
         guiItemRenderers.forEach((i, renderer) -> renderer.markInvalid());
     }
 
-    //? if <26.2 {
-    /*@ModifyArg(method = "prepareItemElements", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/state/gui/GuiRenderState;forEachItem(Ljava/util/function/Consumer;)V"))
+    @ModifyArg(method = "prepareItemElements", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/state/gui/GuiRenderState;forEachItem(Ljava/util/function/Consumer;)V"))
     private Consumer<GuiItemRenderState> prepareItemElements(Consumer<GuiItemRenderState> consumer) {
         return renderState -> {
             LegacyGuiItemRenderState legacyRenderState = LegacyGuiItemRenderState.of(renderState);
@@ -118,28 +122,26 @@ public abstract class GuiRendererMixin {
                 guiItemRenderers.computeIfAbsent(((long) legacyRenderState.size() << 32) | (Float.floatToIntBits(LegacyOptions.enhancedItemTranslucency.get() ? 1.0f : legacyRenderState.opacity()) & 4294967295L), LegacyGuiItemRenderer::new).markValid();
         };
     }
-    *///?}
 
     @Inject(method = "prepareItemElements", at = @At("RETURN"))
     private void prepareItemElements(CallbackInfo ci) {
         for (ObjectIterator<LegacyGuiItemRenderer> iter = guiItemRenderers.values().iterator(); iter.hasNext(); ) {
             var renderer = iter.next();
             if (renderer.isValid())
-                renderer.prepareItemElements(featureRenderDispatcher,
-                        //? if <26.2 {
-                        /*submitNodeCollector, bufferSource,
-                        *///?}
-                        renderState, legacyFrameNumber);
+                renderer.prepareItemElements(featureRenderDispatcher, submitNodeCollector, bufferSource, renderState, legacyFrameNumber);
             else {
                 renderer.close();
                 iter.remove();
             }
         }
     }
+    *///?}
 
     @Inject(method = "close", at = @At("RETURN"), remap = false)
     private void close(CallbackInfo ci) {
-        guiItemRenderers.forEach((i, renderer) -> renderer.close());
+        //? if <26.2 {
+        /*guiItemRenderers.forEach((i, renderer) -> renderer.close());
+        *///?}
         guiEntityRenderers.forEach(PictureInPictureRenderer::close);
         //? if >=26.2 {
         List<Runnable> runnables = new ArrayList<>();
