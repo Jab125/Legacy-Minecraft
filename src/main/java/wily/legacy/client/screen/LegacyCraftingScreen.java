@@ -28,6 +28,8 @@ import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.block.BannerBlock;
 import net.minecraft.world.level.block.ShulkerBoxBlock;
+import net.minecraft.world.level.block.StainedGlassBlock;
+import net.minecraft.world.level.block.StainedGlassPaneBlock;
 import net.minecraft.world.level.block.entity.*;
 import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.Nullable;
@@ -243,8 +245,7 @@ public class LegacyCraftingScreen extends RecipesScreen<LegacyCraftingMenu, Reci
 
         dyeArmorButtons.add(craftingButtonByPredicate(Component.translatable("legacy.container.tab.armour"), i -> /*? if <1.20.5 {*//*i.getItem() instanceof DyeableLeatherItem*//*?} else {*/i.is(ItemTags.CAULDRON_CAN_REMOVE_DYE)/*?}*/, dyeArmorUpdateRecipe));
         dyeArmorButtons.add(craftingButtonByList(LegacyComponents.COLOR_TAB, dyes, dyeArmorUpdateRecipe).enableAddIngredients());
-        //~ if >=26.3 'i.getItem() instanceof BedItem' -> 'i.is(ItemTags.BEDS)'
-        dyeItemButtons.add(craftingButtonByPredicate(Component.translatable("entity.minecraft.item"), i -> i.is(ItemTags.BEDS) || (i.getItem() instanceof BlockItem b && b.getBlock() instanceof ShulkerBoxBlock/*? if >=1.21.4 {*/ || i.getItem() instanceof BundleItem/*?}*/), dyeItemUpdateRecipe));
+        dyeItemButtons.add(craftingButtonByPredicate(Component.translatable("entity.minecraft.item"), i -> !(i.getItem() instanceof BlockItem item && (item.getBlock() instanceof StainedGlassBlock || item.getBlock() instanceof StainedGlassPaneBlock)) && !i.is(ItemTags.CONCRETE) && !i.is(ItemTags.CONCRETE_POWDERS) && !i.is(ItemTags.TERRACOTTA) && !i.is(ItemTags.GLAZED_TERRACOTTA) && !i.is(ItemTags.BANNERS) && !(i.is(ItemTags.CANDLES) && !i.is(Items.CANDLE)) && i.is(TagKey.create(Registries.ITEM, Identifier.parse("c:dyed"))) || i.is(Items.CANDLE) /*? if >=26.3 {*/|| i.is(ItemTags.WOOL_STAIRS) || i.is(ItemTags.WOOL_SLABS)/*?}*/, dyeItemUpdateRecipe));
         dyeItemButtons.add(craftingButtonByList(LegacyComponents.COLOR_TAB, dyes, dyeItemUpdateRecipe));
         if (!is2x2)
             bannerButtons.add(craftingButtonByRecipes(LegacyComponents.CREATE_BANNER_TAB, Arrays.stream(DyeColor.values()).flatMap(c -> allRecipes.stream().filter(new RecipeInfo.Filter.ItemId(BuiltInRegistries.ITEM.getKey(LegacyItemUtil.getBannerItem(c))))).toList()));
