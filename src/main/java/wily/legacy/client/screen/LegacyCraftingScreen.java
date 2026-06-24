@@ -7,6 +7,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -14,6 +15,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.*;
@@ -241,7 +243,8 @@ public class LegacyCraftingScreen extends RecipesScreen<LegacyCraftingMenu, Reci
 
         dyeArmorButtons.add(craftingButtonByPredicate(Component.translatable("legacy.container.tab.armour"), i -> /*? if <1.20.5 {*//*i.getItem() instanceof DyeableLeatherItem*//*?} else {*/i.is(ItemTags.CAULDRON_CAN_REMOVE_DYE)/*?}*/, dyeArmorUpdateRecipe));
         dyeArmorButtons.add(craftingButtonByList(LegacyComponents.COLOR_TAB, dyes, dyeArmorUpdateRecipe).enableAddIngredients());
-        dyeItemButtons.add(craftingButtonByPredicate(Component.translatable("entity.minecraft.item"), i -> i.getItem() instanceof BedItem || (i.getItem() instanceof BlockItem b && b.getBlock() instanceof ShulkerBoxBlock/*? if >=1.21.4 {*/ || i.getItem() instanceof BundleItem/*?}*/), dyeItemUpdateRecipe));
+        //~ if >=26.3 'i.getItem() instanceof BedItem' -> 'i.is(ItemTags.BEDS)'
+        dyeItemButtons.add(craftingButtonByPredicate(Component.translatable("entity.minecraft.item"), i -> i.is(ItemTags.BEDS) || (i.getItem() instanceof BlockItem b && b.getBlock() instanceof ShulkerBoxBlock/*? if >=1.21.4 {*/ || i.getItem() instanceof BundleItem/*?}*/), dyeItemUpdateRecipe));
         dyeItemButtons.add(craftingButtonByList(LegacyComponents.COLOR_TAB, dyes, dyeItemUpdateRecipe));
         if (!is2x2)
             bannerButtons.add(craftingButtonByRecipes(LegacyComponents.CREATE_BANNER_TAB, Arrays.stream(DyeColor.values()).flatMap(c -> allRecipes.stream().filter(new RecipeInfo.Filter.ItemId(BuiltInRegistries.ITEM.getKey(LegacyItemUtil.getBannerItem(c))))).toList()));
@@ -272,8 +275,10 @@ public class LegacyCraftingScreen extends RecipesScreen<LegacyCraftingMenu, Reci
         decoratedPotButtons.add(craftingButtonByList(LegacyComponents.ADD_SHERD,
                 //? if <26.2 {
                 /*DecoratedPotPatterns.ITEM_TO_POT_TEXTURE
+                *///?} else if <26.3 {
+                /*(switch (0) { default -> {Map<ResourceKey<Item>, ResourceKey<DecoratedPotPattern>> map = new HashMap<>();DecoratedPotPatterns.itemToPatternMappings(map::put); yield map;}})
                 *///?} else {
-                (switch (0) { default -> {Map<ResourceKey<Item>, ResourceKey<DecoratedPotPattern>> map = new HashMap<>();DecoratedPotPatterns.itemToPatternMappings(map::put); yield map;}})
+                Minecraft.getInstance().level.registryAccess().getOrThrow(ItemTags.DECORATED_POT_SHERDS).stream().filter(a -> a.components().has(DataComponents.PROVIDES_POTTERY_PATTERN)).map(a -> Map.entry(a.unwrapKey().orElseThrow(), a.components().get(DataComponents.PROVIDES_POTTERY_PATTERN).value())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
                 //?}
                 .keySet().stream()
                         //? if >=26.2 {

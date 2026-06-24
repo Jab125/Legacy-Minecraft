@@ -132,7 +132,8 @@ public final class SkinPackLang {
 
     private static Map<Identifier, Resource> listResources(ResourceManager rm, String root, java.util.function.Predicate<Identifier> filter) {
         try {
-            return rm.listResources(root, filter);
+            //~ if >=26.3 'filter)' -> 'filter::test)'
+            return rm.listResources(root, filter::test);
         } catch (RuntimeException ignored) {
             return Map.of();
         }

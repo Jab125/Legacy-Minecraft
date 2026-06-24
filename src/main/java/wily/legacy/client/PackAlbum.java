@@ -10,6 +10,9 @@ import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+//? if >=26.3 {
+import net.minecraft.server.packs.PackMetadataResources;
+//?}
 import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -409,7 +412,8 @@ public record PackAlbum(String id, int version, Component displayName, Component
         }
 
         public static Identifier loadPackIcon(TextureManager textureManager, Pack pack, String icon, Identifier fallback) {
-            try (PackResources packResources = pack.open()) {
+            //~ if >=26.3 'PackResources packResources = pack.open()' -> 'PackMetadataResources packResources = pack.openMetadata()'
+            try (PackMetadataResources packResources = pack.openMetadata()) {
                 Identifier resourceLocation;
                 {
                     IoSupplier<InputStream> ioSupplier = packResources.getRootResource(icon);

@@ -35,7 +35,7 @@ public class TntBlockMixin {
         if (level instanceof ServerLevel serverLevel && !serverLevel.getGameRules().get(LegacyGameRules.TNT_EXPLODES.get())) ci.cancel();
     }
     *///?} else {
-    @ModifyExpressionValue(method = "prime(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/LivingEntity;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/gamerules/GameRules;get(Lnet/minecraft/world/level/gamerules/GameRule;)Ljava/lang/Object;"))
+    @ModifyExpressionValue(method = "prime(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/LivingEntity;" /*? if >=26.3 {*/+ "Lnet/minecraft/world/item/ItemStack;"/*?}*/ + ")Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/gamerules/GameRules;get(Lnet/minecraft/world/level/gamerules/GameRule;)Ljava/lang/Object;"))
     private static Object explode(Object original, @Local BlockPos pos, @Local ServerLevel serverLevel) {
         return (Boolean) original && (serverLevel.getGameRules().get(LegacyGameRules.TNT_LIMIT.get()) == 0 || serverLevel.getEntitiesOfClass(PrimedTnt.class, tntDetectBounding.move(pos)).size() < serverLevel.getGameRules().get(LegacyGameRules.TNT_LIMIT.get()));
     }
