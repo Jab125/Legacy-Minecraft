@@ -81,6 +81,7 @@ public class LegacyUIElementTypes {
             .setEquipSound(SoundEvents.ARMOR_EQUIP_DIAMOND)
             .setAsset(EquipmentAssets.DIAMOND)
             .build();
+    //~ if >=26.3 'MaterialAssetGroup.EMERALD' -> 'Identifier.withDefaultNamespace("emerald")'
     private static final Holder<TrimMaterial> EMERALD_TRIM_MATERIAL = new KeyedHolder<>(TrimMaterials.EMERALD, new TrimMaterial(Identifier.withDefaultNamespace("emerald"), Component.translatable("trim_material.minecraft.emerald").withStyle(Style.EMPTY.withColor(1155126))));
     private static final Holder<TrimPattern> SENTRY_TRIM_PATTERN = new KeyedHolder<>(TrimPatterns.SENTRY, new TrimPattern(Identifier.withDefaultNamespace("sentry"), Component.translatable("trim_pattern.minecraft.sentry"), false));
     private static final ArmorTrim EMERALD_SENTRY_TRIM = new ArmorTrim(EMERALD_TRIM_MATERIAL, SENTRY_TRIM_PATTERN);
