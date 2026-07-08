@@ -52,7 +52,8 @@ public class CustomHeadLayerMixin {
     private void hurtOverlayOnSkulls(float animationPos, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, SkullModelBase skullModel, RenderType renderType, int outlineColor, ModelFeatureRenderer.CrumblingOverlay crumblingOverlay, PoseStack ignoredPoseStack, SubmitNodeCollector ignoredCollector, int ignoredLight, LivingEntityRenderState renderState, float headYaw, float headPitch) {
         SkullModelBase.State state = new SkullModelBase.State();
         state.animationPos = animationPos;
-        submitNodeCollector.submitModel(skullModel, state, poseStack, renderType, light, legacy$getOverlay(renderState), outlineColor, crumblingOverlay);
+        // TODO 26.3 crumbling overlay
+        submitNodeCollector.submitModel(skullModel, state, poseStack, renderType, light, legacy$getOverlay(renderState), outlineColor);
     }
 
     @Unique

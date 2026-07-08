@@ -12,7 +12,7 @@ import wily.legacy.util.client.LegacyRenderUtil;
 
 @Mixin(TutorialToast.class)
 public abstract class TutorialToastMixin implements Toast {
-    @Redirect(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V"))
+    @Redirect(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/renderpearl/api/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V"))
     public void extractRenderState(GuiGraphicsExtractor instance, RenderPipeline renderPipeline, Identifier resourceLocation, int i, int j, int k, int l) {
         LegacyRenderUtil.renderPointerPanel(instance, 0, 0, width(), height());
     }

@@ -104,7 +104,7 @@ public abstract class CloudRendererMixin {
         method = "render",
         at = @At(
             value = "FIELD",
-            target = "Lnet/minecraft/client/renderer/RenderPipelines;CLOUDS:Lcom/mojang/blaze3d/pipeline/RenderPipeline;"
+            target = "Lnet/minecraft/client/renderer/RenderPipelines;CLOUDS:Lcom/mojang/renderpearl/api/pipeline/RenderPipeline;"
         )
     )
     private RenderPipeline legacy$useLegacyCloudPipeline() {
@@ -123,7 +123,7 @@ public abstract class CloudRendererMixin {
         method = "render",
         at = @At(
             value = "FIELD",
-            target = "Lnet/minecraft/client/renderer/RenderPipelines;FLAT_CLOUDS:Lcom/mojang/blaze3d/pipeline/RenderPipeline;"
+            target = "Lnet/minecraft/client/renderer/RenderPipelines;FLAT_CLOUDS:Lcom/mojang/renderpearl/api/pipeline/RenderPipeline;"
         )
     )
     private RenderPipeline legacy$useLegacyFlatCloudPipeline() {

@@ -48,7 +48,7 @@ public abstract class FireworkEntityRendererMixin extends EntityRenderer<Firewor
             poseStack.pushPose();
             poseStack.mulPose(Axis.YP.rotationDegrees(renderState.yRot - 90.0F));
             poseStack.mulPose(Axis.ZP.rotationDegrees(renderState.xRot));
-            submitNodeCollector.submitModel(model, new ArrowRenderState(), poseStack, RenderTypes.entityCutout(FIREWORK_LOCATION), fireworkRocketRenderState.lightCoords, OverlayTexture.NO_OVERLAY, fireworkRocketRenderState.outlineColor, null);
+            submitNodeCollector.submitModel(model, new ArrowRenderState(), poseStack, RenderTypes.entityCutout(FIREWORK_LOCATION), fireworkRocketRenderState.lightCoords, OverlayTexture.NO_OVERLAY, fireworkRocketRenderState.outlineColor /*? if <26.3 {*//*, null*//*?}*/);
             poseStack.popPose();
             super.submit(fireworkRocketRenderState, poseStack, submitNodeCollector, cameraRenderState);
         }

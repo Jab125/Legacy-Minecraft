@@ -113,7 +113,7 @@ public abstract class GuiGraphicsExtractorMixin {
         return shiftedState;
     }
 
-    @WrapOperation(method = {"itemBar", "itemCooldown"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;fill(Lcom/mojang/blaze3d/pipeline/RenderPipeline;IIIII)V"))
+    @WrapOperation(method = {"itemBar", "itemCooldown"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;fill(Lcom/mojang/renderpearl/api/pipeline/RenderPipeline;IIIII)V"))
     private void fill(GuiGraphicsExtractor instance, RenderPipeline j, int i, int renderPipeline, int k, int l, int m, Operation<Void> original) {
         float opacity = LegacyGuiItemRenderer.OPACITY;
         if (opacity != 1f) m = ARGB.color((int) (ARGB.alpha(m) * opacity), ARGB.transparent(m));

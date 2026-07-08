@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 
 @Mixin(Screenshot.class)
 public abstract class ScreenshotMixin {
-    @ModifyVariable(method = "grab(Ljava/io/File;Ljava/lang/String;Lcom/mojang/blaze3d/pipeline/RenderTarget;ILjava/util/function/Consumer;)V", at = @At("HEAD"), argsOnly = true)
+    @ModifyVariable(method = "grab(Ljava/io/File;Ljava/lang/String;Lcom/mojang/renderpearl/api/pipeline/RenderTarget;ILjava/util/function/Consumer;)V", at = @At("HEAD"), argsOnly = true)
     private static Consumer<Component> legacy$screenshot(Consumer<Component> original) {
         return component -> {
             if (LegacyOptions.screenshotToasts.get()) {

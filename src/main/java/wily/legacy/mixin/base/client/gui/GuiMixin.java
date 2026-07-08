@@ -95,12 +95,12 @@ public abstract class GuiMixin implements ControlTooltip.Event {
         return FactoryConfig.hasCommonConfigEnabled(LegacyCommonOptions.legacyCombat) ? AttackIndicatorStatus.OFF : instance.get();
     }
 
-    @ModifyArg(method = "extractCrosshair", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V"))
+    @ModifyArg(method = "extractCrosshair", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/renderpearl/api/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V"))
     public RenderPipeline renderCrosshair(RenderPipeline renderPipeline) {
         return LegacyOptions.invertedCrosshair.get() ? renderPipeline : RenderPipelines.GUI_TEXTURED;
     }
 
-    @ModifyArg(method = "extractCrosshair", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIIIIIII)V"))
+    @ModifyArg(method = "extractCrosshair", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/renderpearl/api/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIIIIIII)V"))
     public RenderPipeline renderCrosshairAttackIndicator(RenderPipeline renderPipeline) {
         return LegacyOptions.invertedCrosshair.get() ? renderPipeline : RenderPipelines.GUI_TEXTURED;
     }
@@ -111,12 +111,12 @@ public abstract class GuiMixin implements ControlTooltip.Event {
         LegacyRenderUtil.renderGuiEffects(GuiGraphicsExtractor);
     }
 
-    @Inject(method = "extractItemHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V", ordinal = 1))
+    @Inject(method = "extractItemHotbar", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/renderpearl/api/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V", ordinal = 1))
     private void renderHotbarSelection(GuiGraphicsExtractor GuiGraphicsExtractor, DeltaTracker deltaTracker, CallbackInfo ci) {
         FactoryGuiGraphics.of(GuiGraphicsExtractor).blitSprite(LegacySprites.HOTBAR_SELECTION, 24, 24, 0, 23, GuiGraphicsExtractor.guiWidth() / 2 - 91 - 1 + minecraft.player.getInventory()./*? if <1.21.5 {*//*selected*//*?} else {*/getSelectedSlot()/*?}*/ * 20, GuiGraphicsExtractor.guiHeight(), 0, 24, 1);
     }
 
-    @WrapWithCondition(method = "extractCrosshair", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V", ordinal = 0))
+    @WrapWithCondition(method = "extractCrosshair", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/renderpearl/api/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V", ordinal = 0))
     private boolean renderCrosshair(GuiGraphicsExtractor instance, RenderPipeline renderPipeline, Identifier arg, int i, int j, int k, int l) {
         if (LegacyOptions.getUIMode().isFHD()) {
             int size = 15 * minecraft.getWindow().getGuiScale() - 1;

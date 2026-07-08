@@ -141,7 +141,7 @@ public class LegacyTorchModel implements BlockStateModelPart {
         float maxU = Math.max(Math.max(v0.u, v1.u), Math.max(v2.u, v3.u)) / 16.0f;
         float maxV = Math.max(Math.max(v0.v, v1.v), Math.max(v2.v, v3.v)) / 16.0f;
         Transparency transparency = material.forceTranslucent() ? Transparency.TRANSLUCENT : material.sprite().contents().computeTransparency(minU, minV, maxU, maxV);
-        return BakedQuad.MaterialInfo.of(material, transparency, -1, false, 0);
+        return BakedQuad.MaterialInfo.of(material, transparency, -1, /*? if <26.3 {*//*false,*//*?} else {*/null/*?}*/, 0);
     }
 
     private static long uv(Material.Baked material, Vertex vertex) {

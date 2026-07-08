@@ -30,7 +30,7 @@ public abstract class SpectatorGuiMixin {
         this.extractPage(k, arg * LegacyRenderUtil.getHUDOpacity(), f, k.guiHeight() - 22, j);
     }
 
-    @Inject(method = "extractPage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIIII)V", ordinal = 1))
+    @Inject(method = "extractPage", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/renderpearl/api/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIIII)V", ordinal = 1))
     private void renderHotbarSelection(GuiGraphicsExtractor GuiGraphicsExtractor, float f, int i, int j, SpectatorPage spectatorPage, CallbackInfo ci) {
         FactoryGuiGraphics.of(GuiGraphicsExtractor).setBlitColor(1.0f, 1.0f, 1.0f, f);
         FactoryGuiGraphics.of(GuiGraphicsExtractor).blitSprite(LegacySprites.HOTBAR_SELECTION, 24, 24, 0, 23, GuiGraphicsExtractor.guiWidth() / 2 - 91 - 1 + spectatorPage.getSelectedSlot() * 20, j + 22, 24, 1);

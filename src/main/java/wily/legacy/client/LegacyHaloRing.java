@@ -125,7 +125,12 @@ public final class LegacyHaloRing {
 
         //~ if >=26.2 'OptionalInt.empty()' -> 'Optional.empty()'
         try (RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Legacy halo ring", target.getColorTextureView(), Optional.empty(), target.getDepthTextureView(), OptionalDouble.empty())) {
-            renderPass.setPipeline(PIPELINE);
+            renderPass.setPipeline(
+                    //? if >=26.3 {
+                    RenderSystem.getCompiledPipeline
+                    //?}
+                    (PIPELINE)
+            );
             RenderSystem.bindDefaultUniforms(renderPass);
             renderPass.setUniform("DynamicTransforms", transforms);
             //? if >=1.21.11 {

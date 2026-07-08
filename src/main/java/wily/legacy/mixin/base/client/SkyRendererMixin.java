@@ -70,7 +70,7 @@ public class SkyRendererMixin {
                                                            );
     }
 
-    @ModifyArg(method = {"renderDarkDisc", "renderSkyDisc"}, at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderPass;setPipeline(Lcom/mojang/blaze3d/pipeline/RenderPipeline;)V", remap = false))
+    @ModifyArg(method = {"renderDarkDisc", "renderSkyDisc"}, at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderPass;setPipeline(Lcom/mojang/renderpearl/api/pipeline/RenderPipeline;)V", remap = false))
     private RenderPipeline changeSkyRenderPipeline(RenderPipeline renderPipeline) {
         return legacySkyShape ? LegacyRenderPipelines.LEGACY_SKY : renderPipeline;
     }

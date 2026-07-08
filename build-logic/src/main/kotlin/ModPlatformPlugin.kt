@@ -347,6 +347,9 @@ abstract class ModPlatformPlugin @Inject constructor() : Plugin<Project> {
 					replace("com.mojang.blaze3d.pipeline.", "com.mojang.renderpearl.api.pipeline.")
 				}
 				string(eval(current.version, ">=26.3"), "!renaming_26_3") {
+					replace("com/mojang/blaze3d/pipeline/", "com/mojang/renderpearl/api/pipeline/")
+				}
+				string(eval(current.version, ">=26.3"), "!renaming_26_3") {
 					replace("com.mojang.blaze3d.buffers.GpuBuffer", "com.mojang.renderpearl.api.buffers.GpuBuffer")
 				}
 				string(eval(current.version, ">=26.3"), "!renaming_26_3") {
