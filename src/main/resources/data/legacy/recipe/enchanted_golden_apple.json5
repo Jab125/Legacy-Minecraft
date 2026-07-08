@@ -1,8 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "food",
+  //~ if >=26.2 'food' -> 'misc'
+  "category": "misc",
   "key": {
-    //? if <1.21.2 {
+    //? if <26.2 {
     /*"#": {
       "item": "minecraft:gold_block"
     },
@@ -20,6 +21,7 @@
     "###"
   ],
   "result": {
+    //~ if >=26.2 'item' -> 'id'
     "id": "minecraft:enchanted_golden_apple"
   }
 }

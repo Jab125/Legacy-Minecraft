@@ -731,9 +731,9 @@ public interface ControlTooltip {
             }
             if (canHang(minecraft, blockHit, blockState, actualItem)) return LegacyComponents.HANG;
             if (canTill(minecraft, hand, actualItem)) return LegacyComponents.TILL;
-            if (LegacyItemUtil.blockTransformerAffectsLocation(actualItem, world, blockHit.getBlockPos(), LegacyItemUtil.Type.PEEL) && !(hand.equals(InteractionHand.MAIN_HAND) && minecraft.player.getOffhandItem().is(Items.SHIELD) && !minecraft.player.isSecondaryUseActive()))
+            if (blockHit != null && LegacyItemUtil.blockTransformerAffectsLocation(actualItem, world, blockHit.getBlockPos(), LegacyItemUtil.Type.PEEL) && !(hand.equals(InteractionHand.MAIN_HAND) && minecraft.player.getOffhandItem().is(Items.SHIELD) && !minecraft.player.isSecondaryUseActive()))
                 return LegacyComponents.PEEL_BARK;
-            if (LegacyItemUtil.blockTransformerAffectsLocation(actualItem, world, blockHit.getBlockPos(), LegacyItemUtil.Type.DIG))
+            if (blockHit != null && LegacyItemUtil.blockTransformerAffectsLocation(actualItem, world, blockHit.getBlockPos(), LegacyItemUtil.Type.DIG))
                 return LegacyComponents.DIG_PATH;
             if (actualItem.is(Items.LILY_PAD) || actualItem.is(Items.FROGSPAWN))
                 return canPlaceOnWater(minecraft, actualItem) ? LegacyComponents.PLACE : null;

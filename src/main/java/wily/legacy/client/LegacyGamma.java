@@ -34,6 +34,8 @@ public class LegacyGamma implements AutoCloseable {
     }
 
     public void render() {
+        // TODO 26.3
+        if (true) return;
         float value = LegacyOptions.legacyGamma.get().floatValue();
         CommandEncoder commandEncoder = RenderSystem.getDevice().createCommandEncoder();
         //? if <26.2 {
