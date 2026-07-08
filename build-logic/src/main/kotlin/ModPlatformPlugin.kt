@@ -347,7 +347,10 @@ abstract class ModPlatformPlugin @Inject constructor() : Plugin<Project> {
 					replace("com.mojang.blaze3d.pipeline.", "com.mojang.renderpearl.api.pipeline.")
 				}
 				string(eval(current.version, ">=26.3"), "!renaming_26_3") {
-					replace("com.mojang.blaze3d.buffers.", "com.mojang.renderpearl.api.buffers.")
+					replace("com.mojang.blaze3d.buffers.GpuBuffer", "com.mojang.renderpearl.api.buffers.GpuBuffer")
+				}
+				string(eval(current.version, ">=26.3"), "!renaming_26_3") {
+					replace("com.mojang.blaze3d.buffers.GpuBufferSlice", "com.mojang.renderpearl.api.buffers.GpuBufferSlice")
 				}
 				string(eval(current.version, ">=26.3"), "!renaming_26_3") {
 					replace("com.mojang.blaze3d.systems.RenderPass", "com.mojang.renderpearl.api.commands.RenderPass")
@@ -359,10 +362,31 @@ abstract class ModPlatformPlugin @Inject constructor() : Plugin<Project> {
 					replace("com.mojang.blaze3d.platform.CompareOp", "com.mojang.renderpearl.api.pipeline.CompareOp")
 				}
 				string(eval(current.version, ">=26.3"), "!renaming_26_3") {
+					replace("com.mojang.blaze3d.vertex.VertexFormat", "com.mojang.renderpearl.api.vertex.VertexFormat")
+				}
+				string(eval(current.version, ">=26.3"), "!renaming_26_3") {
+					replace("com.mojang.blaze3d.textures.GpuSampler", "com.mojang.renderpearl.api.textures.GpuSampler")
+				}
+				string(eval(current.version, ">=26.3"), "!renaming_26_3") {
+					replace("com.mojang.blaze3d.textures.GpuTextureView", "com.mojang.renderpearl.api.textures.GpuTextureView")
+				}
+				string(eval(current.version, ">=26.3"), "!renaming_26_3") {
+					replace("com.mojang.blaze3d.textures.FilterMode", "com.mojang.renderpearl.api.textures.FilterMode")
+				}
+				string(eval(current.version, ">=26.3"), "!renaming_26_3") {
+					replace("com.mojang.blaze3d.textures.GpuTexture", "com.mojang.renderpearl.api.textures.GpuTexture")
+				}
+				string(eval(current.version, ">=26.3"), "!renaming_26_3") {
+					replace("com.mojang.renderpearl.api.textures.FilterMode", "com.mojang.renderpearl.api.textures.FilterMode")
+				}
+				string(eval(current.version, ">=26.3"), "!renaming_26_3") {
 					replace("com.mojang.blaze3d.pipeline.RenderTarget", "com.mojang.blaze3d.pipeline.RenderTarget")
 				}
 				string(eval(current.version, ">=26.3"), "!renaming_26_3") {
-					replace("com.mojang.blaze3d.vertex.VertexFormat", " com.mojang.renderpearl.api.vertex.VertexFormat")
+					replace("com.mojang.blaze3d.systems.CommandEncoder", "com.mojang.renderpearl.api.commands.CommandEncoder")
+				}
+				string(eval(current.version, ">=26.3"), "!renaming_26_3") {
+					replace("com.mojang.blaze3d.shaders.UniformType", "com.mojang.renderpearl.api.pipeline.UniformType")
 				}
 			}
 			swaps["gui_to_hud"] = when {
