@@ -3,7 +3,7 @@ package wily.legacy.mixin.base.client;
 import com.llamalad7.mixinextras.injector.ModifyReceiver;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -67,7 +67,7 @@ public abstract class GuiGraphicsExtractorMixin {
     }
 
     @Inject(method = /*? if (forge || neoforge) && <26.1 {*/ /*"renderTooltip(Lnet/minecraft/client/gui/Font;Ljava/util/List;IILnet/minecraft/client/gui/screens/inventory/tooltip/ClientTooltipPositioner;Lnet/minecraft/resources/Identifier;Lnet/minecraft/world/item/ItemStack;)V", remap = false*//*?} else if forge || neoforge {*/ /*"tooltip(Lnet/minecraft/client/gui/Font;Ljava/util/List;IILnet/minecraft/client/gui/screens/inventory/tooltip/ClientTooltipPositioner;Lnet/minecraft/resources/Identifier;Lnet/minecraft/world/item/ItemStack;)V" *//*?} else {*/"tooltip"/*?}*/, at = @At("HEAD"), cancellable = true)
-    private void renderTooltipInternal(Font font, List<ClientTooltipComponent> list, int i, int j, ClientTooltipPositioner clientTooltipPositioner, Identifier location/*? if forge || neoforge {*//*, ItemStack tooltipStack*//*?}*/, CallbackInfo ci) {
+    private void renderTooltipInternal(Font font, List<ClientTooltipComponent> list, int i, int j, ClientTooltipPositioner clientTooltipPositioner, Identifier location/*? if >=26.3 {*/, boolean extraSpaceAfterFirstLine/*?}*//*? if forge || neoforge {*//*, ItemStack tooltipStack*//*?}*/, CallbackInfo ci) {
         if (!LegacyOptions.legacyItemTooltips.get()) return;
         ci.cancel();
         LegacyFontUtil.applySDFont(b -> LegacyRenderUtil.renderTooltipInternal(self(), font, list, i, j, clientTooltipPositioner/*? if forge || neoforge {*//*, tooltipStack*//*?}*/));
@@ -113,7 +113,7 @@ public abstract class GuiGraphicsExtractorMixin {
         return shiftedState;
     }
 
-    @WrapOperation(method = {"itemBar", "itemCooldown"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;fill(Lcom/mojang/blaze3d/pipeline/RenderPipeline;IIIII)V"))
+    @WrapOperation(method = {"itemBar", "itemCooldown"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;fill(Lcom/mojang/renderpearl/api/pipeline/RenderPipeline;IIIII)V"))
     private void fill(GuiGraphicsExtractor instance, RenderPipeline j, int i, int renderPipeline, int k, int l, int m, Operation<Void> original) {
         float opacity = LegacyGuiItemRenderer.OPACITY;
         if (opacity != 1f) m = ARGB.color((int) (ARGB.alpha(m) * opacity), ARGB.transparent(m));

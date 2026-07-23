@@ -86,6 +86,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.RecipePropertySet;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.*;
 import net.minecraft.world.level.block.entity.vault.VaultState;
@@ -378,6 +379,7 @@ public interface ControlTooltip {
         BlockState blockState = blockHit == null ? null : minecraft.level.getBlockState(blockHit.getBlockPos());
         Entity entity = minecraft.hitResult instanceof EntityHitResult r ? r.getEntity() : null;
         ItemStack mainHand = minecraft.player.getMainHandItem();
+        Level world = minecraft.level;
 
         if (minecraft.player.isSleeping()) return LegacyComponents.WAKE_UP;
         if (minecraft.hitResult instanceof EntityHitResult r && (r.getEntity() instanceof AbstractVillager m && (!(m instanceof Villager v) || /*? if <1.21.5 {*//*v.getVillagerData().getProfession() != VillagerProfession.NONE*//*?} else {*/!v.getVillagerData().profession().is(VillagerProfession.NONE)/*?}*/) && !m.isTrading()))
@@ -533,7 +535,7 @@ public interface ControlTooltip {
                 ItemStack item = minecraft.player.getItemInHand(hand);
                 if (item.is(Items.HONEYCOMB) && HoneycombItem.WAXABLES.get().containsKey(blockState.getBlock()))
                     return LegacyComponents.WAX;
-                if (item.getItem() instanceof AxeItem && (HoneycombItem.WAX_OFF_BY_BLOCK.get().containsKey(blockState.getBlock()) || WeatheringCopper.getPrevious(blockState).isPresent()))
+                if (LegacyItemUtil.canScrape(item) && (HoneycombItem.WAX_OFF_BY_BLOCK.get().containsKey(blockState.getBlock()) || WeatheringCopper.getPrevious(blockState).isPresent()))
                     return LegacyComponents.SCRAPE;
             }
             if (blockState.is(BlockTags.COPPER_GOLEM_STATUES) && !mainHand.is(ItemTags.AXES))
@@ -624,7 +626,7 @@ public interface ControlTooltip {
                 if (hit.getType() == HitResult.Type.BLOCK && minecraft.level.getFluidState(hit.getBlockPos()).is(FluidTags.WATER))
                     return LegacyComponents.COLLECT;
             }
-            if (blockState != null && blockState.getBlock() instanceof ComposterBlock && blockState.getValue(ComposterBlock.LEVEL) < 7 && ComposterBlock.COMPOSTABLES.containsKey(actualItem.getItem()))
+            if (blockState != null && blockState.getBlock() instanceof ComposterBlock && blockState.getValue(ComposterBlock.LEVEL) < 7 && LegacyItemUtil.canCompost(actualItem))
                 return LegacyComponents.FILL;
             if (blockHit != null && !actualItem.isEmpty() && minecraft.level.getBlockEntity(blockHit.getBlockPos()) instanceof CampfireBlockEntity e && /*? if <1.21.2 {*//*e.getCookableRecipe(actualItem).isPresent()*//*?} else {*/minecraft.level.recipeAccess().propertySet(RecipePropertySet.FURNACE_INPUT).test(actualItem)/*?}*/)
                 return LegacyComponents.COOK;
@@ -729,9 +731,9 @@ public interface ControlTooltip {
             }
             if (canHang(minecraft, blockHit, blockState, actualItem)) return LegacyComponents.HANG;
             if (canTill(minecraft, hand, actualItem)) return LegacyComponents.TILL;
-            if (actualItem.getItem() instanceof AxeItem && blockState != null && AxeItem.STRIPPABLES.get(blockState.getBlock()) != null && !(hand.equals(InteractionHand.MAIN_HAND) && minecraft.player.getOffhandItem().is(Items.SHIELD) && !minecraft.player.isSecondaryUseActive()))
+            if (blockHit != null && LegacyItemUtil.blockTransformerAffectsLocation(actualItem, world, blockHit.getBlockPos(), LegacyItemUtil.Type.PEEL) && !(hand.equals(InteractionHand.MAIN_HAND) && minecraft.player.getOffhandItem().is(Items.SHIELD) && !minecraft.player.isSecondaryUseActive()))
                 return LegacyComponents.PEEL_BARK;
-            if (actualItem.getItem() instanceof ShovelItem && blockState != null && minecraft.level.getBlockState(blockHit.getBlockPos().above()).isAir() && ShovelItem.FLATTENABLES.get(blockState.getBlock()) != null)
+            if (blockHit != null && LegacyItemUtil.blockTransformerAffectsLocation(actualItem, world, blockHit.getBlockPos(), LegacyItemUtil.Type.DIG))
                 return LegacyComponents.DIG_PATH;
             if (actualItem.is(Items.LILY_PAD) || actualItem.is(Items.FROGSPAWN))
                 return canPlaceOnWater(minecraft, actualItem) ? LegacyComponents.PLACE : null;
@@ -777,7 +779,7 @@ public interface ControlTooltip {
             }
             if (((actualItem.getItem() instanceof FlintAndSteelItem || actualItem.getItem() instanceof FireChargeItem) && minecraft.hitResult instanceof BlockHitResult r && blockState != null) && (BaseFireBlock.canBePlacedAt(minecraft.level, r.getBlockPos().relative(r.getDirection()), minecraft.player.getDirection()) || CampfireBlock.canLight(blockState) || CandleBlock.canLight(blockState) || CandleCakeBlock.canLight(blockState)))
                 return LegacyComponents.IGNITE;
-            if (actualItem.getItem() instanceof ShovelItem && blockState != null && blockState.getBlock() instanceof CampfireBlock && blockState.getValue(CampfireBlock.LIT))
+            if (LegacyItemUtil.dousesCampfires(actualItem) && blockState != null && blockState.getBlock() instanceof CampfireBlock && blockState.getValue(CampfireBlock.LIT))
                 return LegacyComponents.DOUSE;
             if (actualItem.getItem() instanceof NameTagItem && FactoryItemUtil.hasCustomName(actualItem) && minecraft.hitResult instanceof EntityHitResult r && r.getEntity() instanceof LivingEntity e && !(e instanceof Player) && e.isAlive())
                 return LegacyComponents.NAME;
@@ -954,9 +956,10 @@ public interface ControlTooltip {
     }
 
     static boolean canTill(Minecraft minecraft, InteractionHand hand, ItemStack usedItem) {
-        if (!(usedItem.getItem() instanceof HoeItem && minecraft.hitResult instanceof BlockHitResult r)) return false;
-        Pair<Predicate<UseOnContext>, Consumer<UseOnContext>> use = HoeItem.TILLABLES.get(minecraft.level.getBlockState(r.getBlockPos()).getBlock());
-        return use != null && use.getFirst().test(new UseOnContext(minecraft.player, hand, r));
+        return minecraft.hitResult instanceof BlockHitResult b && LegacyItemUtil.blockTransformerAffectsLocation(usedItem, minecraft.level, b.getBlockPos(), LegacyItemUtil.Type.TILL);
+//        if (!(usedItem.getItem() instanceof HoeItem && minecraft.hitResult instanceof BlockHitResult r)) return false;
+//        Pair<Predicate<UseOnContext>, Consumer<UseOnContext>> use = HoeItem.TILLABLES.get(minecraft.level.getBlockState(r.getBlockPos()).getBlock());
+//        return use != null && use.getFirst().test(new UseOnContext(minecraft.player, hand, r));
     }
 
     static boolean canShearPlant(BlockState state) {

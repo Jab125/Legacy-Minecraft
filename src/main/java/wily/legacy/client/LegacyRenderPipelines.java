@@ -1,14 +1,16 @@
 package wily.legacy.client;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.pipeline.DepthStencilState;
-import com.mojang.blaze3d.platform.CompareOp;
-import com.mojang.blaze3d.shaders.UniformType;
+import com.mojang.renderpearl.api.pipeline.BlendFunction;
+import com.mojang.renderpearl.api.pipeline.ColorTargetState;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.DepthStencilState;
+import com.mojang.renderpearl.api.pipeline.CompareOp;
+import com.mojang.renderpearl.api.pipeline.UniformType;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.renderpearl.api.vertex.VertexFormat;
 //? if >=26.2 {
-import com.mojang.blaze3d.PrimitiveTopology;
-import com.mojang.blaze3d.pipeline.BindGroupLayout;
+import com.mojang.renderpearl.api.pipeline.PrimitiveTopology;
+import com.mojang.renderpearl.api.pipeline.BindGroupLayout;
 //?}
 import net.minecraft.client.renderer.RenderPipelines;
 import wily.factoryapi.mixin.base.RenderPipelinesAccessor;
@@ -108,6 +110,9 @@ public class LegacyRenderPipelines {
                     //?}
                     .withVertexShader("core/screenquad")
                     .withFragmentShader(Legacy4J.createModLocation("core/gamma"))
+                    //? if >=26.3 {
+                    .withColorTargetState(ColorTargetState.DEFAULT)
+                    //?}
                     //? if <26.2 {
                     /*.withUniform("GammaInfo", UniformType.UNIFORM_BUFFER)
                     *///?}

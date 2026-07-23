@@ -153,7 +153,10 @@ public class Legacy4J {
         CommonRecipeManager.addRecipeTypeToSync(RecipeType.STONECUTTING);
 
         LegacyBlockBehaviors.setup();
-        ComposterBlock.COMPOSTABLES.put(Items.GRASS_BLOCK, 0.3f);
+        // TODO
+        //? if <26.3 {
+        /*ComposterBlock.COMPOSTABLES.put(Items.GRASS_BLOCK, 0.3f);
+        *///?}
     }
 
     public static boolean isChunkPosVisibleInSquare(int centerX, int centerZ, int viewDistance, int x, int z, boolean offset) {

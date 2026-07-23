@@ -37,8 +37,9 @@ public class EquipmentLayerRendererMixin {
         legacy$wingsRenderState.remove();
     }
 
-    //~ if >=26.3 'TextureAtlasSprite' -> 'UvMapping'
-    @ModifyArgs(method = "renderLayers(Lnet/minecraft/client/resources/model/EquipmentClientInfo$LayerType;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lnet/minecraft/world/item/ItemStack;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/resources/Identifier;II)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/OrderedSubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;IIILnet/minecraft/client/renderer/texture/UvMapping;ILnet/minecraft/client/renderer/feature/ModelFeatureRenderer$CrumblingOverlay;)V"))
+    //~ if >=26.3 'TextureAtlasSprite' -> 'UvMapping' {
+    //~ if >=26.3 ';ILnet/minecraft/client/renderer/feature/ModelFeatureRenderer$CrumblingOverlay;)V' -> ';I)V' {
+    @ModifyArgs(method = "renderLayers(Lnet/minecraft/client/resources/model/EquipmentClientInfo$LayerType;Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lnet/minecraft/world/item/ItemStack;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/resources/Identifier;II)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/OrderedSubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;IIILnet/minecraft/client/renderer/texture/UvMapping;I)V"))
     private void legacy$applyWingsHurtOverlay(Args args) {
         LivingEntityRenderState renderState = legacy$wingsRenderState.get();
         if (renderState == null) return;
@@ -46,4 +47,6 @@ public class EquipmentLayerRendererMixin {
         args.set(5, overlay);
         if (overlay != OverlayTexture.NO_OVERLAY) args.set(6, ARGB.multiply(args.get(6), 0xFFFF8080));
     }
+    //~}
+    //~}
 }

@@ -13,7 +13,7 @@ import wily.legacy.util.client.LegacyRenderUtil;
 @Mixin(LocatorBar.class)
 public class LocatorBarRendererMixin {
 
-    @ModifyArg(method = "lambda$extractRenderState$1", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIIII)V"), index = 6)
+    @ModifyArg(method = "lambda$extractRenderState$1", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/renderpearl/api/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIIII)V"), index = 6)
     private int extractRenderState(int color) {
         return ARGB.color((int) (ARGB.alpha(color) * LegacyRenderUtil.getHUDOpacity()), ARGB.transparent(color));
     }

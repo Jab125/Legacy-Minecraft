@@ -1,17 +1,18 @@
 package wily.legacy.client;
 
-import com.mojang.blaze3d.buffers.GpuBuffer;
+
+import com.mojang.renderpearl.api.buffers.GpuBuffer;
 //? if >=26.2 {
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
+import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
 //?}
 import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.systems.CommandEncoder;
-import com.mojang.blaze3d.systems.RenderPass;
+import com.mojang.renderpearl.api.commands.CommandEncoder;
+import com.mojang.renderpearl.api.commands.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.FilterMode;
-import com.mojang.blaze3d.textures.GpuTexture;
-import com.mojang.blaze3d.textures.GpuTextureView;
+import com.mojang.renderpearl.api.textures.FilterMode;
+import com.mojang.renderpearl.api.textures.GpuTexture;
+import com.mojang.renderpearl.api.textures.GpuTextureView;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MappableRingBuffer;
 import net.minecraft.util.profiling.Profiler;
@@ -56,8 +57,13 @@ public class LegacyGamma implements AutoCloseable {
         ProfilerFiller profilerFiller = Profiler.get();
         profilerFiller.push("legacyGamma");
         //~ if >=26.2 'OptionalInt.empty()' -> 'Optional.empty()'
-        try (RenderPass renderPass = commandEncoder.createRenderPass(() -> "Display Legacy Gamma", target.getColorTextureView(), Optional.empty(), target.useDepth ? target.getDepthTextureView() : null, OptionalDouble.empty())) {
-            renderPass.setPipeline(LegacyRenderPipelines.GAMMA);
+        try (RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Display Legacy Gamma", target.getColorTextureView(), Optional.empty(), target/*? if <26.3 {*//*.useDepth*//*?} else {*/.hasDepth()/*?}*/ ? target.getDepthTextureView() : null, OptionalDouble.empty())) {
+            renderPass.setPipeline(
+                    //? if >=26.3 {
+                    RenderSystem.getCompiledPipeline
+                    //?}
+                    (LegacyRenderPipelines.GAMMA)
+            );
             RenderSystem.bindDefaultUniforms(renderPass);
             renderPass.bindTexture("InSampler", inputView, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
             renderPass.setUniform("GammaInfo", this.ubo.currentBuffer());

@@ -1,5 +1,6 @@
 package wily.legacy.mixin.base;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.authlib.GameProfile;
 import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -171,7 +172,7 @@ public abstract class ServerPlayerMixin extends Player implements LegacyPlayer, 
     }
 
     @Inject(method = "startSleepInBed", at = @At("RETURN"), cancellable = true)
-    public void startSleepInBed(BlockPos blockPos, CallbackInfoReturnable<Either<BedSleepingProblem, Unit>> cir) {
+    public void startSleepInBed(CallbackInfoReturnable<Either<BedSleepingProblem, Unit>> cir, @Local(argsOnly = true) BlockPos blockPos) {
         Either<BedSleepingProblem, Unit> either = cir.getReturnValue();
         if (level()./*? if <1.21.5 {*//*isDay*//*?} else {*/isBrightOutside/*?}*/() && either.left().isPresent() && either.left().get() == BedSleepingProblem.OTHER_PROBLEM && !this.isCreative()) {
             Vec3 vec3 = Vec3.atBottomCenterOf(blockPos);

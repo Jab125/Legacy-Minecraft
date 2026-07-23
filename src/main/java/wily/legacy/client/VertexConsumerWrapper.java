@@ -47,6 +47,13 @@ public class VertexConsumerWrapper implements VertexConsumer {
         return consumer.setUv2(i, j);
     }
 
+    //? if >=26.3 {
+    @Override
+    public VertexConsumer setUv3(float u, float v) {
+        return consumer.setUv3(u, v);
+    }
+    //?}
+
     @Override
     public VertexConsumer setNormal(float f, float g, float h) {
         return consumer.setNormal(f, g, h);

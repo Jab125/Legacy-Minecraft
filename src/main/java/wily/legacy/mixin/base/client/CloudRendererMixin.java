@@ -1,6 +1,6 @@
 package wily.legacy.mixin.base.client;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import net.minecraft.client.CloudStatus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.CloudRenderer;
@@ -58,7 +58,8 @@ public abstract class CloudRendererMixin {
     @Shadow
     private CloudRenderer.TextureData texture;
 
-    @Inject(method = "render", at = @At("HEAD"))
+    //~ if >=26.3 '"render"' -> '"prepare(ILnet/minecraft/client/CloudStatus;FILnet/minecraft/world/phys/Vec3;JF)V"'
+    @Inject(method = "prepare(ILnet/minecraft/client/CloudStatus;FILnet/minecraft/world/phys/Vec3;JF)V", at = @At("HEAD"))
     private void legacy$markCloudsForRebuildWhenModeChanges(int color, CloudStatus cloudStatus, float cloudHeight, int cloudDistanceBlocks, Vec3 cameraPosition, long packedRelativeCameraPos, float ticks, CallbackInfo ci) {
         Minecraft minecraft = Minecraft.getInstance();
         legacy$useWarmCloudPipelines = minecraft.level != null && LegacyCloudAtmosphere.shouldUseWarmCloudTransparency(minecraft.level, ticks);
@@ -77,7 +78,8 @@ public abstract class CloudRendererMixin {
         }
     }
 
-    @ModifyVariable(method = "render", at = @At("HEAD"), argsOnly = true)
+    //~ if >=26.3 '"render"' -> '"prepare(ILnet/minecraft/client/CloudStatus;FILnet/minecraft/world/phys/Vec3;JF)V"'
+    @ModifyVariable(method = "prepare(ILnet/minecraft/client/CloudStatus;FILnet/minecraft/world/phys/Vec3;JF)V", at = @At("HEAD"), argsOnly = true)
     private CloudStatus legacy$forceFancyClouds(CloudStatus cloudStatus) {
         if (!LegacyCloudAtmosphere.areLceCloudsEnabled()) {
             return cloudStatus;
@@ -86,7 +88,8 @@ public abstract class CloudRendererMixin {
         return cloudStatus == CloudStatus.OFF ? cloudStatus : CloudStatus.FANCY;
     }
 
-    @ModifyVariable(method = "render", at = @At("HEAD"), argsOnly = true, ordinal = 0)
+    //~ if >=26.3 '"render"' -> '"prepare(ILnet/minecraft/client/CloudStatus;FILnet/minecraft/world/phys/Vec3;JF)V"'
+    @ModifyVariable(method = "prepare(ILnet/minecraft/client/CloudStatus;FILnet/minecraft/world/phys/Vec3;JF)V", at = @At("HEAD"), argsOnly = true, ordinal = 0)
     private int legacy$useCloudTextureTint(int color) {
         if (!LegacyCloudAtmosphere.areLceCloudsEnabled()) {
             return color;
@@ -101,10 +104,11 @@ public abstract class CloudRendererMixin {
     }
 
     @Redirect(
-        method = "render",
+        //~ if >=26.3 '"render"' -> '"render(Lnet/minecraft/client/CloudStatus;Lcom/mojang/renderpearl/api/commands/RenderPass;)V"'
+        method = "render(Lnet/minecraft/client/CloudStatus;Lcom/mojang/renderpearl/api/commands/RenderPass;)V",
         at = @At(
             value = "FIELD",
-            target = "Lnet/minecraft/client/renderer/RenderPipelines;CLOUDS:Lcom/mojang/blaze3d/pipeline/RenderPipeline;"
+            target = "Lnet/minecraft/client/renderer/RenderPipelines;CLOUDS:Lcom/mojang/renderpearl/api/pipeline/RenderPipeline;"
         )
     )
     private RenderPipeline legacy$useLegacyCloudPipeline() {
@@ -120,10 +124,11 @@ public abstract class CloudRendererMixin {
     }
 
     @Redirect(
-        method = "render",
+        //~ if >=26.3 '"render"' -> '"render(Lnet/minecraft/client/CloudStatus;Lcom/mojang/renderpearl/api/commands/RenderPass;)V"'
+        method = "render(Lnet/minecraft/client/CloudStatus;Lcom/mojang/renderpearl/api/commands/RenderPass;)V",
         at = @At(
             value = "FIELD",
-            target = "Lnet/minecraft/client/renderer/RenderPipelines;FLAT_CLOUDS:Lcom/mojang/blaze3d/pipeline/RenderPipeline;"
+            target = "Lnet/minecraft/client/renderer/RenderPipelines;FLAT_CLOUDS:Lcom/mojang/renderpearl/api/pipeline/RenderPipeline;"
         )
     )
     private RenderPipeline legacy$useLegacyFlatCloudPipeline() {
@@ -138,12 +143,14 @@ public abstract class CloudRendererMixin {
         return legacy$useWarmCloudPipelines ? LegacyRenderPipelines.LEGACY_WARM_FLAT_CLOUDS : LegacyRenderPipelines.LEGACY_FLAT_CLOUDS;
     }
 
-    @ModifyVariable(method = "render", at = @At("HEAD"), argsOnly = true, ordinal = 1)
+    //~ if >=26.3 '"render"' -> '"prepare(ILnet/minecraft/client/CloudStatus;FILnet/minecraft/world/phys/Vec3;JF)V"'
+    @ModifyVariable(method = "prepare(ILnet/minecraft/client/CloudStatus;FILnet/minecraft/world/phys/Vec3;JF)V", at = @At("HEAD"), argsOnly = true, ordinal = 1)
     private int legacy$useExtendedCloudDistance(int cloudDistanceChunks) {
         return LegacyCloudAtmosphere.areLceCloudsEnabled() ? LegacyCloudAtmosphere.getCloudDrawDistanceChunks() : cloudDistanceChunks;
     }
 
-    @ModifyVariable(method = "render", at = @At("HEAD"), argsOnly = true, ordinal = 0)
+    //~ if >=26.3 '"render"' -> '"prepare(ILnet/minecraft/client/CloudStatus;FILnet/minecraft/world/phys/Vec3;JF)V"'
+    @ModifyVariable(method = "prepare(ILnet/minecraft/client/CloudStatus;FILnet/minecraft/world/phys/Vec3;JF)V", at = @At("HEAD"), argsOnly = true, ordinal = 0)
     private float legacy$useLegacyCloudHeight(float cloudHeight) {
         return LegacyCloudAtmosphere.areLegacyCloudHeightAndTextureEnabled() ? LEGACY_CLOUD_HEIGHT : cloudHeight;
     }

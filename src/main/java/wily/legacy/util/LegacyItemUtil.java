@@ -1,13 +1,17 @@
 package wily.legacy.util;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.BlockTransformer;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -16,10 +20,14 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.component.BlockTransformerMappings;
 import net.minecraft.world.item.component.DyedItemColor;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.AbstractSkullBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
+import net.minecraft.world.level.block.state.BlockState;
 import wily.factoryapi.base.config.FactoryConfig;
 import wily.legacy.config.LegacyCommonOptions;
 
@@ -284,12 +292,79 @@ public class LegacyItemUtil {
         return level;
     }
 
+    public static boolean isShovel(ItemStack stack) {
+        //? if >=26.3 {
+        return stack.is(ItemTags.SHOVELS);
+        //?} else {
+        /*return stack.getItem() instanceof ShovelItem;
+        *///?}
+    }
+
+    public static boolean isAxe(ItemStack stack) {
+        //? if >=26.3 {
+        return stack.is(ItemTags.AXES);
+        //?} else {
+        /*stack.getItem() instanceof net.minecraft.world.item.AxeItem
+        *///?}
+    }
+
+    // TODO
+    public static boolean canScrape(ItemStack stack) {
+        BlockTransformer blockTransformer = stack.getComponents().get(DataComponents.BLOCK_TRANSFORMER);
+        if (blockTransformer == null) return false;
+        if (blockTransformer == BlockTransformerMappings.AXE) return true;
+        return false;
+    }
+
+    public static boolean blockTransformerAffectsLocation(ItemStack stack, final Level level, final BlockPos pos, Type type) {
+        return stack.getComponents().get(DataComponents.BLOCK_TRANSFORMER) instanceof BlockTransformer t && blockTransformerAffectsLocation(t, level, level.getRandom(), pos, type);
+    }
+
+    public static boolean blockTransformerAffectsLocation(BlockTransformer transformer, final Level level, final BlockPos pos, Type type) {
+        return blockTransformerAffectsLocation(transformer, level, level.getRandom(), pos, type);
+    }
+
+    public enum Type {
+        SCRAPE,
+        DIG,
+        PEEL,
+        TILL
+    }
+    public static boolean blockTransformerAffectsLocation(BlockTransformer transformer, final Level level, final RandomSource random, final BlockPos pos, Type type) {
+        for (BlockTransformer.BlockTransformData transform : transformer.transforms()) {
+            if (transform.blockStateProvider().getOptionalState(level, random, pos) != null) {
+                if (type == Type.SCRAPE) {
+                    return transform.sound().equals(SoundEvents.AXE_WAX_OFF);
+                }
+                if (type == Type.PEEL) {
+                    return transform.sound().equals(SoundEvents.AXE_STRIP);
+                }
+                if (type == Type.DIG) {
+                    return transform.sound().equals(SoundEvents.SHOVEL_FLATTEN);
+                }
+                if (type == Type.TILL) {
+                    return transform.sound().equals(SoundEvents.HOE_TILL);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean canCompost(ItemStack stack) {
+        return stack.has(DataComponents.COMPOSTABLE);
+    }
+
+    public static boolean dousesCampfires(ItemStack stack) {
+        return stack.is(ItemTags.DOUSES_CAMPFIRES);
+    }
+
     public static float getItemDamageModifier(ItemStack stack) {
         if (FactoryConfig.hasCommonConfigEnabled(LegacyCommonOptions.legacyCombat)) {
             if (stack.is(ItemTags.SWORDS)) return 1;
-            else if (stack.getItem() instanceof ShovelItem) return -0.5f;
+            else if (isShovel(stack)) return -0.5f;
             else if (stack.is(ItemTags.PICKAXES)) return 1;
-            else if (stack.getItem() instanceof net.minecraft.world.item.AxeItem) {
+            else if (isAxe(stack)) {
                 if (stack.is(Items.STONE_AXE)) return -4;
                 else if (stack.is(Items.DIAMOND_AXE) || stack.is(Items.NETHERITE_AXE)) return -2;
                 else return -3;
